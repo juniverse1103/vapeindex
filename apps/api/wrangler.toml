@@ -1,0 +1,27 @@
+name = "vapeindex-api"
+main = "src/index.ts"
+compatibility_date = "2024-11-16"
+node_compat = true
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "vapeindex-db"
+database_id = "placeholder-will-create-after-deploy"
+
+# KV Namespace for caching
+[[kv_namespaces]]
+binding = "CACHE"
+id = "placeholder-will-create-after-deploy"
+
+# Durable Objects for real-time trending
+[[durable_objects.bindings]]
+name = "TRENDING"
+class_name = "TrendingCalculator"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["TrendingCalculator"]
+
+[env.production]
+name = "vapeindex-api-production"

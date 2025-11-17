@@ -1,0 +1,19 @@
+{
+  "name": "vapeindex",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VapeIndex.io - THC vape community platform with viral growth mechanics",
+  "workspaces": [
+    "apps/frontend",
+    "apps/api"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "preview": "npm run preview --workspace=apps/frontend",
+    "deploy": "npm run deploy --workspaces --if-present"
+  },
+  "keywords": ["vape", "thc", "cannabis", "community", "cloudflare"],
+  "author": "junson",
+  "license": "MIT"
+}
