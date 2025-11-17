@@ -1,16 +1,127 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
 
+// Sample data (will be replaced with real data from D1)
+const featuredProducts = [
+  { id: '1', name: 'Raw Garden Live Resin - Blue Dream', type: 'cart', brand: 'Raw Garden', rating: 4.8, reviews: 127 },
+  { id: '2', name: 'Stiiizy Battery - Black', type: 'battery', brand: 'Stiiizy', rating: 4.6, reviews: 89 },
+  { id: '3', name: 'Plugplay - Gelato', type: 'disposable', brand: 'Plugplay', rating: 4.7, reviews: 156 },
+];
+
+const topPosts = [
+  { id: '1', title: 'Best carts in Venice Beach?', score: 42, comments: 18, author: 'vapefan23' },
+  { id: '2', title: 'PSA: Fake Stiiizy pods spotted in DTLA', score: 87, comments: 34, author: 'legit_only' },
+  { id: '3', title: 'Raw Garden vs. Plugplay - honest comparison', score: 64, comments: 51, author: 'connoisseur420' },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <Header />
+
+  <main style="max-width: 1200px; margin: 0 auto; padding: 1em;">
+    <!-- Hero Section -->
+    <div style="background: white; padding: 2em; margin-bottom: 1em; border: 1px solid var(--border);">
+      <h1 style="font-size: 18pt; margin: 0 0 0.5em 0;">Welcome to VapeIndex</h1>
+      <p style="font-size: 11pt; line-height: 1.6; margin: 0 0 1em 0; color: var(--text-muted);">
+        The community-driven platform for THC vape reviews, strain information, and discussions.
+        Find the best carts, batteries, and disposables in LA and beyond.
+      </p>
+      <p style="margin: 0;">
+        <a href="/login" style="background: var(--brand); color: white; padding: 0.6em 1.2em; border-radius: 3px; display: inline-block; font-weight: bold;">
+          Join the Community
+        </a>
+        <span style="margin: 0 0.5em; color: var(--text-muted);">or</span>
+        <a href="/products" style="color: var(--brand); font-weight: bold;">Browse Products →</a>
+      </p>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1em;">
+      <!-- Main Content - Top Posts -->
+      <div>
+        <h2 style="font-size: 12pt; margin: 0 0 0.5em 0;">Top Discussions</h2>
+        <table style="width: 100%; background: white; border: 1px solid var(--border); border-collapse: collapse;">
+          {topPosts.map((post, i) => (
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.5em; width: 2em; text-align: center; color: var(--text-muted);">
+                {i + 1}.
+              </td>
+              <td style="padding: 0.5em;">
+                <div>
+                  <a href={`/post/${post.id}`} style="font-weight: 500;">
+                    {post.title}
+                  </a>
+                </div>
+                <div class="text-muted" style="margin-top: 0.25em;">
+                  {post.score} points |
+                  by {post.author} |
+                  <a href={`/post/${post.id}`}>{post.comments} comments</a>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </table>
+
+        <p style="margin-top: 1em;">
+          <a href="/posts" style="color: var(--brand);">View all discussions →</a>
+        </p>
+      </div>
+
+      <!-- Sidebar - Featured Products -->
+      <div>
+        <h2 style="font-size: 12pt; margin: 0 0 0.5em 0;">Top Rated Products</h2>
+        <div style="background: white; border: 1px solid var(--border); padding: 1em;">
+          {featuredProducts.map((product) => (
+            <div style="margin-bottom: 1em; padding-bottom: 1em; border-bottom: 1px solid var(--border); last-child:border-bottom: none;">
+              <div style="font-weight: 500; margin-bottom: 0.25em;">
+                <a href={`/product/${product.id}`}>{product.name}</a>
+              </div>
+              <div class="text-muted">
+                <span style="color: var(--brand);">★ {product.rating}</span> ·
+                {product.reviews} reviews ·
+                {product.type}
+              </div>
+            </div>
+          ))}
+
+          <a href="/products" style="color: var(--brand); font-size: 9pt;">View all products →</a>
+        </div>
+
+        <!-- Quick Stats -->
+        <div style="background: white; border: 1px solid var(--border); padding: 1em; margin-top: 1em;">
+          <h3 style="font-size: 10pt; margin: 0 0 0.5em 0;">Community Stats</h3>
+          <div class="text-muted" style="font-size: 9pt;">
+            <div>🔥 372 reviews this week</div>
+            <div>💬 1,243 comments today</div>
+            <div>🌿 89 strains documented</div>
+            <div>📍 Serving LA → USA</div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div style="background: linear-gradient(135deg, #ff6600 0%, #ff5500 100%); color: white; padding: 1em; margin-top: 1em; border-radius: 3px;">
+          <h3 style="margin: 0 0 0.5em 0; font-size: 11pt;">Start Contributing</h3>
+          <p style="margin: 0 0 0.5em 0; font-size: 9pt; opacity: 0.9;">
+            Join our community of vape enthusiasts. Review products, share knowledge, earn karma.
+          </p>
+          <a href="/login" style="background: white; color: var(--brand); padding: 0.5em 1em; border-radius: 3px; display: inline-block; font-weight: bold; font-size: 9pt;">
+            Sign Up Free
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="margin-top: 2em; padding-top: 1em; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 8pt;">
+      <p>
+        <a href="/about">About</a> |
+        <a href="/guidelines">Guidelines</a> |
+        <a href="/faq">FAQ</a> |
+        <a href="https://discord.gg/vapeindex" target="_blank">Discord</a> |
+        <a href="https://github.com/juniverse1103/vapeindex" target="_blank">GitHub</a>
+      </p>
+      <p style="margin-top: 0.5em;">Built with Astro + Hono + Cloudflare. Open source.</p>
+    </footer>
+  </main>
+</Layout>

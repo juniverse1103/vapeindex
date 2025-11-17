@@ -1,1 +1,112 @@
 @import "tailwindcss";
+
+/* HackerNews-inspired clean design system */
+@layer base {
+  :root {
+    /* Orange brand color (HN-inspired) */
+    --brand: #ff6600;
+    --brand-dark: #ff5500;
+
+    /* Clean grayscale */
+    --bg: #f6f6ef;
+    --bg-alt: #ffffff;
+    --text: #000000;
+    --text-muted: #828282;
+    --border: #d0d0d0;
+
+    /* Semantic colors */
+    --upvote: #ff6600;
+    --downvote: #9493dd;
+    --success: #00b300;
+    --error: #dd0000;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --bg-alt: #242424;
+      --text: #e0e0e0;
+      --text-muted: #888888;
+      --border: #333333;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: Verdana, Geneva, sans-serif; /* HN uses Verdana */
+    font-size: 10pt; /* HN-style compact sizing */
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* HN-style links */
+  a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  a:visited {
+    color: #828282;
+  }
+
+  /* Clean button styles */
+  button {
+    font-family: inherit;
+    font-size: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Form inputs */
+  input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    padding: 0.4em;
+    color: var(--text);
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  .upvote {
+    color: var(--upvote);
+    cursor: pointer;
+  }
+
+  .upvote:hover {
+    color: var(--brand-dark);
+  }
+
+  .text-muted {
+    color: var(--text-muted);
+    font-size: 8pt;
+  }
+
+  .spacer {
+    display: inline-block;
+    width: 1em;
+  }
+}
