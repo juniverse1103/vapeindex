@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "setup:stripe": "node scripts/setup-stripe.js",
+    "test:subscription": "node scripts/test-subscription.js"
   },
   "dependencies": {
     "hono": "^4.6.14",
