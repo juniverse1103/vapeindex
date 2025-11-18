@@ -4,15 +4,15 @@ import Header from '../components/Header.astro';
 
 // Sample data (will be replaced with real data from D1)
 const featuredProducts = [
-  { id: '1', name: 'Raw Garden Live Resin - Blue Dream', type: 'cart', brand: 'Raw Garden', rating: 4.8, reviews: 127 },
-  { id: '2', name: 'Stiiizy Battery - Black', type: 'battery', brand: 'Stiiizy', rating: 4.6, reviews: 89 },
-  { id: '3', name: 'Plugplay - Gelato', type: 'disposable', brand: 'Plugplay', rating: 4.7, reviews: 156 },
+  { id: '1', name: 'Elf Bar BC5000 - Watermelon Ice', type: 'disposable', brand: 'Elf Bar', rating: 4.8, reviews: 1247 },
+  { id: '2', name: 'Caliburn G2 Pod System', type: 'pod', brand: 'Uwell', rating: 4.7, reviews: 892 },
+  { id: '3', name: 'Pax 3 - Dry Herb Vaporizer', type: 'dry_herb', brand: 'Pax', rating: 4.9, reviews: 2156 },
 ];
 
 const topPosts = [
-  { id: '1', title: 'Best carts in Venice Beach?', score: 42, comments: 18, author: 'vapefan23' },
-  { id: '2', title: 'PSA: Fake Stiiizy pods spotted in DTLA', score: 87, comments: 34, author: 'legit_only' },
-  { id: '3', title: 'Raw Garden vs. Plugplay - honest comparison', score: 64, comments: 51, author: 'connoisseur420' },
+  { id: '1', title: 'Best disposable vapes of 2025?', score: 142, comments: 68, author: 'vapeenthusiast' },
+  { id: '2', title: 'PSA: Fake Elf Bars - How to spot them', score: 287, comments: 94, author: 'authentic_only' },
+  { id: '3', title: 'Pax 3 vs Mighty+ - Full comparison', score: 164, comments: 121, author: 'herb_connoisseur' },
 ];
 ---
 
@@ -24,8 +24,8 @@ const topPosts = [
     <div style="background: white; padding: 2em; margin-bottom: 1em; border: 1px solid var(--border);">
       <h1 style="font-size: 18pt; margin: 0 0 0.5em 0;">Welcome to VapeIndex</h1>
       <p style="font-size: 11pt; line-height: 1.6; margin: 0 0 1em 0; color: var(--text-muted);">
-        The community-driven platform for THC vape reviews, strain information, and discussions.
-        Find the best carts, batteries, and disposables in LA and beyond.
+        The complete vaping index. Price tracking, reviews, and community discussions for all vapes—nicotine, THC, dry herb, and CBD.
+        Compare products, find deals, and join the conversation.
       </p>
       <p style="margin: 0;">
         <a href="/login" style="background: var(--brand); color: white; padding: 0.6em 1.2em; border-radius: 3px; display: inline-block; font-weight: bold;">
@@ -92,18 +92,18 @@ const topPosts = [
         <div style="background: white; border: 1px solid var(--border); padding: 1em; margin-top: 1em;">
           <h3 style="font-size: 10pt; margin: 0 0 0.5em 0;">Community Stats</h3>
           <div class="text-muted" style="font-size: 9pt;">
-            <div>🔥 372 reviews this week</div>
-            <div>💬 1,243 comments today</div>
-            <div>🌿 89 strains documented</div>
-            <div>📍 Serving LA → USA</div>
+            <div>🔥 2,847 reviews this month</div>
+            <div>💬 8,234 comments this week</div>
+            <div>📦 1,200+ products tracked</div>
+            <div>🌐 Global vaping community</div>
           </div>
         </div>
 
         <!-- CTA -->
         <div style="background: linear-gradient(135deg, #ff6600 0%, #ff5500 100%); color: white; padding: 1em; margin-top: 1em; border-radius: 3px;">
-          <h3 style="margin: 0 0 0.5em 0; font-size: 11pt;">Start Contributing</h3>
+          <h3 style="margin: 0 0 0.5em 0; font-size: 11pt;">Join the Community</h3>
           <p style="margin: 0 0 0.5em 0; font-size: 9pt; opacity: 0.9;">
-            Join our community of vape enthusiasts. Review products, share knowledge, earn karma.
+            Track prices, review products, share knowledge. Join vapers worldwide.
           </p>
           <a href="/login" style="background: white; color: var(--brand); padding: 0.5em 1em; border-radius: 3px; display: inline-block; font-weight: bold; font-size: 9pt;">
             Sign Up Free
