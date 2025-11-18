@@ -1,10 +1,29 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import subscriptions from './routes/subscriptions';
+import webhooks from './routes/webhooks';
 
 type Bindings = {
   DB: D1Database;
   CACHE: KVNamespace;
   TRENDING: DurableObjectNamespace;
+  // Stripe
+  STRIPE_SECRET_KEY: string;
+  STRIPE_PUBLISHABLE_KEY: string;
+  STRIPE_WEBHOOK_SECRET: string;
+  // Discord webhooks
+  DISCORD_WEBHOOK_REVENUE: string;
+  DISCORD_WEBHOOK_ALERTS: string;
+  DISCORD_WEBHOOK_ANALYTICS: string;
+  DISCORD_WEBHOOK_MODERATION: string;
+  DISCORD_WEBHOOK_GROWTH: string;
+  DISCORD_WEBHOOK_BOT: string;
+  // Optional
+  MERCURY_API_KEY?: string;
+  MERCURY_ACCOUNT_ID?: string;
+  ANTHROPIC_API_KEY?: string;
+  SITE_URL?: string;
+  API_URL?: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -17,10 +36,20 @@ app.use('/*', cors({
 
 // Health check
 app.get('/health', (c) => {
-  return c.json({ status: 'ok', timestamp: Date.now() });
+  return c.json({
+    status: 'ok',
+    timestamp: Date.now(),
+    version: '0.1.0'
+  });
 });
 
-// API routes
+// Revenue routes (Stripe subscriptions)
+app.route('/api/subscriptions', subscriptions);
+
+// Webhook routes (Stripe events)
+app.route('/webhooks', webhooks);
+
+// Content API routes (to be implemented)
 app.get('/api/products', async (c) => {
   // TODO: Implement product listing
   return c.json({ products: [] });
