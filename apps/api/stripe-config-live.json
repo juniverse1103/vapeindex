@@ -1,0 +1,41 @@
+{
+  "mode": "LIVE",
+  "created_at": "2025-11-18T06:06:30.714Z",
+  "products": [
+    {
+      "key": "premium",
+      "priceId": "price_1SUi3cIT2IDxL7huOgi0Vbkr",
+      "amount": 900
+    },
+    {
+      "key": "pro",
+      "priceId": "price_1SUi3cIT2IDxL7huYgwcxpBN",
+      "amount": 2900
+    },
+    {
+      "key": "sponsor_basic",
+      "priceId": "price_1SUi3dIT2IDxL7huR1lwpZY6",
+      "amount": 9900
+    },
+    {
+      "key": "sponsor_premium",
+      "priceId": "price_1SUi3dIT2IDxL7hutQkPFMEg",
+      "amount": 29900
+    },
+    {
+      "key": "api_starter",
+      "priceId": "price_1SUi3dIT2IDxL7huKQyaJK3J",
+      "amount": 9900
+    },
+    {
+      "key": "api_professional",
+      "priceId": "price_1SUi3eIT2IDxL7huKdipUudt",
+      "amount": 29900
+    },
+    {
+      "key": "api_enterprise",
+      "priceId": "price_1SUi3eIT2IDxL7hu9Pml4C2g",
+      "amount": 99900
+    }
+  ]
+}

@@ -56,23 +56,13 @@ app.post('/subscribe', async (c) => {
       user.username as string
     );
 
-    // Create checkout session
+    // Create checkout session using pre-created Stripe Price IDs
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       mode: 'subscription',
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: plan.name,
-              description: plan.features.join(', '),
-            },
-            unit_amount: plan.price,
-            recurring: {
-              interval: plan.interval,
-            },
-          },
+          price: plan.priceId,
           quantity: 1,
         },
       ],

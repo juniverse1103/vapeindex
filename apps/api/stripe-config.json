@@ -1,0 +1,57 @@
+{
+  "created_at": "2025-11-18T04:31:47.227Z",
+  "products": [
+    {
+      "key": "premium",
+      "productId": "prod_TRZj04IP5AcCJw",
+      "priceId": "price_1SUgZwEqOtxWEnpNcouALv8x",
+      "amount": 900
+    },
+    {
+      "key": "pro",
+      "productId": "prod_TRZjx7ZzqJTxiu",
+      "priceId": "price_1SUgZwEqOtxWEnpNTKm8xngS",
+      "amount": 2900
+    },
+    {
+      "key": "sponsor_basic",
+      "productId": "prod_TRZjuhnDAcdW98",
+      "priceId": "price_1SUgZxEqOtxWEnpN3k7gzqMl",
+      "amount": 9900
+    },
+    {
+      "key": "sponsor_premium",
+      "productId": "prod_TRZj0PlAK8vuMs",
+      "priceId": "price_1SUgZxEqOtxWEnpNgR0pFwUT",
+      "amount": 29900
+    },
+    {
+      "key": "api_starter",
+      "productId": "prod_TRZjevObkIhyfr",
+      "priceId": "price_1SUgZyEqOtxWEnpNkfmdbCKL",
+      "amount": 9900
+    },
+    {
+      "key": "api_professional",
+      "productId": "prod_TRZjDqCiQOnZJc",
+      "priceId": "price_1SUgZyEqOtxWEnpNXm7R0vRw",
+      "amount": 29900
+    },
+    {
+      "key": "api_enterprise",
+      "productId": "prod_TRZjirabnXKU5h",
+      "priceId": "price_1SUgZzEqOtxWEnpN2u6eJPTF",
+      "amount": 99900
+    }
+  ],
+  "webhook_secret": "whsec_YOUR_WEBHOOK_SECRET_HERE",
+  "lookup_keys": {
+    "premium": "price_1SUgZwEqOtxWEnpNcouALv8x",
+    "pro": "price_1SUgZwEqOtxWEnpNTKm8xngS",
+    "sponsor_basic": "price_1SUgZxEqOtxWEnpN3k7gzqMl",
+    "sponsor_premium": "price_1SUgZxEqOtxWEnpNgR0pFwUT",
+    "api_starter": "price_1SUgZyEqOtxWEnpNkfmdbCKL",
+    "api_professional": "price_1SUgZyEqOtxWEnpNXm7R0vRw",
+    "api_enterprise": "price_1SUgZzEqOtxWEnpN2u6eJPTF"
+  }
+}

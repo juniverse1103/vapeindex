@@ -8,6 +8,7 @@
     "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
     "setup:stripe": "node scripts/setup-stripe.js",
+    "check:stripe": "node scripts/check-stripe-status.js",
     "test:subscription": "node scripts/test-subscription.js"
   },
   "dependencies": {

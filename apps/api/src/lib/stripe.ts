@@ -8,12 +8,13 @@ export function createStripeClient(apiKey: string): Stripe {
   });
 }
 
-// Subscription plans configuration
+// Subscription plans configuration with Stripe Price IDs
 export const PLANS = {
   premium: {
     name: 'Premium',
     price: 900, // $9.00
     interval: 'month' as const,
+    priceId: 'price_1SUgZwEqOtxWEnpNcouALv8x',
     features: [
       'Ad-free experience',
       'Price drop alerts',
@@ -26,6 +27,7 @@ export const PLANS = {
     name: 'Pro',
     price: 2900, // $29.00
     interval: 'month' as const,
+    priceId: 'price_1SUgZwEqOtxWEnpNTKm8xngS',
     features: [
       'Everything in Premium',
       'Verified badge',
@@ -38,6 +40,7 @@ export const PLANS = {
     name: 'Basic Sponsorship',
     price: 9900, // $99.00
     interval: 'month' as const,
+    priceId: 'price_1SUgZxEqOtxWEnpN3k7gzqMl',
     features: [
       'Featured badge',
       'Priority ranking',
@@ -48,6 +51,7 @@ export const PLANS = {
     name: 'Premium Sponsorship',
     price: 29900, // $299.00
     interval: 'month' as const,
+    priceId: 'price_1SUgZxEqOtxWEnpNgR0pFwUT',
     features: [
       'Everything in Basic',
       'Homepage placement',
@@ -59,6 +63,7 @@ export const PLANS = {
     name: 'API Starter',
     price: 9900, // $99.00
     interval: 'month' as const,
+    priceId: 'price_1SUgZyEqOtxWEnpNkfmdbCKL',
     features: [
       'Read-only API access',
       '10,000 requests/month',
@@ -69,6 +74,7 @@ export const PLANS = {
     name: 'API Professional',
     price: 29900, // $299.00
     interval: 'month' as const,
+    priceId: 'price_1SUgZyEqOtxWEnpNXm7R0vRw',
     features: [
       'Full API access',
       '100,000 requests/month',
@@ -80,6 +86,7 @@ export const PLANS = {
     name: 'API Enterprise',
     price: 99900, // $999.00
     interval: 'month' as const,
+    priceId: 'price_1SUgZzEqOtxWEnpN2u6eJPTF',
     features: [
       'Unlimited requests',
       'Custom integrations',
@@ -121,12 +128,10 @@ export async function getOrCreateCustomer(
 
 // Calculate MRR (Monthly Recurring Revenue)
 export function calculateMRR(subscriptions: any[]): number {
-  return subscriptions
-    .filter(sub => sub.status === 'active')
-    .reduce((total, sub) => {
-      const plan = PLANS[sub.plan as PlanKey];
-      return total + (plan?.price || 0);
-    }, 0);
+  return subscriptions.reduce((total, sub) => {
+    const plan = PLANS[sub.plan as PlanKey];
+    return total + (plan?.price || 0);
+  }, 0);
 }
 
 // Format currency

@@ -29,7 +29,7 @@ app.post('/stripe-webhook', async (c) => {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    event = await stripe.webhooks.constructEventAsync(
       rawBody,
       signature,
       c.env.STRIPE_WEBHOOK_SECRET
@@ -122,6 +122,11 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription, env:
     }
   }
 
+  // Get period dates from subscription item
+  const subscriptionItem = subscription.items.data[0];
+  const periodStart = subscriptionItem.current_period_start || subscription.billing_cycle_anchor || Math.floor(Date.now() / 1000);
+  const periodEnd = subscriptionItem.current_period_end || (periodStart + 30 * 24 * 60 * 60); // Default to 30 days if missing
+
   // Save subscription to database
   const subscriptionId = crypto.randomUUID();
   await env.DB.prepare(`
@@ -137,8 +142,8 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription, env:
     subscription.id,
     planKey,
     subscription.status,
-    subscription.current_period_start * 1000,
-    subscription.current_period_end * 1000,
+    periodStart * 1000,
+    periodEnd * 1000,
     subscription.cancel_at_period_end ? 1 : 0,
     Date.now(),
     Date.now()
@@ -187,6 +192,11 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription, env:
 
 // Handle subscription updates (plan changes, cancellations, etc.)
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription, env: Bindings) {
+  // Get period dates from subscription item
+  const subscriptionItem = subscription.items.data[0];
+  const periodStart = subscriptionItem.current_period_start || subscription.billing_cycle_anchor || Math.floor(Date.now() / 1000);
+  const periodEnd = subscriptionItem.current_period_end || (periodStart + 30 * 24 * 60 * 60);
+
   await env.DB.prepare(`
     UPDATE subscriptions
     SET status = ?,
@@ -197,8 +207,8 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription, env:
     WHERE stripe_subscription_id = ?
   `).bind(
     subscription.status,
-    subscription.current_period_start * 1000,
-    subscription.current_period_end * 1000,
+    periodStart * 1000,
+    periodEnd * 1000,
     subscription.cancel_at_period_end ? 1 : 0,
     Date.now(),
     subscription.id
@@ -264,7 +274,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice, env: Bindings) {
     UPDATE transactions
     SET status = 'succeeded'
     WHERE stripe_payment_intent_id = ? OR stripe_invoice_id = ?
-  `).bind(invoice.payment_intent as string, invoice.id).run();
+  `).bind(invoice.payment_intent as string || null, invoice.id).run();
 
   // Record new transaction if it doesn't exist
   const existing = await env.DB.prepare(`
@@ -284,7 +294,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice, env: Bindings) {
       userId,
       invoice.amount_paid,
       invoice.id,
-      invoice.payment_intent as string,
+      invoice.payment_intent as string || null,
       'Subscription payment',
       Date.now()
     ).run();
