@@ -132,7 +132,7 @@ import Header from '../components/Header.astro';
   }
 
   .hero-logo {
-    background: white;
+    background: var(--bg-elevated);
     color: var(--brand);
     width: 80px;
     height: 80px;
@@ -164,8 +164,8 @@ import Header from '../components/Header.astro';
   }
 
   .content-section {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
     padding: 2rem;
     border-radius: 0.5rem;
   }
@@ -178,7 +178,7 @@ import Header from '../components/Header.astro';
 
   .content-section p {
     font-size: 1rem;
-    color: #666;
+    color: var(--text-secondary);
     line-height: 1.7;
     margin: 0 0 1rem 0;
   }
@@ -211,7 +211,7 @@ import Header from '../components/Header.astro';
 
   .feature p {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0;
   }
 
@@ -224,7 +224,7 @@ import Header from '../components/Header.astro';
 
   .value {
     padding: 1rem;
-    background: #f9f9f9;
+    background: var(--bg-secondary);
     border-left: 4px solid var(--brand);
     border-radius: 0.25rem;
     font-size: 0.9375rem;
@@ -240,13 +240,13 @@ import Header from '../components/Header.astro';
     margin: 1rem 0 0 0;
     padding-left: 1.5rem;
     font-size: 0.9375rem;
-    color: #666;
+    color: var(--text-secondary);
     line-height: 1.8;
   }
 
   .stats-section {
     background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-primary);
     padding: 2rem;
     border-radius: 0.5rem;
   }
@@ -267,15 +267,15 @@ import Header from '../components/Header.astro';
 
   .stat-label {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--text-secondary);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .cta-section {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
     padding: 3rem 2rem;
     border-radius: 0.5rem;
     text-align: center;
@@ -289,7 +289,7 @@ import Header from '../components/Header.astro';
 
   .cta-section p {
     font-size: 1rem;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0 0 1.5rem 0;
   }
 
@@ -313,7 +313,7 @@ import Header from '../components/Header.astro';
   }
 
   .btn-secondary {
-    background: white;
+    background: var(--bg-elevated);
     color: var(--brand);
     border: 2px solid var(--brand);
   }

@@ -105,8 +105,8 @@ import Header from '../components/Header.astro';
   }
 
   .page-header {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
     padding: 2rem;
     margin-bottom: 1.5rem;
     border-radius: 0.5rem;
@@ -121,7 +121,7 @@ import Header from '../components/Header.astro';
 
   .page-header p {
     font-size: 1rem;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0;
   }
 
@@ -133,8 +133,8 @@ import Header from '../components/Header.astro';
 
   .contact-form-section,
   .contact-info-section {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
     padding: 2rem;
     border-radius: 0.5rem;
   }
@@ -155,7 +155,7 @@ import Header from '../components/Header.astro';
     font-weight: 700;
     font-size: 0.9375rem;
     margin-bottom: 0.5rem;
-    color: #333;
+    color: var(--text-secondary);
   }
 
   .form-group input,
@@ -214,7 +214,7 @@ import Header from '../components/Header.astro';
 
   .method-content p {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0;
     line-height: 1.5;
   }
@@ -226,10 +226,10 @@ import Header from '../components/Header.astro';
   }
 
   .response-time {
-    background: #f9f9f9;
+    background: var(--bg-secondary);
     padding: 1.25rem;
     border-radius: 0.375rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-primary);
   }
 
   .response-time h3 {
@@ -240,7 +240,7 @@ import Header from '../components/Header.astro';
 
   .response-time p {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0;
     line-height: 1.6;
   }

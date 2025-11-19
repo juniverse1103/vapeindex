@@ -105,8 +105,8 @@ const posts = [
   }
 
   .page-header {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
     padding: 2rem;
     margin-bottom: 1rem;
     border-radius: 0.5rem;
@@ -120,13 +120,13 @@ const posts = [
 
   .page-header p {
     font-size: 1rem;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0;
   }
 
   .filter-bar {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
     padding: 0.75rem 1rem;
     margin-bottom: 1rem;
     display: flex;
@@ -144,7 +144,7 @@ const posts = [
   }
 
   .filter-tab {
-    color: #333;
+    color: var(--text-secondary);
     text-decoration: none;
     padding: 0.375rem 0.75rem;
     font-weight: 700;
@@ -153,8 +153,8 @@ const posts = [
   }
 
   .filter-tab.active {
-    color: #000;
-    background: #f0f0f0;
+    color: var(--text-primary);
+    background: var(--bg-hover);
   }
 
   .create-post-btn {

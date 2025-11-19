@@ -158,8 +158,8 @@ if (!user) {
   }
 
   .profile-header {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
     border-radius: 0.5rem;
     padding: 2rem;
     margin-bottom: 1rem;
@@ -190,7 +190,7 @@ if (!user) {
 
   .profile-bio {
     font-size: 1rem;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0 0 1rem 0;
     line-height: 1.6;
   }
@@ -210,12 +210,12 @@ if (!user) {
   .stat-value {
     font-size: 1.5rem;
     font-weight: 900;
-    color: #000;
+    color: var(--text-primary);
   }
 
   .stat-label {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--text-tertiary);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -223,7 +223,7 @@ if (!user) {
 
   .profile-meta {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--text-secondary);
   }
 
   .profile-actions {
@@ -248,21 +248,21 @@ if (!user) {
   }
 
   .btn-message {
-    background: white;
+    background: var(--bg-elevated);
     color: var(--brand);
     border: 2px solid var(--brand);
   }
 
   .activity-section {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
     border-radius: 0.5rem;
     overflow: hidden;
   }
 
   .activity-tabs {
     display: flex;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-primary);
   }
 
   .tab-btn {
@@ -271,7 +271,7 @@ if (!user) {
     background: none;
     border: none;
     font-weight: 700;
-    color: #666;
+    color: var(--text-secondary);
     cursor: pointer;
     position: relative;
   }
@@ -296,7 +296,7 @@ if (!user) {
 
   .activity-item {
     padding: 1rem;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--divider);
   }
 
   .activity-item:last-child {
@@ -311,11 +311,11 @@ if (!user) {
   }
 
   .activity-type {
-    color: #666;
+    color: var(--text-secondary);
   }
 
   .activity-time {
-    color: #999;
+    color: var(--text-tertiary);
   }
 
   .board-link,
@@ -332,7 +332,7 @@ if (!user) {
   }
 
   .activity-title a {
-    color: #000;
+    color: var(--text-primary);
     text-decoration: none;
   }
 
@@ -342,11 +342,11 @@ if (!user) {
 
   .comment-preview {
     font-size: 0.9375rem;
-    color: #333;
+    color: var(--text-secondary);
     line-height: 1.6;
     margin-bottom: 0.5rem;
     padding: 0.75rem;
-    background: #f9f9f9;
+    background: var(--bg-secondary);
     border-left: 3px solid var(--brand);
     border-radius: 0.25rem;
   }
@@ -355,7 +355,7 @@ if (!user) {
     display: flex;
     gap: 1.5rem;
     font-size: 0.8125rem;
-    color: #666;
+    color: var(--text-secondary);
     font-weight: 600;
   }
 
