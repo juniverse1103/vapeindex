@@ -1,0 +1,390 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+// Mock users with different activity levels
+const users = {
+  vapeenthusiast: {
+    username: 'vapeenthusiast',
+    karma: 2847,
+    joined: 'Jan 2024',
+    posts: 156,
+    comments: 892,
+    awards: 3,
+    bio: 'Been vaping for 2 years. Love trying new flavors and helping beginners!',
+    activity: [
+      { type: 'post', id: '1', title: 'Best disposable vapes of 2025?', board: 'Disposables', score: 287, comments: 94, time: '3h ago' },
+      { type: 'comment', postId: '15', postTitle: 'Caliburn G2 vs Smok Nord 4?', content: 'I've owned both. Caliburn has better flavor but Nord has longer battery life. Depends on your priority!', score: 45, time: '1d ago' },
+      { type: 'post', id: '45', title: 'My 6-month vaping journey - from smoker to vaper', board: 'Beginner', score: 234, comments: 67, time: '3d ago' },
+      { type: 'comment', postId: '23', postTitle: 'Best fruity flavors?', content: 'Watermelon Ice is my go-to. Also love Peach Mango from Lost Mary.', score: 78, time: '4d ago' },
+    ]
+  },
+  authentic_only: {
+    username: 'authentic_only',
+    karma: 5234,
+    joined: 'Aug 2023',
+    posts: 234,
+    comments: 1567,
+    awards: 12,
+    bio: 'Fighting fake vapes one post at a time. DM me if you need help verifying authenticity.',
+    activity: [
+      { type: 'post', id: '2', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', board: 'Disposables', score: 512, comments: 143, time: '5h ago' },
+      { type: 'comment', postId: '1', postTitle: 'Best disposable vapes of 2025?', content: 'Elf Bar BC5000 is the gold standard. Just make sure you buy from reputable sellers - there are tons of fakes out there.', score: 156, time: '2h ago' },
+      { type: 'post', id: '67', title: 'Verified seller list - Updated for 2025', board: 'Deals', score: 678, comments: 234, time: '1w ago' },
+    ]
+  },
+  newbie2025: {
+    username: 'newbie2025',
+    karma: 12,
+    joined: 'Nov 2024',
+    posts: 3,
+    comments: 8,
+    awards: 0,
+    bio: 'New to vaping, trying to quit smoking. Thanks for all the help!',
+    activity: [
+      { type: 'post', id: '12', title: 'Complete beginner - what device should I buy?', board: 'Beginner', score: 98, comments: 73, time: '1d ago' },
+      { type: 'comment', postId: '45', postTitle: 'My 6-month vaping journey', content: 'This is really inspiring! I just started last week.', score: 12, time: '2d ago' },
+      { type: 'post', id: '78', title: 'How long does nicotine withdrawal last?', board: 'Beginner', score: 45, comments: 23, time: '5d ago' },
+    ]
+  }
+};
+
+const { username } = Astro.params;
+const user = users[username as keyof typeof users];
+
+if (!user) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout title={`u/${user.username} - VapeIndex`}>
+  <Header />
+
+  <main class="main-content">
+    <div class="layout-container profile-layout">
+
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <div class="avatar-circle">{user.username[0].toUpperCase()}</div>
+        </div>
+        <div class="profile-info">
+          <h1 class="profile-username">u/{user.username}</h1>
+          <p class="profile-bio">{user.bio}</p>
+          <div class="profile-stats">
+            <div class="stat">
+              <span class="stat-value">{user.karma.toLocaleString()}</span>
+              <span class="stat-label">Karma</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{user.posts}</span>
+              <span class="stat-label">Posts</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{user.comments}</span>
+              <span class="stat-label">Comments</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{user.awards}</span>
+              <span class="stat-label">Awards</span>
+            </div>
+          </div>
+          <div class="profile-meta">
+            <span>📅 Joined {user.joined}</span>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-follow">+ Follow</button>
+          <button class="btn-message">Message</button>
+        </div>
+      </div>
+
+      <!-- Activity Tabs -->
+      <div class="activity-section">
+        <div class="activity-tabs">
+          <button class="tab-btn active">Overview</button>
+          <button class="tab-btn">Posts</button>
+          <button class="tab-btn">Comments</button>
+          <button class="tab-btn">Awards</button>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity-feed">
+          {user.activity.map(item => (
+            <div class="activity-item">
+              {item.type === 'post' ? (
+                <div class="activity-post">
+                  <div class="activity-meta">
+                    <span class="activity-type">📝 Posted in <a href={`/b/${item.board?.toLowerCase()}`} class="board-link">b/{item.board}</a></span>
+                    <span class="activity-time">{item.time}</span>
+                  </div>
+                  <h3 class="activity-title">
+                    <a href={`/post/${item.id}`}>{item.title}</a>
+                  </h3>
+                  <div class="activity-stats">
+                    <span>⬆ {item.score} points</span>
+                    <span>💬 {item.comments} comments</span>
+                  </div>
+                </div>
+              ) : (
+                <div class="activity-comment">
+                  <div class="activity-meta">
+                    <span class="activity-type">💬 Commented on <a href={`/post/${item.postId}`} class="post-link">{item.postTitle}</a></span>
+                    <span class="activity-time">{item.time}</span>
+                  </div>
+                  <div class="comment-preview">{item.content}</div>
+                  <div class="activity-stats">
+                    <span>⬆ {item.score} points</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .profile-layout {
+    max-width: 900px;
+  }
+
+  .profile-header {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .avatar-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand) 0%, #EC4899 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 900;
+  }
+
+  .profile-username {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .profile-bio {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #000;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: #999;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .profile-meta {
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .btn-follow,
+  .btn-message {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.375rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-follow {
+    background: var(--brand);
+    color: white;
+    border: none;
+  }
+
+  .btn-message {
+    background: white;
+    color: var(--brand);
+    border: 2px solid var(--brand);
+  }
+
+  .activity-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .activity-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 1rem;
+    background: none;
+    border: none;
+    font-weight: 700;
+    color: #666;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .tab-btn.active {
+    color: var(--brand);
+  }
+
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--brand);
+  }
+
+  .activity-feed {
+    padding: 1rem;
+  }
+
+  .activity-item {
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .activity-item:last-child {
+    border-bottom: none;
+  }
+
+  .activity-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .activity-type {
+    color: #666;
+  }
+
+  .activity-time {
+    color: #999;
+  }
+
+  .board-link,
+  .post-link {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .activity-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .activity-title a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .activity-title a:hover {
+    color: var(--brand);
+  }
+
+  .comment-preview {
+    font-size: 0.9375rem;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    background: #f9f9f9;
+    border-left: 3px solid var(--brand);
+    border-radius: 0.25rem;
+  }
+
+  .activity-stats {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.8125rem;
+    color: #666;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .profile-header {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .avatar-circle {
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+    }
+
+    .profile-username {
+      font-size: 1.5rem;
+    }
+
+    .profile-stats {
+      gap: 1rem;
+    }
+
+    .stat-value {
+      font-size: 1.25rem;
+    }
+
+    .profile-actions {
+      flex-direction: row;
+    }
+
+    .tab-btn {
+      font-size: 0.875rem;
+    }
+  }
+</style>

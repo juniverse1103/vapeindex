@@ -2,126 +2,387 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 
-// Sample data (will be replaced with real data from D1)
-const featuredProducts = [
-  { id: '1', name: 'Elf Bar BC5000 - Watermelon Ice', type: 'disposable', brand: 'Elf Bar', rating: 4.8, reviews: 1247 },
-  { id: '2', name: 'Caliburn G2 Pod System', type: 'pod', brand: 'Uwell', rating: 4.7, reviews: 892 },
-  { id: '3', name: 'Pax 3 - Dry Herb Vaporizer', type: 'dry_herb', brand: 'Pax', rating: 4.9, reviews: 2156 },
+// Complete community structure with boards, posts, and users
+const boards = [
+  { name: 'Disposables', slug: 'disposables', posts: 2847, members: 15234, description: 'Elf Bar, Puff Bar, and all disposable vapes', color: '#3B82F6' },
+  { name: 'Pod Systems', slug: 'pods', posts: 1923, members: 8901, description: 'Refillable pods, salt nic devices', color: '#8B5CF6' },
+  { name: 'Dry Herb', slug: 'dryherb', posts: 1456, members: 12456, description: 'Pax, Mighty, and dry herb vaporizers', color: '#10B981' },
+  { name: 'Mods & Tanks', slug: 'mods', posts: 3201, members: 19234, description: 'Box mods, sub-ohm tanks, coil builds', color: '#F59E0B' },
+  { name: 'Deals', slug: 'deals', posts: 892, members: 23456, description: 'Sales, coupons, and price drops', color: '#EF4444' },
+  { name: 'Reviews', slug: 'reviews', posts: 2156, members: 11234, description: 'In-depth product reviews', color: '#EC4899' },
+  { name: 'DIY', slug: 'diy', posts: 1534, members: 6789, description: 'Coil building, mixing e-liquid', color: '#6366F1' },
+  { name: 'Beginner', slug: 'beginner', posts: 2789, members: 18902, description: 'New to vaping? Start here', color: '#14B8A6' },
 ];
 
 const topPosts = [
-  { id: '1', title: 'Best disposable vapes of 2025?', score: 142, comments: 68, author: 'vapeenthusiast' },
-  { id: '2', title: 'PSA: Fake Elf Bars - How to spot them', score: 287, comments: 94, author: 'authentic_only' },
-  { id: '3', title: 'Pax 3 vs Mighty+ - Full comparison', score: 164, comments: 121, author: 'herb_connoisseur' },
+  { id: '1', title: 'Best disposable vapes of 2025? Looking for recommendations', board: 'Disposables', boardSlug: 'disposables', score: 287, comments: 94, author: 'vapeenthusiast', authorKarma: 2847, time: '3h', views: 1847, hot: true, awarded: true },
+  { id: '2', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', board: 'Disposables', boardSlug: 'disposables', score: 512, comments: 143, author: 'authentic_only', authorKarma: 5234, time: '5h', views: 4234, hot: true, awarded: true },
+  { id: '3', title: 'Pax 3 vs Mighty+ - Full comparison with photos', board: 'Dry Herb', boardSlug: 'dryherb', score: 164, comments: 121, author: 'herb_connoisseur', authorKarma: 3456, time: '7h', views: 1923, hot: false, awarded: false },
+  { id: '4', title: 'Caliburn G2 pods leaking after 2 days - any solutions?', board: 'Pod Systems', boardSlug: 'pods', score: 89, comments: 45, author: 'pod_user', authorKarma: 234, time: '9h', views: 1247, hot: false, awarded: false },
+  { id: '5', title: 'VaporDNA 30% off sale - today only! Code: VAPE30', board: 'Deals', boardSlug: 'deals', score: 456, comments: 87, author: 'deal_hunter', authorKarma: 8901, time: '11h', views: 5632, hot: true, awarded: true },
+  { id: '6', title: 'Freebase vs salt nicotine - comprehensive beginner guide', board: 'Reviews', boardSlug: 'reviews', score: 203, comments: 32, author: 'nic_expert', authorKarma: 12456, time: '14h', views: 3421, hot: false, awarded: false },
+  { id: '7', title: 'Battery safety - what EVERY vaper needs to know', board: 'Mods & Tanks', boardSlug: 'mods', score: 392, comments: 156, author: 'safety_first', authorKarma: 15234, time: '16h', views: 6234, hot: true, awarded: true },
+  { id: '8', title: 'New Elf Bar BC5000 flavors just dropped - tried them all', board: 'Disposables', boardSlug: 'disposables', score: 178, comments: 56, author: 'flavor_king', authorKarma: 1823, time: '18h', views: 2145, hot: false, awarded: false },
+  { id: '9', title: 'Smok RPM4 - is it worth upgrading from RPM3?', board: 'Pod Systems', boardSlug: 'pods', score: 67, comments: 28, author: 'smok_fan', authorKarma: 456, time: '20h', views: 987, hot: false, awarded: false },
+  { id: '10', title: 'Share your current vape setup! [Photos]', board: 'Show', boardSlug: 'show', score: 234, comments: 89, author: 'setup_share', authorKarma: 2134, time: '22h', views: 3156, hot: false, awarded: false },
+  { id: '11', title: 'Built my first triple-core fused clapton coils! Tips?', board: 'DIY', boardSlug: 'diy', score: 145, comments: 67, author: 'coil_builder', authorKarma: 987, time: '1d', views: 1456, hot: false, awarded: false },
+  { id: '12', title: 'Complete beginner - what device should I buy?', board: 'Beginner', boardSlug: 'beginner', score: 98, comments: 73, author: 'newbie2025', authorKarma: 12, time: '1d', views: 1892, hot: false, awarded: false },
+  { id: '13', title: 'Storz & Bickel Mighty+ price tracking - all time low?', board: 'Deals', boardSlug: 'deals', score: 267, comments: 41, author: 'price_watcher', authorKarma: 6734, time: '1d', views: 2734, hot: false, awarded: false },
+  { id: '14', title: 'Lost Vape Thelema DNA250C - 6 month review', board: 'Reviews', boardSlug: 'reviews', score: 189, comments: 52, author: 'reviewer_pro', authorKarma: 9234, time: '1d', views: 2341, hot: false, awarded: false },
+  { id: '15', title: 'Anyone tried the new Geek Bar Pulse? Thoughts?', board: 'Disposables', boardSlug: 'disposables', score: 134, comments: 48, author: 'disposable_fan', authorKarma: 1234, time: '2d', views: 1678, hot: false, awarded: false },
 ];
+
+const trendingBoards = boards.slice(0, 4);
+const stats = {
+  totalPosts: 16293,
+  totalMembers: 115406,
+  activeNow: 1834,
+  boardsCount: boards.length
+};
 ---
 
 <Layout>
   <Header />
 
-  <main style="max-width: 1200px; margin: 0 auto; padding: 1em;">
-    <!-- Hero Section -->
-    <div style="background: white; padding: 2em; margin-bottom: 1em; border: 1px solid var(--border);">
-      <h1 style="font-size: 18pt; margin: 0 0 0.5em 0;">Welcome to VapeIndex</h1>
-      <p style="font-size: 11pt; line-height: 1.6; margin: 0 0 1em 0; color: var(--text-muted);">
-        The complete vaping index. Price tracking, reviews, and community discussions for all vapes—nicotine, THC, dry herb, and CBD.
-        Compare products, find deals, and join the conversation.
-      </p>
-      <p style="margin: 0;">
-        <a href="/login" style="background: var(--brand); color: white; padding: 0.6em 1.2em; border-radius: 3px; display: inline-block; font-weight: bold;">
-          Join the Community
-        </a>
-        <span style="margin: 0 0.5em; color: var(--text-muted);">or</span>
-        <a href="/products" style="color: var(--brand); font-weight: bold;">Browse Products →</a>
-      </p>
-    </div>
+  <main class="main-content">
+    <div class="layout-container">
 
-    <!-- Two Column Layout -->
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1em;">
-      <!-- Main Content - Top Posts -->
-      <div>
-        <h2 style="font-size: 12pt; margin: 0 0 0.5em 0;">Top Discussions</h2>
-        <table style="width: 100%; background: white; border: 1px solid var(--border); border-collapse: collapse;">
-          {topPosts.map((post, i) => (
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 0.5em; width: 2em; text-align: center; color: var(--text-muted);">
-                {i + 1}.
-              </td>
-              <td style="padding: 0.5em;">
-                <div>
-                  <a href={`/post/${post.id}`} style="font-weight: 500;">
-                    {post.title}
-                  </a>
-                </div>
-                <div class="text-muted" style="margin-top: 0.25em;">
-                  {post.score} points |
-                  by {post.author} |
-                  <a href={`/post/${post.id}`}>{post.comments} comments</a>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </table>
-
-        <p style="margin-top: 1em;">
-          <a href="/posts" style="color: var(--brand);">View all discussions →</a>
-        </p>
-      </div>
-
-      <!-- Sidebar - Featured Products -->
-      <div>
-        <h2 style="font-size: 12pt; margin: 0 0 0.5em 0;">Top Rated Products</h2>
-        <div style="background: white; border: 1px solid var(--border); padding: 1em;">
-          {featuredProducts.map((product) => (
-            <div style="margin-bottom: 1em; padding-bottom: 1em; border-bottom: 1px solid var(--border); last-child:border-bottom: none;">
-              <div style="font-weight: 500; margin-bottom: 0.25em;">
-                <a href={`/product/${product.id}`}>{product.name}</a>
-              </div>
-              <div class="text-muted">
-                <span style="color: var(--brand);">★ {product.rating}</span> ·
-                {product.reviews} reviews ·
-                {product.type}
-              </div>
-            </div>
-          ))}
-
-          <a href="/products" style="color: var(--brand); font-size: 9pt;">View all products →</a>
+      <!-- Left Sidebar - Boards -->
+      <aside class="sidebar-left">
+        <!-- Create Board CTA -->
+        <div style="background: white; border: 1px solid var(--border); padding: 1rem;">
+          <div style="font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; color: #000000;">Create Your Community</div>
+          <p style="font-size: 0.8125rem; color: #333333; margin: 0 0 0.75rem 0; line-height: 1.5;">
+            Start a new board and build your own community around any vaping topic.
+          </p>
+          <a href="/create-board" style="display: block; background: var(--brand); color: white; padding: 0.5rem 1rem; border-radius: 0.25rem; text-align: center; font-weight: 700; font-size: 0.875rem; text-decoration: none;">
+            + Create Board
+          </a>
         </div>
 
-        <!-- Quick Stats -->
-        <div style="background: white; border: 1px solid var(--border); padding: 1em; margin-top: 1em;">
-          <h3 style="font-size: 10pt; margin: 0 0 0.5em 0;">Community Stats</h3>
-          <div class="text-muted" style="font-size: 9pt;">
-            <div>🔥 2,847 reviews this month</div>
-            <div>💬 8,234 comments this week</div>
-            <div>📦 1,200+ products tracked</div>
-            <div>🌐 Global vaping community</div>
+        <!-- Boards List -->
+        <div style="background: white; border: 1px solid var(--border);">
+          <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);">
+            <h3 style="font-size: 0.875rem; font-weight: 800; color: #000000; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">
+              Browse Boards
+            </h3>
+          </div>
+          <div style="max-height: 500px; overflow-y: auto;">
+            {boards.map(board => (
+              <a href={`/b/${board.slug}`} style={`display: block; padding: 0.75rem 1rem; color: #000000; text-decoration: none; border-left: 3px solid ${board.color}; border-bottom: 1px solid #f0f0f0;`}>
+                <div style="font-weight: 700; font-size: 0.9375rem; margin-bottom: 0.25rem; color: #000000;">{board.name}</div>
+                <div style="font-size: 0.8125rem; color: #333333; margin-bottom: 0.375rem;">{board.description}</div>
+                <div style="font-size: 0.75rem; color: #000000; display: flex; gap: 1rem; font-weight: 600;">
+                  <span>{board.posts.toLocaleString()} posts</span>
+                  <span>{board.members.toLocaleString()} members</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content - Posts Feed -->
+      <div class="main-feed">
+        <!-- Hot Posts Indicator -->
+        <div class="filter-bar">
+          <div class="filter-tabs">
+            <a href="/" class="filter-tab active">🔥 Hot</a>
+            <a href="/new" class="filter-tab">New</a>
+            <a href="/top" class="filter-tab">Top</a>
+            <a href="/rising" class="filter-tab">Rising</a>
+          </div>
+          <div class="filter-actions">
+            <a href="/submit" class="create-post-btn">+ Create Post</a>
           </div>
         </div>
 
-        <!-- CTA -->
-        <div style="background: linear-gradient(135deg, #ff6600 0%, #ff5500 100%); color: white; padding: 1em; margin-top: 1em; border-radius: 3px;">
-          <h3 style="margin: 0 0 0.5em 0; font-size: 11pt;">Join the Community</h3>
-          <p style="margin: 0 0 0.5em 0; font-size: 9pt; opacity: 0.9;">
-            Track prices, review products, share knowledge. Join vapers worldwide.
-          </p>
-          <a href="/login" style="background: white; color: var(--brand); padding: 0.5em 1em; border-radius: 3px; display: inline-block; font-weight: bold; font-size: 9pt;">
-            Sign Up Free
-          </a>
+        <!-- Posts List -->
+        <div class="posts-container">
+          {topPosts.map((post, i) => (
+            <article class="post-card">
+              <!-- Voting Column -->
+              <div class="vote-column">
+                <button class="vote-btn vote-up" aria-label="Upvote">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 3l5 5H3z"/>
+                  </svg>
+                </button>
+                <span class="vote-score">{post.score}</span>
+                <button class="vote-btn vote-down" aria-label="Downvote">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 13l-5-5h10z"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Content Column -->
+              <div class="post-content">
+                <!-- Meta Info -->
+                <div class="post-meta">
+                  <a href={`/b/${post.boardSlug}`} class="board-tag" style={`color: ${boards.find(b => b.slug === post.boardSlug)?.color || '#7C3AED'}`}>
+                    b/{post.boardSlug}
+                  </a>
+                  <span class="meta-separator">•</span>
+                  <span class="post-author">
+                    <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
+                    <span class="author-karma">{post.authorKarma.toLocaleString()}</span>
+                  </span>
+                  <span class="meta-separator">•</span>
+                  <time class="post-time">{post.time}</time>
+                  {post.hot && <span class="badge badge-hot">🔥 HOT</span>}
+                  {post.awarded && <span class="badge badge-award">⭐</span>}
+                </div>
+
+                <!-- Title -->
+                <h2 class="post-title">
+                  <a href={`/post/${post.id}`}>{post.title}</a>
+                </h2>
+
+                <!-- Actions -->
+                <div class="post-actions">
+                  <a href={`/post/${post.id}`} class="action-btn action-comment">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                    </svg>
+                    <span>{post.comments}</span>
+                  </a>
+                  <span class="action-btn action-views">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M8 3C4.5 3 1.5 5.5 0 8c1.5 2.5 4.5 5 8 5s6.5-2.5 8-5c-1.5-2.5-4.5-5-8-5zm0 8a3 3 0 110-6 3 3 0 010 6z"/>
+                    </svg>
+                    <span>{post.views.toLocaleString()}</span>
+                  </span>
+                  <button class="action-btn action-share">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M13 7a2 2 0 100-4 2 2 0 000 4zm-2.5 1.5l-5 3a2 2 0 100 3 2 2 0 000-4l5-3z"/>
+                    </svg>
+                    <span>Share</span>
+                  </button>
+                  <button class="action-btn action-save">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M3 2a1 1 0 00-1 1v11l6-3 6 3V3a1 1 0 00-1-1H3z"/>
+                    </svg>
+                    <span>Save</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- Load More -->
+        <div style="background: white; border: 1px solid var(--border); padding: 1rem; text-align: center;">
+          <a href="/page/2" style="color: var(--brand); text-decoration: none; font-weight: 600; font-size: 0.875rem;">Load More Posts →</a>
         </div>
       </div>
+
+      <!-- Right Sidebar - Stats & Info -->
+      <aside class="sidebar-right">
+        <!-- Community Stats -->
+        <div style="background: white; border: 1px solid var(--border); padding: 1rem;">
+          <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 1rem 0; color: #000000;">VapeIndex Community</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div>
+              <div style="font-size: 1.75rem; font-weight: 900; color: #000000;">{stats.totalMembers.toLocaleString()}</div>
+              <div style="font-size: 0.8125rem; color: #333333; font-weight: 600;">Total Members</div>
+            </div>
+            <div>
+              <div style="font-size: 1.75rem; font-weight: 900; color: #000000;">{stats.activeNow.toLocaleString()}</div>
+              <div style="font-size: 0.8125rem; color: #333333; font-weight: 600;">🟢 Active Now</div>
+            </div>
+            <div>
+              <div style="font-size: 1.75rem; font-weight: 900; color: #000000;">{stats.totalPosts.toLocaleString()}</div>
+              <div style="font-size: 0.8125rem; color: #333333; font-weight: 600;">Total Posts</div>
+            </div>
+            <div>
+              <div style="font-size: 1.75rem; font-weight: 900; color: #000000;">{stats.boardsCount}</div>
+              <div style="font-size: 0.8125rem; color: #333333; font-weight: 600;">Active Boards</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trending Boards -->
+        <div style="background: white; border: 1px solid var(--border); padding: 1rem;">
+          <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 0.75rem 0; color: #000000;">🔥 Trending Boards</h3>
+          {trendingBoards.map((board, i) => (
+            <a href={`/b/${board.slug}`} style="display: block; padding: 0.5rem 0; color: #000000; text-decoration: none; border-bottom: 1px solid #f0f0f0;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-weight: 800; color: #000000; font-size: 1rem;">{i + 1}</span>
+                <div style="flex: 1;">
+                  <div style="font-weight: 700; font-size: 0.875rem; color: #000000;">b/{board.slug}</div>
+                  <div style="font-size: 0.75rem; color: #333333; font-weight: 600;">{board.members.toLocaleString()} members</div>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <!-- Quick Links -->
+        <div style="background: white; border: 1px solid var(--border); padding: 1rem;">
+          <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 0.75rem 0; color: #000000;">Quick Links</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem;">
+            <a href="/rules" style="color: #000000; text-decoration: none; font-weight: 600;">Community Rules</a>
+            <a href="/guidelines" style="color: #000000; text-decoration: none; font-weight: 600;">Posting Guidelines</a>
+            <a href="/faq" style="color: #000000; text-decoration: none; font-weight: 600;">FAQ</a>
+            <a href="/prices" style="color: var(--brand); text-decoration: none; font-weight: 700;">💰 Price Tracker</a>
+            <a href="/api" style="color: #000000; text-decoration: none; font-weight: 600;">API Docs</a>
+          </div>
+        </div>
+      </aside>
+
     </div>
+  </main>
+
+  <style>
+    .main-content {
+      background: #f6f6ef;
+      min-height: 100vh;
+    }
+
+    .layout-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      gap: 0.75rem;
+      padding: 0.75rem;
+    }
+
+    .sidebar-left,
+    .sidebar-right {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .main-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .filter-bar {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .filter-tab {
+      color: #333333;
+      text-decoration: none;
+      padding: 0.375rem 0.75rem;
+      font-weight: 700;
+      font-size: 0.875rem;
+      white-space: nowrap;
+      border-radius: 0.25rem;
+    }
+
+    .filter-tab.active {
+      color: #000000;
+      background: #f0f0f0;
+      font-weight: 800;
+    }
+
+    .filter-actions {
+      flex-shrink: 0;
+    }
+
+    .create-post-btn {
+      background: var(--brand);
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.25rem;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.875rem;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .layout-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .sidebar-left,
+      .sidebar-right {
+        display: none;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .layout-container {
+        padding: 0.5rem;
+      }
+
+      .filter-bar {
+        padding: 0.5rem;
+        gap: 0.5rem;
+      }
+
+      .filter-tabs {
+        gap: 0.25rem;
+        width: 100%;
+      }
+
+      .filter-tab {
+        padding: 0.5rem 0.625rem;
+        font-size: 0.8125rem;
+        flex: 1;
+        text-align: center;
+        min-width: 0;
+      }
+
+      .filter-actions {
+        width: 100%;
+      }
+
+      .create-post-btn {
+        width: 100%;
+        text-align: center;
+        padding: 0.625rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .filter-tab {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.5rem;
+      }
+
+      .filter-tab:not(.active) {
+        font-size: 0.6875rem;
+      }
+    }
+  </style>
 
     <!-- Footer -->
-    <footer style="margin-top: 2em; padding-top: 1em; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 8pt;">
-      <p>
-        <a href="/about">About</a> |
-        <a href="/guidelines">Guidelines</a> |
-        <a href="/faq">FAQ</a> |
-        <a href="https://discord.gg/vapeindex" target="_blank">Discord</a> |
-        <a href="https://github.com/juniverse1103/vapeindex" target="_blank">GitHub</a>
-      </p>
-      <p style="margin-top: 0.5em;">Built with Astro + Hono + Cloudflare. Open source.</p>
+    <footer style="margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted);">
+      <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; font-size: 0.9375rem;">
+        <a href="/about" style="color: var(--text-muted);">About</a>
+        <a href="/guidelines" style="color: var(--text-muted);">Guidelines</a>
+        <a href="/faq" style="color: var(--text-muted);">FAQ</a>
+        <a href="/contact" style="color: var(--text-muted);">Contact</a>
+        <a href="/privacy" style="color: var(--text-muted);">Privacy</a>
+        <a href="/terms" style="color: var(--text-muted);">Terms</a>
+      </div>
+      <p style="font-size: 0.875rem; opacity: 0.7;">© 2025 VapeIndex. All rights reserved.</p>
     </footer>
   </main>
 </Layout>

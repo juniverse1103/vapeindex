@@ -1,0 +1,415 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+// Mock board data with different densities
+const boards = {
+  disposables: {
+    name: 'Disposables',
+    slug: 'disposables',
+    description: 'Elf Bar, Puff Bar, and all disposable vapes',
+    color: '#3B82F6',
+    members: 15234,
+    posts: 2847,
+    onlineNow: 432,
+    rules: ['No selling', 'Be respectful', 'Verify authenticity'],
+    moderators: ['authentic_only', 'vape_mod_1'],
+    posts: [
+      { id: '101', title: 'Best disposable vapes of 2025? Looking for recommendations', author: 'vapeenthusiast', authorKarma: 2847, time: '3h', score: 287, comments: 94, views: 1847, hot: true },
+      { id: '102', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', author: 'authentic_only', authorKarma: 5234, time: '5h', score: 512, comments: 143, views: 4234, hot: true },
+      { id: '103', title: 'New Elf Bar BC5000 flavors just dropped', author: 'flavor_king', authorKarma: 1823, time: '8h', score: 178, comments: 56, views: 2145 },
+      { id: '104', title: 'Anyone tried Geek Bar Pulse? Worth it?', author: 'disposable_fan', authorKarma: 1234, time: '12h', score: 134, comments: 48, views: 1678 },
+      { id: '105', title: 'Lost Mary vs Elf Bar - which is better?', author: 'comparison_guy', authorKarma: 3456, time: '1d', score: 256, comments: 89, views: 2934 },
+      { id: '106', title: 'My disposable tastes burnt after 2 days', author: 'newbie_vaper', authorKarma: 45, time: '1d', score: 67, comments: 34, views: 892 },
+      { id: '107', title: 'Best online stores for authentic disposables?', author: 'deal_seeker', authorKarma: 2134, time: '2d', score: 189, comments: 67, views: 2456 },
+      { id: '108', title: 'Rechargeable vs regular disposables', author: 'tech_vaper', authorKarma: 4567, time: '2d', score: 234, comments: 78, views: 3123 },
+      { id: '109', title: 'Environmental impact of disposables - discussion', author: 'eco_conscious', authorKarma: 1892, time: '3d', score: 345, comments: 156, views: 5234 },
+      { id: '110', title: 'Flavor recommendations for ex-smokers?', author: 'just_quit', authorKarma: 23, time: '3d', score: 98, comments: 45, views: 1234 },
+    ]
+  },
+  beginner: {
+    name: 'Beginner',
+    slug: 'beginner',
+    description: 'New to vaping? Start here',
+    color: '#14B8A6',
+    members: 18902,
+    posts: 2789,
+    onlineNow: 234,
+    rules: ['No judgment', 'All questions welcome', 'Be helpful'],
+    moderators: ['helpful_mod', 'beginner_guide'],
+    posts: [
+      { id: '201', title: 'Complete beginner - what device should I buy?', author: 'newbie2025', authorKarma: 12, time: '2h', score: 98, comments: 73, views: 1892, hot: true },
+      { id: '202', title: 'What nicotine level should I start with?', author: 'ex_smoker', authorKarma: 34, time: '5h', score: 156, comments: 89, views: 2456 },
+      { id: '203', title: 'How do I know when to replace coils?', author: 'learning_fast', authorKarma: 67, time: '8h', score: 123, comments: 45, views: 1567 },
+      { id: '204', title: 'Vaping terminology guide - help!', author: 'confused_newb', authorKarma: 5, time: '12h', score: 87, comments: 34, views: 1123 },
+      { id: '205', title: 'Is vaping cheaper than smoking?', author: 'budget_minded', authorKarma: 156, time: '1d', score: 234, comments: 112, views: 3456 },
+    ]
+  },
+  deals: {
+    name: 'Deals',
+    slug: 'deals',
+    description: 'Sales, coupons, and price drops',
+    color: '#EF4444',
+    members: 23456,
+    posts: 892,
+    onlineNow: 567,
+    rules: ['Post coupon codes', 'No affiliate spam', 'Verify deals'],
+    moderators: ['deal_hunter', 'price_watcher'],
+    posts: [
+      { id: '301', title: 'VaporDNA 30% off sale - today only! Code: VAPE30', author: 'deal_hunter', authorKarma: 8901, time: '1h', score: 456, comments: 87, views: 5632, hot: true },
+      { id: '302', title: 'Storz & Bickel Mighty+ - all time low price', author: 'price_watcher', authorKarma: 6734, time: '4h', score: 267, comments: 41, views: 2734, hot: true },
+      { id: '303', title: 'Element Vape clearance - 50% off pods', author: 'bargain_finder', authorKarma: 4523, time: '8h', score: 189, comments: 56, views: 2145 },
+      { id: '304', title: 'Free shipping on orders over $50 - VapeSociety', author: 'shipping_saver', authorKarma: 2341, time: '12h', score: 134, comments: 23, views: 1456 },
+      { id: '305', title: 'Black Friday deals thread - post them here!', author: 'deal_mod', authorKarma: 12456, time: '1d', score: 678, comments: 234, views: 8901 },
+    ]
+  }
+};
+
+const { slug } = Astro.params;
+const board = boards[slug as keyof typeof boards];
+
+if (!board) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout title={`b/${board.slug} - VapeIndex`}>
+  <Header />
+
+  <main class="main-content">
+    <div class="layout-container">
+
+      <!-- Board Header -->
+      <div class="board-header">
+        <div class="board-info">
+          <h1 class="board-title" style={`border-left: 4px solid ${board.color}`}>
+            b/{board.slug}
+          </h1>
+          <p class="board-description">{board.description}</p>
+          <div class="board-stats">
+            <span><strong>{board.members.toLocaleString()}</strong> members</span>
+            <span>•</span>
+            <span><strong class="online-indicator">{board.onlineNow}</strong> online</span>
+            <span>•</span>
+            <span><strong>{board.posts.toLocaleString()}</strong> posts</span>
+          </div>
+        </div>
+        <div class="board-actions">
+          <button class="btn-join">+ Join Board</button>
+          <button class="btn-create-post">Create Post</button>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <div class="board-layout">
+        <!-- Main Content -->
+        <div class="board-main">
+          <!-- Filter Bar -->
+          <div class="filter-bar">
+            <div class="filter-tabs">
+              <a href={`/b/${board.slug}`} class="filter-tab active">🔥 Hot</a>
+              <a href={`/b/${board.slug}/new`} class="filter-tab">New</a>
+              <a href={`/b/${board.slug}/top`} class="filter-tab">Top</a>
+            </div>
+          </div>
+
+          <!-- Posts -->
+          <div class="posts-container">
+            {board.posts.map(post => (
+              <article class="post-card">
+                <div class="vote-column">
+                  <button class="vote-btn vote-up">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M8 3l5 5H3z"/>
+                    </svg>
+                  </button>
+                  <span class="vote-score">{post.score}</span>
+                  <button class="vote-btn vote-down">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M8 13l-5-5h10z"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="post-content">
+                  <div class="post-meta">
+                    <span class="post-author">
+                      <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
+                      <span class="author-karma">{post.authorKarma.toLocaleString()}</span>
+                    </span>
+                    <span class="meta-separator">•</span>
+                    <time class="post-time">{post.time}</time>
+                    {post.hot && <span class="badge badge-hot">🔥 HOT</span>}
+                  </div>
+
+                  <h2 class="post-title">
+                    <a href={`/post/${post.id}`}>{post.title}</a>
+                  </h2>
+
+                  <div class="post-actions">
+                    <a href={`/post/${post.id}`} class="action-btn action-comment">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                      </svg>
+                      <span>{post.comments}</span>
+                    </a>
+                    <span class="action-btn action-views">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 3C4.5 3 1.5 5.5 0 8c1.5 2.5 4.5 5 8 5s6.5-2.5 8-5c-1.5-2.5-4.5-5-8-5zm0 8a3 3 0 110-6 3 3 0 010 6z"/>
+                      </svg>
+                      <span>{post.views.toLocaleString()}</span>
+                    </span>
+                    <button class="action-btn action-share">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M13 7a2 2 0 100-4 2 2 0 000 4zm-2.5 1.5l-5 3a2 2 0 100 3 2 2 0 000-4l5-3z"/>
+                      </svg>
+                      <span>Share</span>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="board-sidebar">
+          <!-- Board Info Card -->
+          <div class="sidebar-card">
+            <h3>About b/{board.slug}</h3>
+            <p>{board.description}</p>
+            <div class="sidebar-stats">
+              <div>
+                <strong>{board.members.toLocaleString()}</strong>
+                <span>Members</span>
+              </div>
+              <div>
+                <strong class="online-indicator">{board.onlineNow}</strong>
+                <span>Online</span>
+              </div>
+            </div>
+            <button class="btn-join-full">+ Join Board</button>
+          </div>
+
+          <!-- Rules Card -->
+          <div class="sidebar-card">
+            <h3>Board Rules</h3>
+            <ol class="rules-list">
+              {board.rules.map(rule => <li>{rule}</li>)}
+            </ol>
+          </div>
+
+          <!-- Moderators Card -->
+          <div class="sidebar-card">
+            <h3>Moderators</h3>
+            <div class="mod-list">
+              {board.moderators.map(mod => (
+                <a href={`/u/${mod}`} class="mod-link">u/{mod}</a>
+              ))}
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .board-header {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .board-title {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+    padding-left: 1rem;
+  }
+
+  .board-description {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .board-stats {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .online-indicator {
+    color: #10B981;
+  }
+
+  .board-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .btn-join,
+  .btn-join-full {
+    background: white;
+    border: 2px solid var(--brand);
+    color: var(--brand);
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.375rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .btn-join:hover,
+  .btn-join-full:hover {
+    background: var(--brand);
+    color: white;
+  }
+
+  .btn-join-full {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .btn-create-post {
+    background: var(--brand);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.375rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .board-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1rem;
+  }
+
+  .board-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .board-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sidebar-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  .sidebar-card h3 {
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #000;
+    margin: 0 0 1rem 0;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-card p {
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .sidebar-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .sidebar-stats strong {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #000;
+  }
+
+  .sidebar-stats span {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  .rules-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    color: #333;
+  }
+
+  .rules-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .mod-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mod-link {
+    font-size: 0.875rem;
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  @media (max-width: 1024px) {
+    .board-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .board-sidebar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .board-header {
+      padding: 1rem;
+    }
+
+    .board-title {
+      font-size: 1.5rem;
+    }
+
+    .board-actions {
+      width: 100%;
+    }
+
+    .btn-join,
+    .btn-create-post {
+      flex: 1;
+    }
+  }
+</style>

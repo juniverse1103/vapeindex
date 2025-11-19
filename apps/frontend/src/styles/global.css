@@ -1,30 +1,23 @@
-/* HackerNews-inspired clean design system */
+/* Minimal High-Contrast Design */
 :root {
-    /* Orange brand color (HN-inspired) */
-    --brand: #ff6600;
-    --brand-dark: #ff5500;
+    /* Simple brand */
+    --brand: #7C3AED;        /* Violet */
+    --brand-dark: #6D28D9;   /* Darker violet */
 
-    /* Clean grayscale */
-    --bg: #f6f6ef;
-    --bg-alt: #ffffff;
-    --text: #000000;
-    --text-muted: #828282;
-    --border: #d0d0d0;
-
-    /* Semantic colors */
-    --upvote: #ff6600;
-    --downvote: #9493dd;
-    --success: #00b300;
-    --error: #dd0000;
+    /* High contrast palette */
+    --bg: #FFFFFF;           /* Pure white */
+    --text: #000000;         /* Pure black */
+    --text-muted: #333333;   /* Darker gray for better visibility */
+    --border: #DDDDDD;       /* Light gray border */
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1a1a1a;
-      --bg-alt: #242424;
-      --text: #e0e0e0;
-      --text-muted: #888888;
-      --border: #333333;
+      --bg: #0F172A;         /* Slate 900 */
+      --bg-alt: #1E293B;     /* Slate 800 */
+      --text: #F1F5F9;       /* Slate 100 */
+      --text-muted: #94A3B8; /* Slate 400 */
+      --border: #334155;     /* Slate 700 */
     }
   }
 
@@ -33,11 +26,13 @@
   }
 
   html {
-    font-family: Verdana, Geneva, sans-serif; /* HN uses Verdana */
-    font-size: 10pt; /* HN-style compact sizing */
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+    font-size: 16px; /* Larger, more readable */
     background: var(--bg);
     color: var(--text);
-    line-height: 1.4;
+    line-height: 1.7; /* More spacing between lines */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
@@ -53,10 +48,6 @@
 
   a:hover {
     text-decoration: underline;
-  }
-
-  a:visited {
-    color: #828282;
   }
 
   /* Clean button styles */
