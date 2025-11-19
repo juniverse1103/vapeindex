@@ -65,6 +65,11 @@ const boards = {
   }
 };
 
+export function getStaticPaths() {
+  const boardSlugs = ['disposables', 'beginner'];
+  return boardSlugs.map(slug => ({ params: { slug } }));
+}
+
 const { slug } = Astro.params;
 const board = boards[slug as keyof typeof boards];
 

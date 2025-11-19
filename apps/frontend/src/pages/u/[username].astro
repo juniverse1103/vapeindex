@@ -14,7 +14,7 @@ const users = {
     bio: 'Been vaping for 2 years. Love trying new flavors and helping beginners!',
     activity: [
       { type: 'post', id: '1', title: 'Best disposable vapes of 2025?', board: 'Disposables', score: 287, comments: 94, time: '3h ago' },
-      { type: 'comment', postId: '15', postTitle: 'Caliburn G2 vs Smok Nord 4?', content: 'I've owned both. Caliburn has better flavor but Nord has longer battery life. Depends on your priority!', score: 45, time: '1d ago' },
+      { type: 'comment', postId: '15', postTitle: 'Caliburn G2 vs Smok Nord 4?', content: 'I\'ve owned both. Caliburn has better flavor but Nord has longer battery life. Depends on your priority!', score: 45, time: '1d ago' },
       { type: 'post', id: '45', title: 'My 6-month vaping journey - from smoker to vaper', board: 'Beginner', score: 234, comments: 67, time: '3d ago' },
       { type: 'comment', postId: '23', postTitle: 'Best fruity flavors?', content: 'Watermelon Ice is my go-to. Also love Peach Mango from Lost Mary.', score: 78, time: '4d ago' },
     ]
@@ -48,6 +48,11 @@ const users = {
     ]
   }
 };
+
+export function getStaticPaths() {
+  const usernames = ['vapeenthusiast', 'authentic_only', 'newbie2025'];
+  return usernames.map(username => ({ params: { username } }));
+}
 
 const { username } = Astro.params;
 const user = users[username as keyof typeof users];

@@ -161,12 +161,17 @@ The fakes are getting better. Some even have QR codes that go to fake verificati
 We've started giving customers a receipt with our store info and encouraging them to report fakes to local authorities.`,
         replies: [
           { id: 'c11r1', author: 'concerned_user', authorKarma: 567, time: '2h ago', score: 178, content: 'What should we do if we find a store selling fakes?' },
-          { id: 'c11r2', author: 'vape_shop_owner', authorKarma: 8901, time: '2h ago', score: 234, content: 'Report to your state's tobacco/vape regulatory agency and FDA. Also warn others on local community groups.' }
+          { id: 'c11r2', author: 'vape_shop_owner', authorKarma: 8901, time: '2h ago', score: 234, content: 'Report to your state\'s tobacco/vape regulatory agency and FDA. Also warn others on local community groups.' }
         ]
       }
     ]
   }
 };
+
+export function getStaticPaths() {
+  const postIds = ['1', '2'];
+  return postIds.map(id => ({ params: { id } }));
+}
 
 const { id } = Astro.params;
 const post = posts[id as keyof typeof posts];
