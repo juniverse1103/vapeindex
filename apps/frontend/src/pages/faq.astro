@@ -1,0 +1,247 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const faqs = [
+  {
+    category: "Getting Started",
+    questions: [
+      { q: "What is VapeIndex?", a: "VapeIndex is a community-driven platform for vapers to discuss devices, share reviews, ask questions, and help each other identify authentic products." },
+      { q: "Is VapeIndex free to use?", a: "Yes! VapeIndex is completely free. Create an account and start participating in the community." },
+      { q: "Who can join VapeIndex?", a: "Anyone 21 years or older can join VapeIndex. We strictly enforce age verification requirements." }
+    ]
+  },
+  {
+    category: "Using VapeIndex",
+    questions: [
+      { q: "How do I create a post?", a: "Click the '+ Create Post' button in the navigation or on any page. Choose your board, write a title and description, then submit!" },
+      { q: "What are boards?", a: "Boards are topic-specific communities within VapeIndex (like /b/disposables or /b/pods). Each board focuses on a specific type of vaping discussion." },
+      { q: "How does voting work?", a: "Upvote posts and comments that are helpful or contribute to the discussion. Downvote content that violates rules or is off-topic." },
+      { q: "What is karma?", a: "Karma is the total score of all your upvotes minus downvotes. It reflects your contribution to the community." }
+    ]
+  },
+  {
+    category: "Safety & Authenticity",
+    questions: [
+      { q: "How can I verify if my vape is authentic?", a: "Post clear photos in the appropriate board. Our community members can help identify fakes. Check for QR codes, scratch-off verification codes, and packaging quality." },
+      { q: "Are there fake vapes on the market?", a: "Yes, unfortunately counterfeit vapes are common. Always buy from reputable sellers and verify authenticity when possible." },
+      { q: "Is vaping safe?", a: "While vaping is considered less harmful than smoking traditional cigarettes, it's not without risks. Consult healthcare professionals for medical advice." }
+    ]
+  },
+  {
+    category: "Community",
+    questions: [
+      { q: "What should I do if I see rule violations?", a: "Use the 'Report' button on posts or comments that violate our rules. Moderators will review all reports." },
+      { q: "Can I advertise my vape shop?", a: "No. VapeIndex is not a marketplace. Share deals in /b/deals only, without promotional intent." },
+      { q: "How do I become a moderator?", a: "Active, helpful community members may be invited to moderate. Focus on contributing quality content and helping others first." }
+    ]
+  }
+];
+---
+
+<Layout title="FAQ - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="content-container">
+      <div class="page-header">
+        <h1>❓ Frequently Asked Questions</h1>
+        <p>Find answers to common questions about VapeIndex</p>
+      </div>
+
+      <div class="search-box">
+        <input type="text" placeholder="Search FAQs..." class="search-input" />
+      </div>
+
+      <div class="faq-sections">
+        {faqs.map(category => (
+          <div class="faq-category">
+            <h2 class="category-title">{category.category}</h2>
+            <div class="questions-list">
+              {category.questions.map((item, index) => (
+                <details class="faq-item">
+                  <summary class="question">{item.q}</summary>
+                  <div class="answer">{item.a}</div>
+                </details>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="contact-box">
+        <h3>Still have questions?</h3>
+        <p>Can't find what you're looking for? <a href="/contact">Contact us</a> and we'll be happy to help!</p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .search-box {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--brand);
+  }
+
+  .faq-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .faq-category {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .category-title {
+    background: #f9f9f9;
+    padding: 1.25rem 1.5rem;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 900;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .questions-list {
+    padding: 0.5rem;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .question {
+    padding: 1.25rem 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+    list-style: none;
+    user-select: none;
+  }
+
+  .question::-webkit-details-marker {
+    display: none;
+  }
+
+  .question::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 0.75rem;
+    transition: transform 0.2s;
+    color: var(--brand);
+    font-size: 0.75rem;
+  }
+
+  .faq-item[open] .question::before {
+    transform: rotate(90deg);
+  }
+
+  .answer {
+    padding: 0 1rem 1.25rem 2.5rem;
+    color: #666;
+    line-height: 1.6;
+    font-size: 0.9375rem;
+  }
+
+  .contact-box {
+    background: linear-gradient(135deg, var(--brand) 0%, #EC4899 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .contact-box h3 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .contact-box p {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .contact-box a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .content-container {
+      padding: 0.5rem;
+      margin: 1rem auto;
+    }
+
+    .page-header {
+      padding: 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .category-title {
+      font-size: 1.125rem;
+      padding: 1rem;
+    }
+
+    .question {
+      padding: 1rem 0.75rem;
+      font-size: 0.9375rem;
+    }
+  }
+</style>

@@ -1,0 +1,497 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="API Documentation - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="content-container">
+      <div class="page-header">
+        <h1>🔌 API Documentation</h1>
+        <p>Integrate VapeIndex data into your application</p>
+      </div>
+
+      <div class="api-intro">
+        <h2>VapeIndex REST API</h2>
+        <p>Our API provides programmatic access to posts, comments, boards, users, and price data. Perfect for building apps, bots, or analytics tools.</p>
+        <div class="api-status">
+          <span class="status-badge">🟢 API Status: Operational</span>
+          <span class="version-badge">Version: 1.0</span>
+        </div>
+      </div>
+
+      <div class="quick-start">
+        <h2>Quick Start</h2>
+        <div class="code-block">
+          <div class="code-header">
+            <span>Example Request</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code>curl https://api.vapeindex.io/v1/posts?board=disposables&limit=10</code></pre>
+        </div>
+      </div>
+
+      <div class="endpoints-section">
+        <h2>API Endpoints</h2>
+
+        <div class="endpoint-card">
+          <div class="endpoint-method get">GET</div>
+          <div class="endpoint-path">/v1/posts</div>
+          <div class="endpoint-desc">Get posts from all boards or filtered by board</div>
+          <details class="endpoint-details">
+            <summary>View Details</summary>
+            <div class="details-content">
+              <h4>Parameters</h4>
+              <ul>
+                <li><code>board</code> (optional) - Filter by board slug</li>
+                <li><code>sort</code> (optional) - Sort by: hot, new, top, rising</li>
+                <li><code>limit</code> (optional) - Number of results (1-100, default: 25)</li>
+                <li><code>offset</code> (optional) - Pagination offset</li>
+              </ul>
+              <h4>Example Response</h4>
+              <div class="code-block">
+                <pre><code>{
+  "posts": [
+    {
+      "id": "1",
+      "title": "Best disposable vapes of 2025?",
+      "board": "disposables",
+      "author": "vapeenthusiast",
+      "score": 287,
+      "comments": 94,
+      "created": "2025-01-18T10:30:00Z"
+    }
+  ],
+  "pagination": {
+    "total": 1543,
+    "limit": 25,
+    "offset": 0
+  }
+}</code></pre>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-method get">GET</div>
+          <div class="endpoint-path">/v1/posts/:id</div>
+          <div class="endpoint-desc">Get a specific post with comments</div>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-method get">GET</div>
+          <div class="endpoint-path">/v1/boards</div>
+          <div class="endpoint-desc">List all boards</div>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-method get">GET</div>
+          <div class="endpoint-path">/v1/boards/:slug</div>
+          <div class="endpoint-desc">Get board details and recent posts</div>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-method get">GET</div>
+          <div class="endpoint-path">/v1/users/:username</div>
+          <div class="endpoint-desc">Get user profile and activity</div>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-method get">GET</div>
+          <div class="endpoint-path">/v1/prices</div>
+          <div class="endpoint-desc">Get price tracking data for products</div>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-method post">POST</div>
+          <div class="endpoint-path">/v1/posts</div>
+          <div class="endpoint-desc">Create a new post (requires authentication)</div>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-method post">POST</div>
+          <div class="endpoint-path">/v1/posts/:id/vote</div>
+          <div class="endpoint-desc">Vote on a post (requires authentication)</div>
+        </div>
+      </div>
+
+      <div class="auth-section">
+        <h2>Authentication</h2>
+        <p>Some endpoints require authentication. Include your API key in the request header:</p>
+        <div class="code-block">
+          <pre><code>Authorization: Bearer YOUR_API_KEY</code></pre>
+        </div>
+        <p>To get an API key, <a href="/contact">contact us</a> with details about your use case.</p>
+      </div>
+
+      <div class="rate-limits">
+        <h2>Rate Limits</h2>
+        <div class="limits-grid">
+          <div class="limit-card">
+            <div class="limit-tier">Free Tier</div>
+            <div class="limit-value">60 requests/minute</div>
+            <div class="limit-desc">Public endpoints only</div>
+          </div>
+          <div class="limit-card">
+            <div class="limit-tier">Authenticated</div>
+            <div class="limit-value">300 requests/minute</div>
+            <div class="limit-desc">Full API access</div>
+          </div>
+          <div class="limit-card">
+            <div class="limit-tier">Enterprise</div>
+            <div class="limit-value">Custom limits</div>
+            <div class="limit-desc">Contact us for pricing</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="best-practices">
+        <h2>Best Practices</h2>
+        <ul>
+          <li>Cache responses when possible to reduce API calls</li>
+          <li>Use pagination for large datasets</li>
+          <li>Include a User-Agent header identifying your application</li>
+          <li>Handle rate limit errors (HTTP 429) with exponential backoff</li>
+          <li>Monitor the <code>X-RateLimit-*</code> response headers</li>
+        </ul>
+      </div>
+
+      <div class="support-section">
+        <h3>Need Help?</h3>
+        <p>Check out our <a href="/faq">FAQ</a> or <a href="/contact">contact us</a> for API support.</p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .api-intro {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .api-intro h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .api-intro p {
+    font-size: 0.9375rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+  }
+
+  .api-status {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .status-badge,
+  .version-badge {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    border-radius: 0.25rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .status-badge {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .version-badge {
+    background: #E0E7FF;
+    color: #3730A3;
+  }
+
+  .quick-start,
+  .endpoints-section,
+  .auth-section,
+  .rate-limits,
+  .best-practices,
+  .support-section {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin: 0 0 1.25rem 0;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 900;
+    margin: 0 0 1rem 0;
+  }
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .code-block {
+    background: #1a1a1a;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+
+  .code-header {
+    background: #2a2a2a;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8125rem;
+    color: #999;
+  }
+
+  .copy-btn {
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .code-block pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .code-block code {
+    color: #e0e0e0;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .endpoint-card {
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .endpoint-card:last-child {
+    margin-bottom: 0;
+  }
+
+  .endpoint-method {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.25rem;
+    font-weight: 800;
+    font-size: 0.75rem;
+    margin-right: 0.75rem;
+  }
+
+  .endpoint-method.get {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+
+  .endpoint-method.post {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .endpoint-path {
+    display: inline-block;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+  }
+
+  .endpoint-desc {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0.5rem 0 0 0;
+  }
+
+  .endpoint-details summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--brand);
+    margin-top: 0.75rem;
+    user-select: none;
+  }
+
+  .details-content {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .details-content ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.8;
+  }
+
+  .details-content code {
+    background: #f0f0f0;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.8125rem;
+  }
+
+  .limits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .limit-card {
+    border: 2px solid var(--border);
+    border-radius: 0.375rem;
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .limit-tier {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .limit-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--brand);
+    margin-bottom: 0.5rem;
+  }
+
+  .limit-desc {
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .best-practices ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    font-size: 0.9375rem;
+    color: #666;
+    line-height: 1.8;
+  }
+
+  .best-practices code {
+    background: #f0f0f0;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.8125rem;
+  }
+
+  .support-section {
+    background: linear-gradient(135deg, var(--brand) 0%, #EC4899 100%);
+    color: white;
+    text-align: center;
+  }
+
+  .support-section h3 {
+    color: white;
+  }
+
+  .support-section p {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .support-section a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 700;
+  }
+
+  .auth-section p {
+    font-size: 0.9375rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+  }
+
+  .auth-section a {
+    color: var(--brand);
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .content-container {
+      padding: 0.5rem;
+      margin: 1rem auto;
+    }
+
+    .page-header,
+    .api-intro,
+    .quick-start,
+    .endpoints-section,
+    .auth-section,
+    .rate-limits,
+    .best-practices,
+    .support-section {
+      padding: 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .limits-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

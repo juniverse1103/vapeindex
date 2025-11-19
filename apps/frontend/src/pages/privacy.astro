@@ -1,0 +1,234 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="Privacy Policy - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="legal-container">
+      <div class="page-header">
+        <h1>🔒 Privacy Policy</h1>
+        <p>Last updated: January 2025</p>
+      </div>
+
+      <div class="legal-content">
+        <section class="legal-section">
+          <h2>Introduction</h2>
+          <p>VapeIndex ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.</p>
+        </section>
+
+        <section class="legal-section">
+          <h2>Information We Collect</h2>
+
+          <h3>Account Information</h3>
+          <ul>
+            <li>Email address</li>
+            <li>Username</li>
+            <li>Password (encrypted)</li>
+            <li>Account creation date</li>
+          </ul>
+
+          <h3>Content You Create</h3>
+          <ul>
+            <li>Posts, comments, and replies</li>
+            <li>Voting history (upvotes/downvotes)</li>
+            <li>Saved posts and preferences</li>
+          </ul>
+
+          <h3>Usage Data</h3>
+          <ul>
+            <li>IP address</li>
+            <li>Browser type and version</li>
+            <li>Device information</li>
+            <li>Pages visited and time spent</li>
+            <li>Referring URLs</li>
+          </ul>
+
+          <h3>Cookies and Tracking</h3>
+          <p>We use cookies and similar technologies to enhance your experience, remember your preferences, and analyze site usage.</p>
+        </section>
+
+        <section class="legal-section">
+          <h2>How We Use Your Information</h2>
+          <ul>
+            <li>Provide and maintain our service</li>
+            <li>Process your account registration and authentication</li>
+            <li>Display your public content (posts, comments, profile)</li>
+            <li>Send important updates and notifications</li>
+            <li>Analyze usage patterns to improve the platform</li>
+            <li>Prevent fraud and enforce our Terms of Service</li>
+            <li>Comply with legal obligations</li>
+          </ul>
+        </section>
+
+        <section class="legal-section">
+          <h2>Information Sharing</h2>
+
+          <h3>Public Information</h3>
+          <p>Your username, posts, comments, and karma are publicly visible to all users and search engines.</p>
+
+          <h3>We Do NOT Sell Your Data</h3>
+          <p>We do not sell, rent, or trade your personal information to third parties for marketing purposes.</p>
+
+          <h3>We May Share Information With:</h3>
+          <ul>
+            <li><strong>Service Providers:</strong> Hosting, analytics, and security services that help us operate the platform</li>
+            <li><strong>Legal Requirements:</strong> When required by law, court order, or legal process</li>
+            <li><strong>Safety & Security:</strong> To protect the rights, property, or safety of VapeIndex, our users, or the public</li>
+          </ul>
+        </section>
+
+        <section class="legal-section">
+          <h2>Your Privacy Rights</h2>
+          <ul>
+            <li><strong>Access:</strong> Request a copy of your data</li>
+            <li><strong>Correction:</strong> Update inaccurate information</li>
+            <li><strong>Deletion:</strong> Request account and data deletion</li>
+            <li><strong>Export:</strong> Download your posts and comments</li>
+            <li><strong>Opt-Out:</strong> Unsubscribe from non-essential emails</li>
+          </ul>
+          <p>To exercise these rights, <a href="/contact">contact us</a>.</p>
+        </section>
+
+        <section class="legal-section">
+          <h2>Data Security</h2>
+          <p>We implement appropriate technical and organizational measures to protect your data, including:</p>
+          <ul>
+            <li>Encryption of data in transit (HTTPS/TLS)</li>
+            <li>Encrypted password storage</li>
+            <li>Regular security audits</li>
+            <li>Access controls and monitoring</li>
+          </ul>
+          <p>However, no method of transmission over the internet is 100% secure. We cannot guarantee absolute security.</p>
+        </section>
+
+        <section class="legal-section">
+          <h2>Children's Privacy</h2>
+          <p>VapeIndex is not intended for users under 21 years of age. We do not knowingly collect information from individuals under 21. If you believe a minor has created an account, please <a href="/contact">report it immediately</a>.</p>
+        </section>
+
+        <section class="legal-section">
+          <h2>Third-Party Links</h2>
+          <p>Our platform may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. Please review their privacy policies.</p>
+        </section>
+
+        <section class="legal-section">
+          <h2>Changes to This Policy</h2>
+          <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date. Continued use of VapeIndex after changes constitutes acceptance of the updated policy.</p>
+        </section>
+
+        <section class="legal-section">
+          <h2>Contact Us</h2>
+          <p>If you have questions about this Privacy Policy, please <a href="/contact">contact us</a>.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .legal-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 0.875rem;
+    color: #999;
+    margin: 0;
+  }
+
+  .legal-content {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .legal-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .legal-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .legal-section h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin: 0 0 1rem 0;
+    color: var(--brand);
+  }
+
+  .legal-section h3 {
+    font-size: 1.125rem;
+    font-weight: 800;
+    margin: 1.25rem 0 0.75rem 0;
+  }
+
+  .legal-section p {
+    font-size: 0.9375rem;
+    color: #666;
+    line-height: 1.7;
+    margin: 0 0 1rem 0;
+  }
+
+  .legal-section ul {
+    font-size: 0.9375rem;
+    color: #666;
+    line-height: 1.8;
+    margin: 0 0 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .legal-section li {
+    margin-bottom: 0.5rem;
+  }
+
+  .legal-section a {
+    color: var(--brand);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .legal-container {
+      padding: 0.5rem;
+      margin: 1rem auto;
+    }
+
+    .page-header {
+      padding: 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .legal-content {
+      padding: 1.5rem;
+    }
+
+    .legal-section h2 {
+      font-size: 1.25rem;
+    }
+  }
+</style>

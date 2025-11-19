@@ -1,0 +1,243 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="Posting Guidelines - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="content-container">
+      <div class="page-header">
+        <h1>✍️ Posting Guidelines</h1>
+        <p>How to create quality posts and contribute to the community</p>
+      </div>
+
+      <div class="guidelines-grid">
+        <div class="guideline-card">
+          <div class="icon">📝</div>
+          <h2>Write Clear Titles</h2>
+          <p>Use descriptive, specific titles that clearly explain what your post is about. Avoid clickbait or vague titles.</p>
+          <div class="examples">
+            <div class="example good">
+              <strong>✅ Good:</strong> "Elf Bar BC5000 vs Lost Mary BM5000 - Flavor Comparison"
+            </div>
+            <div class="example bad">
+              <strong>❌ Bad:</strong> "Which one is better?"
+            </div>
+          </div>
+        </div>
+
+        <div class="guideline-card">
+          <div class="icon">🎯</div>
+          <h2>Choose the Right Board</h2>
+          <p>Post in the board that best matches your topic. This helps users find relevant content.</p>
+          <ul>
+            <li><strong>/b/disposables</strong> - Disposable vape discussions</li>
+            <li><strong>/b/pods</strong> - Pod systems and refillable devices</li>
+            <li><strong>/b/beginner</strong> - Questions from newcomers</li>
+            <li><strong>/b/diy</strong> - DIY e-liquid and coil building</li>
+          </ul>
+        </div>
+
+        <div class="guideline-card">
+          <div class="icon">🔍</div>
+          <h2>Search Before Posting</h2>
+          <p>Before asking a question, search to see if it's been answered. This reduces duplicate posts and helps you find answers faster.</p>
+        </div>
+
+        <div class="guideline-card">
+          <div class="icon">📸</div>
+          <h2>Include Photos When Helpful</h2>
+          <p>For questions about devices, authenticity checks, or build showcases, include clear photos to help others assist you.</p>
+        </div>
+
+        <div class="guideline-card">
+          <div class="icon">💬</div>
+          <h2>Be Constructive</h2>
+          <p>Provide helpful comments. If you disagree, explain why respectfully. Share your experience and knowledge.</p>
+        </div>
+
+        <div class="guideline-card">
+          <div class="icon">⚠️</div>
+          <h2>Safety First</h2>
+          <p>When discussing battery safety, nicotine handling, or health topics, prioritize accurate information. Lives may depend on it.</p>
+        </div>
+
+        <div class="guideline-card">
+          <div class="icon">🏷️</div>
+          <h2>Use Tags Appropriately</h2>
+          <p>Tag posts accurately (Question, Review, Discussion, etc.) to help users filter content.</p>
+        </div>
+
+        <div class="guideline-card">
+          <div class="icon">🚫</div>
+          <h2>What Not to Post</h2>
+          <ul>
+            <li>Personal information (yours or others')</li>
+            <li>Links to fake/counterfeit products</li>
+            <li>Promotional content or spam</li>
+            <li>Off-topic content unrelated to vaping</li>
+            <li>Medical advice (suggest seeing professionals)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tips-box">
+        <h3>💡 Pro Tips for Great Posts</h3>
+        <ul>
+          <li>Provide context - mention your experience level, current device, preferences</li>
+          <li>Be specific about your budget when asking for recommendations</li>
+          <li>Update your post if you solve your own problem (helps others!)</li>
+          <li>Thank people who help you - it encourages more participation</li>
+          <li>Upvote helpful comments and posts</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .guidelines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .guideline-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .guideline-card h2 {
+    font-size: 1.125rem;
+    font-weight: 900;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .guideline-card p {
+    font-size: 0.9375rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .guideline-card ul {
+    font-size: 0.9375rem;
+    color: #666;
+    line-height: 1.8;
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .guideline-card li {
+    margin-bottom: 0.375rem;
+  }
+
+  .examples {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .example {
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+  }
+
+  .example.good {
+    background: #D1FAE5;
+    border: 1px solid #10B981;
+    color: #065F46;
+  }
+
+  .example.bad {
+    background: #FEE2E2;
+    border: 1px solid #EF4444;
+    color: #991B1B;
+  }
+
+  .tips-box {
+    background: linear-gradient(135deg, var(--brand) 0%, #EC4899 100%);
+    color: white;
+    border-radius: 0.5rem;
+    padding: 2rem;
+  }
+
+  .tips-box h3 {
+    font-size: 1.25rem;
+    font-weight: 900;
+    margin: 0 0 1rem 0;
+  }
+
+  .tips-box ul {
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .tips-box li {
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .content-container {
+      padding: 0.5rem;
+      margin: 1rem auto;
+    }
+
+    .page-header {
+      padding: 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .guidelines-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .guideline-card {
+      padding: 1.25rem;
+    }
+  }
+</style>

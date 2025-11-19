@@ -1,0 +1,167 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const askPosts = [
+  { id: '101', title: 'Ask: What\'s the best starter vape for someone quitting cigarettes?', board: 'Beginner', boardSlug: 'beginner', score: 67, comments: 45, author: 'quit_smoking', time: '2h' },
+  { id: '102', title: 'Ask: How do I know if my disposable is authentic?', board: 'Disposables', boardSlug: 'disposables', score: 89, comments: 32, author: 'worried_buyer', time: '4h' },
+  { id: '103', title: 'Ask: What nicotine strength should I start with?', board: 'Beginner', boardSlug: 'beginner', score: 123, comments: 67, author: 'newbie_vaper', time: '6h' },
+  { id: '104', title: 'Ask: Why does my pod keep leaking?', board: 'Pod Systems', boardSlug: 'pods', score: 45, comments: 28, author: 'leaky_pod', time: '8h' },
+  { id: '105', title: 'Ask: Is vaping actually safer than smoking?', board: 'Discussion', boardSlug: 'discussion', score: 234, comments: 156, author: 'health_conscious', time: '12h' },
+  { id: '106', title: 'Ask: Best dry herb vaporizer under $200?', board: 'Dry Herb', boardSlug: 'dryherb', score: 78, comments: 43, author: 'budget_vaper', time: '14h' },
+  { id: '107', title: 'Ask: How long should a coil last?', board: 'Mods & Tanks', boardSlug: 'mods', score: 56, comments: 34, author: 'coil_question', time: '16h' },
+  { id: '108', title: 'Ask: Where to buy authentic vapes online?', board: 'Deals', boardSlug: 'deals', score: 92, comments: 51, author: 'online_shopper', time: '18h' },
+];
+---
+
+<Layout title="Ask - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="layout-container content-page">
+      <div class="page-header">
+        <h1>❓ Ask VapeIndex</h1>
+        <p>Questions from the community - get help from experienced vapers</p>
+      </div>
+
+      <div class="ask-cta">
+        <div class="cta-content">
+          <h2>Have a question?</h2>
+          <p>Our community is here to help! Ask anything about vaping, devices, safety, or troubleshooting.</p>
+        </div>
+        <a href="/submit" class="ask-btn">Ask a Question</a>
+      </div>
+
+      <div class="posts-container">
+        {askPosts.map(post => (
+          <article class="post-card">
+            <div class="vote-column">
+              <button class="vote-btn vote-up">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 3l5 5H3z"/>
+                </svg>
+              </button>
+              <span class="vote-score">{post.score}</span>
+              <button class="vote-btn vote-down">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 13l-5-5h10z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="post-content">
+              <div class="post-meta">
+                <a href={`/b/${post.boardSlug}`} class="board-tag">b/{post.boardSlug}</a>
+                <span class="meta-separator">•</span>
+                <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
+                <span class="meta-separator">•</span>
+                <time class="post-time">{post.time}</time>
+              </div>
+
+              <h2 class="post-title">
+                <a href={`/post/${post.id}`}>{post.title}</a>
+              </h2>
+
+              <div class="post-actions">
+                <a href={`/post/${post.id}`} class="action-btn action-comment">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                  </svg>
+                  <span>{post.comments} answers</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .ask-cta {
+    background: linear-gradient(135deg, var(--brand) 0%, #EC4899 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .cta-content h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .cta-content p {
+    font-size: 0.9375rem;
+    margin: 0;
+    opacity: 0.95;
+  }
+
+  .ask-btn {
+    background: white;
+    color: var(--brand);
+    padding: 0.75rem 2rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1rem;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  @media (max-width: 768px) {
+    .content-page {
+      padding: 0.5rem;
+    }
+
+    .page-header {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .ask-cta {
+      flex-direction: column;
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    .ask-btn {
+      width: 100%;
+    }
+  }
+</style>

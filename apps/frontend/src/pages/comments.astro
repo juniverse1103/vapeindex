@@ -1,0 +1,239 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const recentComments = [
+  { id: '1', author: 'vape_expert', karma: 12456, postTitle: 'Best disposable vapes of 2025?', postId: '1', content: 'Elf Bar BC5000 is still the gold standard. The BC10000 has better battery life but flavor is slightly muted. For pure flavor, stick with BC5000.', score: 89, time: '5m' },
+  { id: '2', author: 'authentic_only', karma: 5234, postTitle: 'PSA: Fake Elf Bars flooding the market', postId: '2', content: 'Check the QR code on the packaging. Real Elf Bars have a scratch-off code that verifies on their official website. If there\'s no QR code, it\'s 100% fake.', score: 156, time: '12m' },
+  { id: '3', author: 'pod_master', karma: 3421, postTitle: 'Caliburn G2 pods leaking after 2 days', postId: '4', content: 'Make sure you\'re not overfilling. Leave a small air gap at the top. Also, prime the coil for 5-10 minutes before first use.', score: 34, time: '23m' },
+  { id: '4', author: 'diy_guru', karma: 8901, postTitle: 'DIY e-liquid recipe - Strawberry Cheesecake', postId: '17', content: 'I\'d recommend adding 0.5% Vienna Cream to make the cheesecake note more authentic. Also try CAP New York Cheesecake instead of TFA.', score: 45, time: '35m' },
+  { id: '5', author: 'safety_first', karma: 15234, postTitle: 'Battery safety - what EVERY vaper needs to know', postId: '7', content: 'Never carry loose batteries in your pocket. Always use a case. One contact with keys or coins and you could have a thermal runaway situation.', score: 234, time: '1h' },
+  { id: '6', author: 'flavor_king', karma: 1823, postTitle: 'New Elf Bar BC5000 flavors just dropped', postId: '8', content: 'Tried the Sakura Grape - it\'s amazing! Tastes like Japanese grape soda. The Mango Peach is also incredible.', score: 67, time: '1h' },
+  { id: '7', author: 'newbie2025', karma: 12, postTitle: 'Complete beginner - what device should I buy?', postId: '12', content: 'Thank you all for the recommendations! I ended up getting the Caliburn AK2. Loving it so far!', score: 23, time: '2h' },
+  { id: '8', author: 'coil_builder', karma: 987, postTitle: 'Built my first triple-core fused clapton coils!', postId: '11', content: 'These came out great! Resistance is 0.15Ω. Ramping up perfectly at 85W. Flavor is incredible.', score: 56, time: '2h' },
+];
+---
+
+<Layout title="Recent Comments - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="layout-container content-page">
+      <div class="page-header">
+        <h1>💬 Recent Comments</h1>
+        <p>Latest comments from the VapeIndex community</p>
+      </div>
+
+      <div class="comments-feed">
+        {recentComments.map(comment => (
+          <article class="comment-card">
+            <div class="comment-header">
+              <a href={`/u/${comment.author}`} class="comment-author">
+                <div class="author-avatar">{comment.author[0].toUpperCase()}</div>
+                <div class="author-info">
+                  <div class="author-name">u/{comment.author}</div>
+                  <div class="author-karma">{comment.karma.toLocaleString()} karma</div>
+                </div>
+              </a>
+              <div class="comment-time">{comment.time}</div>
+            </div>
+
+            <div class="comment-context">
+              commented on <a href={`/post/${comment.postId}`} class="post-link">{comment.postTitle}</a>
+            </div>
+
+            <div class="comment-content">
+              {comment.content}
+            </div>
+
+            <div class="comment-actions">
+              <button class="vote-btn">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 3l5 5H3z"/>
+                </svg>
+                <span>{comment.score}</span>
+              </button>
+              <a href={`/post/${comment.postId}#comment-${comment.id}`} class="reply-btn">Reply</a>
+              <button class="action-btn">Share</button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .comments-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .comment-card {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+  }
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .comment-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand) 0%, #EC4899 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1rem;
+  }
+
+  .author-name {
+    font-weight: 700;
+    color: #000;
+    font-size: 0.9375rem;
+  }
+
+  .author-karma {
+    font-size: 0.75rem;
+    color: #999;
+  }
+
+  .comment-time {
+    font-size: 0.8125rem;
+    color: #999;
+  }
+
+  .comment-context {
+    font-size: 0.8125rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-link {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .comment-content {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    background: #f9f9f9;
+    border-left: 3px solid var(--brand);
+    border-radius: 0.25rem;
+  }
+
+  .comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .vote-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .vote-btn:hover {
+    background: #f0f0f0;
+  }
+
+  .reply-btn {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .reply-btn:hover {
+    background: #f0f0f0;
+  }
+
+  .action-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .action-btn:hover {
+    background: #f0f0f0;
+  }
+
+  @media (max-width: 768px) {
+    .content-page {
+      padding: 0.5rem;
+    }
+
+    .page-header {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .comment-card {
+      padding: 1rem;
+    }
+  }
+</style>

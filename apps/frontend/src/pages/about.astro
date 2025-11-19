@@ -1,0 +1,355 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="About VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="content-container">
+      <div class="hero-section">
+        <div class="hero-logo">V</div>
+        <h1>About VapeIndex</h1>
+        <p class="tagline">The community-driven platform for authentic vaping discussions</p>
+      </div>
+
+      <div class="about-content">
+        <section class="content-section">
+          <h2>Our Mission</h2>
+          <p>VapeIndex exists to create a trusted community where vapers can share knowledge, verify product authenticity, and make informed decisions about vaping products and safety.</p>
+          <p>We believe in transparency, education, and protecting consumers from counterfeit products that flood the market.</p>
+        </section>
+
+        <section class="content-section">
+          <h2>What We Do</h2>
+          <div class="features-grid">
+            <div class="feature">
+              <div class="feature-icon">✅</div>
+              <h3>Authenticity Verification</h3>
+              <p>Help users identify fake products and connect with verified sellers</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">💬</div>
+              <h3>Community Discussions</h3>
+              <p>Foster meaningful conversations about devices, flavors, and experiences</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">📚</div>
+              <h3>Education & Safety</h3>
+              <p>Share accurate information about battery safety, nicotine, and best practices</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">⭐</div>
+              <h3>Honest Reviews</h3>
+              <p>Provide a platform for real user reviews without manufacturer influence</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-section">
+          <h2>Our Values</h2>
+          <div class="values-list">
+            <div class="value">
+              <strong>Safety First:</strong> Accurate information about products and safety is our top priority
+            </div>
+            <div class="value">
+              <strong>Community-Driven:</strong> Users shape the platform through voting, moderation, and contributions
+            </div>
+            <div class="value">
+              <strong>Transparency:</strong> Clear rules, open discussions, and honest communication
+            </div>
+            <div class="value">
+              <strong>Authenticity:</strong> Fighting fakes and protecting consumers from dangerous counterfeits
+            </div>
+            <div class="value">
+              <strong>Respect:</strong> Welcoming environment for beginners and experts alike
+            </div>
+          </div>
+        </section>
+
+        <section class="content-section">
+          <h2>Why VapeIndex?</h2>
+          <p>The vaping industry faces significant challenges: counterfeit products, misleading information, and regulatory uncertainty. VapeIndex was created to address these issues by:</p>
+          <ul class="why-list">
+            <li>Providing a trusted platform for authentic product discussions</li>
+            <li>Helping users identify and avoid fake/dangerous products</li>
+            <li>Building a knowledge base of device reviews and comparisons</li>
+            <li>Creating a supportive community for those transitioning from smoking</li>
+            <li>Aggregating deals and price information transparently</li>
+          </ul>
+        </section>
+
+        <section class="stats-section">
+          <h2>Community Stats</h2>
+          <div class="stats-grid">
+            <div class="stat">
+              <div class="stat-number">115K+</div>
+              <div class="stat-label">Members</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">16K+</div>
+              <div class="stat-label">Posts</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">8</div>
+              <div class="stat-label">Active Boards</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">1.8K</div>
+              <div class="stat-label">Active Now</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="cta-section">
+          <h2>Join the Community</h2>
+          <p>Whether you're new to vaping or an experienced user, VapeIndex welcomes you. Create an account, share your knowledge, and help build a safer vaping community.</p>
+          <div class="cta-buttons">
+            <a href="/signup" class="btn-primary">Create Account</a>
+            <a href="/guidelines" class="btn-secondary">Read Guidelines</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+
+  .hero-section {
+    background: linear-gradient(135deg, var(--brand) 0%, #EC4899 100%);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .hero-logo {
+    background: white;
+    color: var(--brand);
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 3rem;
+  }
+
+  .hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin: 0 0 1rem 0;
+  }
+
+  .tagline {
+    font-size: 1.25rem;
+    margin: 0;
+    opacity: 0.95;
+  }
+
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .content-section {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 0.5rem;
+  }
+
+  .content-section h2 {
+    font-size: 1.75rem;
+    font-weight: 900;
+    margin: 0 0 1rem 0;
+  }
+
+  .content-section p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.7;
+    margin: 0 0 1rem 0;
+  }
+
+  .content-section p:last-child {
+    margin-bottom: 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .feature {
+    text-align: center;
+  }
+
+  .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature h3 {
+    font-size: 1.125rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .feature p {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .values-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .value {
+    padding: 1rem;
+    background: #f9f9f9;
+    border-left: 4px solid var(--brand);
+    border-radius: 0.25rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .value strong {
+    color: var(--brand);
+    font-weight: 900;
+  }
+
+  .why-list {
+    margin: 1rem 0 0 0;
+    padding-left: 1.5rem;
+    font-size: 0.9375rem;
+    color: #666;
+    line-height: 1.8;
+  }
+
+  .stats-section {
+    background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 0.5rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--brand);
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: #666;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .cta-section {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 3rem 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .cta-section h2 {
+    font-size: 1.75rem;
+    font-weight: 900;
+    margin: 0 0 1rem 0;
+  }
+
+  .cta-section p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 0.875rem 2rem;
+    border-radius: 0.375rem;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--brand);
+    color: white;
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--brand);
+    border: 2px solid var(--brand);
+  }
+
+  @media (max-width: 768px) {
+    .content-container {
+      padding: 0.5rem;
+      margin: 1rem auto;
+    }
+
+    .hero-section {
+      padding: 3rem 1.5rem;
+    }
+
+    .hero-section h1 {
+      font-size: 2rem;
+    }
+
+    .tagline {
+      font-size: 1rem;
+    }
+
+    .content-section {
+      padding: 1.5rem;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+    }
+
+    .btn-primary, .btn-secondary {
+      width: 100%;
+    }
+  }
+</style>

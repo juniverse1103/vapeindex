@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const posts = [
+  { id: '87', title: 'The Great Vape Ban of 2023 - What Actually Happened', board: 'Discussion', boardSlug: 'discussion', score: 1243, comments: 456, author: 'history_buff', time: '2y', hot: false },
+  { id: '86', title: 'Juul vs the FDA - Complete Timeline', board: 'Discussion', boardSlug: 'discussion', score: 892, comments: 234, author: 'legal_eagle', time: '2y', hot: false },
+  { id: '85', title: 'Remember Blu E-cigs? What happened to them?', board: 'Discussion', boardSlug: 'discussion', score: 567, comments: 189, author: 'nostalgia_vaper', time: '1y', hot: false },
+  { id: '84', title: 'Classic Vape Memes Megathread', board: 'Discussion', boardSlug: 'discussion', score: 2134, comments: 678, author: 'meme_lord', time: '1y', hot: false },
+  { id: '83', title: 'Vaping in 2020 vs 2025 - How things changed', board: 'Discussion', boardSlug: 'discussion', score: 789, comments: 312, author: 'time_traveler', time: '1y', hot: false },
+  { id: '82', title: 'The Rise and Fall of Pod Mods', board: 'Pod Systems', boardSlug: 'pods', score: 445, comments: 156, author: 'pod_historian', time: '1y', hot: false },
+  { id: '81', title: 'Best Vapes of 2023 - Community Awards', board: 'Reviews', boardSlug: 'reviews', score: 1567, comments: 423, author: 'award_master', time: '1y', hot: false },
+  { id: '80', title: 'I quit smoking 5 years ago thanks to vaping', board: 'Discussion', boardSlug: 'discussion', score: 3421, comments: 892, author: 'success_story', time: '8mo', hot: false },
+];
+---
+
+<Layout title="Past Posts - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="layout-container content-page">
+      <div class="page-header">
+        <h1>📚 Past Posts</h1>
+        <p>Archive of popular posts from the community history</p>
+      </div>
+
+      <div class="posts-container">
+        {posts.map(post => (
+          <article class="post-card">
+            <div class="vote-column">
+              <button class="vote-btn vote-up">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 3l5 5H3z"/>
+                </svg>
+              </button>
+              <span class="vote-score">{post.score}</span>
+              <button class="vote-btn vote-down">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 13l-5-5h10z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="post-content">
+              <div class="post-meta">
+                <a href={`/b/${post.boardSlug}`} class="board-tag">b/{post.boardSlug}</a>
+                <span class="meta-separator">•</span>
+                <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
+                <span class="meta-separator">•</span>
+                <time class="post-time">{post.time}</time>
+              </div>
+
+              <h2 class="post-title">
+                <a href={`/post/${post.id}`}>{post.title}</a>
+              </h2>
+
+              <div class="post-actions">
+                <a href={`/post/${post.id}`} class="action-btn action-comment">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                  </svg>
+                  <span>{post.comments}</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .content-page {
+      padding: 0.5rem;
+    }
+
+    .page-header {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

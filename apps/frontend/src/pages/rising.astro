@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const risingPosts = [
+  { id: '401', title: 'New Elf Bar Ultra just announced - 12000 puffs!', board: 'Disposables', boardSlug: 'disposables', score: 89, comments: 23, author: 'news_reporter', time: '45m', growth: '+185%' },
+  { id: '402', title: 'FDA approves new vape flavors - breaking news', board: 'Discussion', boardSlug: 'discussion', score: 156, comments: 67, author: 'news_hunter', time: '1h', growth: '+142%' },
+  { id: '403', title: 'Just found fake Caliburn pods on Amazon - PSA', board: 'Pod Systems', boardSlug: 'pods', score: 67, comments: 34, author: 'fake_finder', time: '2h', growth: '+128%' },
+  { id: '404', title: 'Puffco announces new Peak Pro 2', board: 'Dry Herb', boardSlug: 'dryherb', score: 123, comments: 45, author: 'tech_news', time: '2h', growth: '+115%' },
+  { id: '405', title: 'My local vape shop is closing - need alternatives', board: 'Discussion', boardSlug: 'discussion', score: 78, comments: 56, author: 'local_vaper', time: '3h', growth: '+98%' },
+  { id: '406', title: 'DIY nic salt recipe that tastes like store-bought', board: 'DIY', boardSlug: 'diy', score: 92, comments: 38, author: 'recipe_master', time: '3h', growth: '+87%' },
+  { id: '407', title: 'Geek Bar vs Elf Bar - honest comparison 2025', board: 'Reviews', boardSlug: 'reviews', score: 134, comments: 41, author: 'honest_reviewer', time: '4h', growth: '+75%' },
+  { id: '408', title: 'First time building coils - tips appreciated!', board: 'DIY', boardSlug: 'diy', score: 45, comments: 29, author: 'coil_newbie', time: '4h', growth: '+68%' },
+];
+---
+
+<Layout title="Rising Posts - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="layout-container content-page">
+      <div class="page-header">
+        <h1>📈 Rising Posts</h1>
+        <p>Fast-growing posts gaining traction right now</p>
+      </div>
+
+      <div class="rising-info">
+        <div class="info-icon">💡</div>
+        <p>These posts are gaining upvotes faster than others. Jump in early to be part of the conversation!</p>
+      </div>
+
+      <div class="posts-container">
+        {risingPosts.map(post => (
+          <article class="post-card">
+            <div class="vote-column">
+              <button class="vote-btn vote-up">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 3l5 5H3z"/>
+                </svg>
+              </button>
+              <span class="vote-score">{post.score}</span>
+              <button class="vote-btn vote-down">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 13l-5-5h10z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="post-content">
+              <div class="post-meta">
+                <a href={`/b/${post.boardSlug}`} class="board-tag">b/{post.boardSlug}</a>
+                <span class="meta-separator">•</span>
+                <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
+                <span class="meta-separator">•</span>
+                <time class="post-time">{post.time}</time>
+                <span class="badge badge-rising">📈 {post.growth}</span>
+              </div>
+
+              <h2 class="post-title">
+                <a href={`/post/${post.id}`}>{post.title}</a>
+              </h2>
+
+              <div class="post-actions">
+                <a href={`/post/${post.id}`} class="action-btn action-comment">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                  </svg>
+                  <span>{post.comments}</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .rising-info {
+    background: linear-gradient(135deg, #10B981 0%, #14B8A6 100%);
+    color: white;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .info-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .rising-info p {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .badge-rising {
+    background: linear-gradient(135deg, #10B981 0%, #14B8A6 100%);
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .content-page {
+      padding: 0.5rem;
+    }
+
+    .page-header {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .rising-info {
+      padding: 1rem;
+    }
+
+    .info-icon {
+      font-size: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,178 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const topPosts = [
+  { id: '301', title: 'I quit smoking 5 years ago thanks to vaping - AMA', board: 'Discussion', boardSlug: 'discussion', score: 3421, comments: 892, author: 'success_story', time: '8mo' },
+  { id: '302', title: 'Classic Vape Memes Megathread', board: 'Discussion', boardSlug: 'discussion', score: 2134, comments: 678, author: 'meme_lord', time: '1y' },
+  { id: '303', title: 'Best Vapes of 2024 - Community Awards Results', board: 'Reviews', boardSlug: 'reviews', score: 1567, comments: 423, author: 'award_master', time: '1y' },
+  { id: '304', title: 'The Great Vape Ban of 2023 - What Actually Happened', board: 'Discussion', boardSlug: 'discussion', score: 1243, comments: 456, author: 'history_buff', time: '2y' },
+  { id: '2', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', board: 'Disposables', boardSlug: 'disposables', score: 512, comments: 143, author: 'authentic_only', time: '5h' },
+  { id: '5', title: 'VaporDNA 30% off sale - today only! Code: VAPE30', board: 'Deals', boardSlug: 'deals', score: 456, comments: 87, author: 'deal_hunter', time: '11h' },
+  { id: '7', title: 'Battery safety - what EVERY vaper needs to know', board: 'Mods & Tanks', boardSlug: 'mods', score: 392, comments: 156, author: 'safety_first', time: '16h' },
+  { id: '1', title: 'Best disposable vapes of 2025? Looking for recommendations', board: 'Disposables', boardSlug: 'disposables', score: 287, comments: 94, author: 'vapeenthusiast', time: '3h' },
+];
+---
+
+<Layout title="Top Posts - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="layout-container content-page">
+      <div class="page-header">
+        <h1>🏆 Top Posts</h1>
+        <p>Most upvoted posts of all time</p>
+      </div>
+
+      <div class="time-filter">
+        <button class="time-btn active">All Time</button>
+        <button class="time-btn">This Year</button>
+        <button class="time-btn">This Month</button>
+        <button class="time-btn">This Week</button>
+        <button class="time-btn">Today</button>
+      </div>
+
+      <div class="posts-container">
+        {topPosts.map((post, index) => (
+          <article class="post-card">
+            <div class="rank-badge">#{index + 1}</div>
+            <div class="vote-column">
+              <button class="vote-btn vote-up">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 3l5 5H3z"/>
+                </svg>
+              </button>
+              <span class="vote-score">{post.score.toLocaleString()}</span>
+              <button class="vote-btn vote-down">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 13l-5-5h10z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="post-content">
+              <div class="post-meta">
+                <a href={`/b/${post.boardSlug}`} class="board-tag">b/{post.boardSlug}</a>
+                <span class="meta-separator">•</span>
+                <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
+                <span class="meta-separator">•</span>
+                <time class="post-time">{post.time}</time>
+              </div>
+
+              <h2 class="post-title">
+                <a href={`/post/${post.id}`}>{post.title}</a>
+              </h2>
+
+              <div class="post-actions">
+                <a href={`/post/${post.id}`} class="action-btn action-comment">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                  </svg>
+                  <span>{post.comments}</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .time-filter {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    border-radius: 0.5rem;
+  }
+
+  .time-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #666;
+    cursor: pointer;
+    border-radius: 0.25rem;
+  }
+
+  .time-btn.active {
+    background: var(--brand);
+    color: white;
+  }
+
+  .post-card {
+    position: relative;
+  }
+
+  .rank-badge {
+    position: absolute;
+    top: 1rem;
+    left: -1rem;
+    background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+    color: white;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  @media (max-width: 768px) {
+    .content-page {
+      padding: 0.5rem;
+    }
+
+    .page-header {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .rank-badge {
+      position: static;
+      margin-bottom: 0.5rem;
+      width: 2rem;
+      height: 2rem;
+      font-size: 0.75rem;
+    }
+  }
+</style>

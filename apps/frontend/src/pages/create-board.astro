@@ -1,0 +1,285 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="Create Board - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="create-container">
+      <div class="create-header">
+        <h1>Create a New Board</h1>
+        <p>Start your own community around a specific vaping topic</p>
+      </div>
+
+      <form class="create-form">
+        <div class="form-section">
+          <h2>Board Details</h2>
+
+          <div class="form-group">
+            <label for="name">Board Name *</label>
+            <input type="text" id="name" name="name" placeholder="e.g., Pod Systems" required maxlength="30" />
+            <span class="help-text">Choose a clear, descriptive name (max 30 characters)</span>
+          </div>
+
+          <div class="form-group">
+            <label for="slug">URL Slug *</label>
+            <div class="slug-preview">vapeindex.io/b/</div>
+            <input type="text" id="slug" name="slug" placeholder="pod-systems" required pattern="[a-z0-9-]+" />
+            <span class="help-text">Lowercase letters, numbers, and hyphens only</span>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description *</label>
+            <textarea id="description" name="description" placeholder="What is this board about?" required rows="3" maxlength="200"></textarea>
+            <span class="help-text">Briefly explain what this board is for (max 200 characters)</span>
+          </div>
+
+          <div class="form-group">
+            <label for="color">Board Color</label>
+            <div class="color-picker">
+              <input type="color" id="color" name="color" value="#7C3AED" />
+              <span class="color-preview"></span>
+            </div>
+            <span class="help-text">Choose a color for your board's identity</span>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Board Settings</h2>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" name="nsfw" />
+              <span>NSFW - Not safe for work content</span>
+            </label>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" name="restricted" />
+              <span>Restricted - Only approved members can post</span>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="rules">Board Rules</label>
+            <textarea id="rules" name="rules" placeholder="List your board's rules, one per line" rows="6"></textarea>
+            <span class="help-text">Optional: Set specific rules for your community</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-create">Create Board</button>
+        </div>
+      </form>
+
+      <div class="guidelines-box">
+        <h3>📋 Board Creation Guidelines</h3>
+        <ul>
+          <li>Choose a unique name that clearly describes your board's purpose</li>
+          <li>Keep your description concise and accurate</li>
+          <li>Set clear rules to maintain quality discussions</li>
+          <li>Be respectful and follow VapeIndex community guidelines</li>
+          <li>Boards must comply with all applicable laws and regulations</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .create-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+
+  .create-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .create-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .create-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .create-form {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-section {
+    margin-bottom: 2rem;
+  }
+
+  .form-section:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .form-section h2 {
+    font-size: 1.25rem;
+    font-weight: 900;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  .form-group input[type="text"],
+  .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--brand);
+  }
+
+  .slug-preview {
+    display: inline-block;
+    color: #999;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .help-text {
+    display: block;
+    font-size: 0.8125rem;
+    color: #666;
+    margin-top: 0.375rem;
+  }
+
+  .color-picker {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .color-picker input[type="color"] {
+    width: 60px;
+    height: 40px;
+    border: 2px solid var(--border);
+    border-radius: 0.375rem;
+    cursor: pointer;
+  }
+
+  .checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1.5rem;
+    border-top: 2px solid #f0f0f0;
+  }
+
+  .btn-cancel {
+    padding: 0.75rem 2rem;
+    border: 2px solid var(--border);
+    background: white;
+    border-radius: 0.375rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #666;
+  }
+
+  .btn-create {
+    padding: 0.75rem 2rem;
+    border: none;
+    background: var(--brand);
+    color: white;
+    border-radius: 0.375rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .guidelines-box {
+    background: #f9f9f9;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .guidelines-box h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0 0 1rem 0;
+  }
+
+  .guidelines-box ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #666;
+    font-size: 0.875rem;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 768px) {
+    .create-container {
+      padding: 0.5rem;
+      margin: 1rem auto;
+    }
+
+    .create-header, .create-form {
+      padding: 1.5rem;
+    }
+
+    .form-actions {
+      flex-direction: column-reverse;
+    }
+
+    .btn-cancel, .btn-create {
+      width: 100%;
+    }
+  }
+</style>

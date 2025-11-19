@@ -1,0 +1,183 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const showPosts = [
+  { id: '201', title: 'Show: My complete vape collection after 3 years', board: 'Show', boardSlug: 'show', score: 456, comments: 89, author: 'collector_pro', time: '3h', hasImage: true },
+  { id: '202', title: 'Show: Custom wrapped my Drag X - what do you think?', board: 'Show', boardSlug: 'show', score: 234, comments: 45, author: 'custom_wrapper', time: '5h', hasImage: true },
+  { id: '203', title: 'Show: My DIY e-liquid mixing station setup', board: 'DIY', boardSlug: 'diy', score: 178, comments: 67, author: 'diy_master', time: '8h', hasImage: true },
+  { id: '204', title: 'Show: Organized my vape drawer - before and after', board: 'Show', boardSlug: 'show', score: 312, comments: 56, author: 'organizer', time: '12h', hasImage: true },
+  { id: '205', title: 'Show: Built a display shelf for my collection', board: 'Show', boardSlug: 'show', score: 289, comments: 42, author: 'woodworker_vaper', time: '14h', hasImage: true },
+  { id: '206', title: 'Show: My first successful clapton coil build!', board: 'DIY', boardSlug: 'diy', score: 145, comments: 38, author: 'coil_newbie', time: '16h', hasImage: true },
+  { id: '207', title: 'Show: Travel vape case setup - everything I need', board: 'Show', boardSlug: 'show', score: 267, comments: 51, author: 'traveler_vaper', time: '18h', hasImage: true },
+  { id: '208', title: 'Show: Custom 3D printed vape stand I designed', board: 'DIY', boardSlug: 'diy', score: 423, comments: 73, author: '3d_printer', time: '20h', hasImage: true },
+];
+---
+
+<Layout title="Show - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="layout-container content-page">
+      <div class="page-header">
+        <h1>🎨 Show VapeIndex</h1>
+        <p>Share your setups, collections, builds, and creations</p>
+      </div>
+
+      <div class="show-cta">
+        <div class="cta-content">
+          <h2>Share your setup!</h2>
+          <p>Show off your collection, custom builds, or creative projects. Inspire the community!</p>
+        </div>
+        <a href="/submit" class="show-btn">Share Your Setup</a>
+      </div>
+
+      <div class="posts-container">
+        {showPosts.map(post => (
+          <article class="post-card show-card">
+            <div class="vote-column">
+              <button class="vote-btn vote-up">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 3l5 5H3z"/>
+                </svg>
+              </button>
+              <span class="vote-score">{post.score}</span>
+              <button class="vote-btn vote-down">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 13l-5-5h10z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="post-content">
+              <div class="post-meta">
+                <a href={`/b/${post.boardSlug}`} class="board-tag">b/{post.boardSlug}</a>
+                <span class="meta-separator">•</span>
+                <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
+                <span class="meta-separator">•</span>
+                <time class="post-time">{post.time}</time>
+                {post.hasImage && <span class="badge badge-image">📸 Image</span>}
+              </div>
+
+              <h2 class="post-title">
+                <a href={`/post/${post.id}`}>{post.title}</a>
+              </h2>
+
+              <div class="post-actions">
+                <a href={`/post/${post.id}`} class="action-btn action-comment">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                  </svg>
+                  <span>{post.comments}</span>
+                </a>
+                <button class="action-btn action-share">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M13 7a2 2 0 100-4 2 2 0 000 4zm-2.5 1.5l-5 3a2 2 0 100 3 2 2 0 000-4l5-3z"/>
+                  </svg>
+                  <span>Share</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .page-header {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .show-cta {
+    background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .cta-content h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .cta-content p {
+    font-size: 0.9375rem;
+    margin: 0;
+    opacity: 0.95;
+  }
+
+  .show-btn {
+    background: white;
+    color: #8B5CF6;
+    padding: 0.75rem 2rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1rem;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .badge-image {
+    background: #10B981;
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .content-page {
+      padding: 0.5rem;
+    }
+
+    .page-header {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .show-cta {
+      flex-direction: column;
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    .show-btn {
+      width: 100%;
+    }
+  }
+</style>
