@@ -55,7 +55,7 @@ const stats = {
           <p style="font-size: 0.8125rem; color: var(--text-secondary); margin: 0 0 0.75rem 0; line-height: 1.5;">
             Start a new board and build your own community around any vaping topic.
           </p>
-          <a href="/create-board" style="display: block; background: var(--brand); color: white; padding: 0.5rem 1rem; border-radius: 0.25rem; text-align: center; font-weight: 700; font-size: 0.875rem; text-decoration: none;">
+          <a href="/create-board" style="display: block; background: var(--brand); color: white; padding: 0.5rem 1rem; border-radius: 0; text-align: center; font-weight: 700; font-size: 0.875rem; text-decoration: none;">
             + Create Board
           </a>
         </div>
@@ -204,7 +204,7 @@ const stats = {
 
         <!-- Trending Boards -->
         <div style="background: var(--bg-elevated); border: 1px solid var(--border-primary); padding: 1rem;">
-          <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 0.75rem 0; color: var(--text-primary);">🔥 Trending Boards</h3>
+          <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 0.75rem 0; color: var(--text-primary);">Trending Boards</h3>
           {trendingBoards.map((board, i) => (
             <a href={`/b/${board.slug}`} style="display: block; padding: 0.5rem 0; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--divider);">
               <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -225,7 +225,7 @@ const stats = {
             <a href="/rules" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Community Rules</a>
             <a href="/guidelines" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Posting Guidelines</a>
             <a href="/faq" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">FAQ</a>
-            <a href="/prices" style="color: var(--brand); text-decoration: none; font-weight: 700;">💰 Price Tracker</a>
+            <a href="/prices" style="color: var(--brand); text-decoration: none; font-weight: 700;">Price Tracker</a>
             <a href="/api" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">API Docs</a>
           </div>
         </div>
@@ -373,7 +373,7 @@ const stats = {
 
     <!-- Footer -->
     <footer style="margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--border-primary); text-align: center; color: var(--text-muted);">
-      <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; font-size: 0.9375rem;">
+      <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.5rem; font-size: 0.9375rem;">
         <a href="/about" style="color: var(--text-muted);">About</a>
         <a href="/guidelines" style="color: var(--text-muted);">Guidelines</a>
         <a href="/faq" style="color: var(--text-muted);">FAQ</a>

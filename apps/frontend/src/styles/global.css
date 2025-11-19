@@ -174,7 +174,7 @@ html[data-theme="dark"] {
     cursor: pointer;
     padding: 0;
     color: inherit;
-    transition: all 0.2s ease;
+    transition: all 0.1s ease;
   }
 
   /* Form inputs */
@@ -183,19 +183,19 @@ html[data-theme="dark"] {
     font-size: inherit;
     background: var(--bg-input);
     border: 1px solid var(--border-primary);
-    padding: 0.4em;
+    padding: 0.5rem;
     color: var(--text-primary);
-    transition: all 0.2s ease;
+    transition: all 0.1s ease;
   }
 
   input:focus, textarea:focus, select:focus {
-    outline: 2px solid var(--border-focus);
-    outline-offset: 1px;
+    outline: 1px solid var(--border-focus);
+    outline-offset: 0;
     border-color: var(--border-focus);
   }
 
   input:hover, textarea:hover, select:hover {
-    border-color: var(--border-secondary);
+    border-color: var(--border-focus);
   }
 
 /* Utility classes */
