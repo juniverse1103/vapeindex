@@ -1,8 +1,8 @@
-/* Ultimate Community Design - Post Cards */
+/* Ultimate Community Design - Post Cards with Theme Support */
 
 .posts-container {
-  background: white;
-  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-primary);
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -11,13 +11,13 @@
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--divider);
   transition: background-color 0.15s ease;
   position: relative;
 }
 
 .post-card:hover {
-  background: #fafafa;
+  background: var(--bg-hover);
 }
 
 .post-card:last-child {
@@ -38,7 +38,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
+  color: var(--text-tertiary);
   padding: 0.25rem;
   display: flex;
   align-items: center;
@@ -48,8 +48,8 @@
 }
 
 .vote-btn:hover {
-  background: #f0f0f0;
-  color: #000;
+  background: var(--interactive-hover);
+  color: var(--text-primary);
 }
 
 .vote-up:hover {
@@ -63,7 +63,7 @@
 .vote-score {
   font-size: 0.875rem;
   font-weight: 800;
-  color: #000;
+  color: var(--text-primary);
   user-select: none;
   min-width: 30px;
   text-align: center;
@@ -101,7 +101,7 @@
 }
 
 .meta-separator {
-  color: #ccc;
+  color: var(--text-disabled);
   user-select: none;
 }
 
@@ -109,11 +109,11 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .author-link {
-  color: #000;
+  color: var(--text-primary);
   text-decoration: none;
   font-weight: 700;
   transition: color 0.15s ease;
@@ -126,15 +126,15 @@
 /* Karma Badge - Stack Overflow Style */
 .author-karma {
   font-size: 0.6875rem;
-  color: #666;
-  background: #f0f0f0;
+  color: var(--text-tertiary);
+  background: var(--bg-tertiary);
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
   font-weight: 600;
 }
 
 .post-time {
-  color: #999;
+  color: var(--text-disabled);
   font-weight: 500;
 }
 
@@ -166,7 +166,7 @@
 .post-title a {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
   text-decoration: none;
   transition: color 0.15s ease;
   display: block;
@@ -189,7 +189,7 @@
   align-items: center;
   gap: 0.375rem;
   font-size: 0.8125rem;
-  color: #666;
+  color: var(--text-tertiary);
   background: none;
   border: none;
   cursor: pointer;
@@ -201,8 +201,8 @@
 }
 
 .action-btn:hover {
-  background: #f0f0f0;
-  color: #000;
+  background: var(--interactive-hover);
+  color: var(--text-primary);
 }
 
 .action-btn svg {

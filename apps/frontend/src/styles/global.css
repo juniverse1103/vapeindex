@@ -1,41 +1,136 @@
-/* Minimal High-Contrast Design */
+/* Comprehensive Theming System */
 :root {
-    /* Simple brand */
+    /* Brand Colors - constant across themes */
     --brand: #7C3AED;        /* Violet */
     --brand-dark: #6D28D9;   /* Darker violet */
+    --brand-light: #8B5CF6;  /* Lighter violet */
+    --brand-hover: #6D28D9;  /* Hover state */
 
-    /* High contrast palette */
-    --bg: #FFFFFF;           /* Pure white */
-    --text: #000000;         /* Pure black */
-    --text-muted: #333333;   /* Darker gray for better visibility */
-    --border: #DDDDDD;       /* Light gray border */
-  }
+    /* Semantic Colors - Light Theme */
+    --bg-primary: #FFFFFF;      /* Main background */
+    --bg-secondary: #F9FAFB;    /* Secondary background */
+    --bg-tertiary: #F3F4F6;     /* Tertiary background */
+    --bg-elevated: #FFFFFF;     /* Cards, modals */
+    --bg-input: #FFFFFF;        /* Form inputs */
+    --bg-hover: #F3F4F6;        /* Hover states */
 
-  /* Dark mode - both system preference and manual toggle */
-  @media (prefers-color-scheme: dark) {
+    /* Text Colors */
+    --text-primary: #111827;    /* Main text */
+    --text-secondary: #4B5563;  /* Secondary text */
+    --text-tertiary: #6B7280;   /* Tertiary text */
+    --text-disabled: #9CA3AF;   /* Disabled text */
+    --text-inverse: #FFFFFF;    /* Text on dark backgrounds */
+
+    /* Border & Divider Colors */
+    --border-primary: #E5E7EB;  /* Main borders */
+    --border-secondary: #D1D5DB; /* Secondary borders */
+    --border-focus: var(--brand); /* Focus state */
+    --divider: #E5E7EB;         /* Dividers */
+
+    /* Interactive States */
+    --interactive-hover: #F3F4F6;
+    --interactive-active: #E5E7EB;
+    --interactive-disabled: #F3F4F6;
+
+    /* Semantic Status Colors */
+    --success: #10B981;
+    --success-bg: #D1FAE5;
+    --warning: #F59E0B;
+    --warning-bg: #FEF3C7;
+    --error: #EF4444;
+    --error-bg: #FEE2E2;
+    --info: #3B82F6;
+    --info-bg: #DBEAFE;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme */
+html[data-theme="dark"] {
+    /* Semantic Colors - Dark Theme */
+    --bg-primary: #0F172A;      /* Main background - Slate 900 */
+    --bg-secondary: #1E293B;    /* Secondary background - Slate 800 */
+    --bg-tertiary: #334155;     /* Tertiary background - Slate 700 */
+    --bg-elevated: #1E293B;     /* Cards, modals */
+    --bg-input: #1E293B;        /* Form inputs */
+    --bg-hover: #334155;        /* Hover states */
+
+    /* Text Colors */
+    --text-primary: #F1F5F9;    /* Main text - Slate 100 */
+    --text-secondary: #CBD5E1;  /* Secondary text - Slate 300 */
+    --text-tertiary: #94A3B8;   /* Tertiary text - Slate 400 */
+    --text-disabled: #64748B;   /* Disabled text - Slate 500 */
+    --text-inverse: #0F172A;    /* Text on light backgrounds */
+
+    /* Border & Divider Colors */
+    --border-primary: #334155;  /* Main borders - Slate 700 */
+    --border-secondary: #475569; /* Secondary borders - Slate 600 */
+    --border-focus: var(--brand-light); /* Focus state */
+    --divider: #334155;         /* Dividers */
+
+    /* Interactive States */
+    --interactive-hover: #334155;
+    --interactive-active: #475569;
+    --interactive-disabled: #1E293B;
+
+    /* Semantic Status Colors - adjusted for dark mode */
+    --success: #34D399;
+    --success-bg: #064E3B;
+    --warning: #FBBF24;
+    --warning-bg: #78350F;
+    --error: #F87171;
+    --error-bg: #7F1D1D;
+    --info: #60A5FA;
+    --info-bg: #1E3A8A;
+
+    /* Shadows - more subtle in dark mode */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* Auto dark mode - respects system preference unless overridden */
+@media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0F172A;         /* Slate 900 */
-      --bg-alt: #1E293B;     /* Slate 800 */
-      --text: #F1F5F9;       /* Slate 100 */
-      --text-muted: #94A3B8; /* Slate 400 */
-      --border: #334155;     /* Slate 700 */
+        --bg-primary: #0F172A;
+        --bg-secondary: #1E293B;
+        --bg-tertiary: #334155;
+        --bg-elevated: #1E293B;
+        --bg-input: #1E293B;
+        --bg-hover: #334155;
+
+        --text-primary: #F1F5F9;
+        --text-secondary: #CBD5E1;
+        --text-tertiary: #94A3B8;
+        --text-disabled: #64748B;
+        --text-inverse: #0F172A;
+
+        --border-primary: #334155;
+        --border-secondary: #475569;
+        --border-focus: var(--brand-light);
+        --divider: #334155;
+
+        --interactive-hover: #334155;
+        --interactive-active: #475569;
+        --interactive-disabled: #1E293B;
+
+        --success: #34D399;
+        --success-bg: #064E3B;
+        --warning: #FBBF24;
+        --warning-bg: #78350F;
+        --error: #F87171;
+        --error-bg: #7F1D1D;
+        --info: #60A5FA;
+        --info-bg: #1E3A8A;
+
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
     }
-  }
-
-  html[data-theme="dark"] {
-    --bg: #0F172A;         /* Slate 900 */
-    --bg-alt: #1E293B;     /* Slate 800 */
-    --text: #F1F5F9;       /* Slate 100 */
-    --text-muted: #94A3B8; /* Slate 400 */
-    --border: #334155;     /* Slate 700 */
-  }
-
-  html[data-theme="light"] {
-    --bg: #FFFFFF;           /* Pure white */
-    --text: #000000;         /* Pure black */
-    --text-muted: #333333;   /* Darker gray */
-    --border: #DDDDDD;       /* Light gray border */
-  }
+}
 
   * {
     box-sizing: border-box;
@@ -43,30 +138,33 @@
 
   html {
     font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', sans-serif;
-    font-size: 16px; /* Larger, more readable */
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7; /* More spacing between lines */
+    font-size: 16px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   body {
     margin: 0;
     padding: 0;
+    background: var(--bg-primary);
   }
 
-  /* HN-style links */
+  /* Links */
   a {
-    color: var(--text);
+    color: var(--text-primary);
     text-decoration: none;
+    transition: color 0.2s ease;
   }
 
   a:hover {
     text-decoration: underline;
   }
 
-  /* Clean button styles */
+  /* Buttons */
   button {
     font-family: inherit;
     font-size: inherit;
@@ -75,21 +173,28 @@
     cursor: pointer;
     padding: 0;
     color: inherit;
+    transition: all 0.2s ease;
   }
 
   /* Form inputs */
   input, textarea, select {
     font-family: inherit;
     font-size: inherit;
-    background: var(--bg-alt);
-    border: 1px solid var(--border);
+    background: var(--bg-input);
+    border: 1px solid var(--border-primary);
     padding: 0.4em;
-    color: var(--text);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
   }
 
   input:focus, textarea:focus, select:focus {
-    outline: 2px solid var(--brand);
+    outline: 2px solid var(--border-focus);
     outline-offset: 1px;
+    border-color: var(--border-focus);
+  }
+
+  input:hover, textarea:hover, select:hover {
+    border-color: var(--border-secondary);
   }
 
 /* Utility classes */
