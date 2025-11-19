@@ -11,14 +11,30 @@
     --border: #DDDDDD;       /* Light gray border */
   }
 
+  /* Dark mode - both system preference and manual toggle */
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --bg: #0F172A;         /* Slate 900 */
       --bg-alt: #1E293B;     /* Slate 800 */
       --text: #F1F5F9;       /* Slate 100 */
       --text-muted: #94A3B8; /* Slate 400 */
       --border: #334155;     /* Slate 700 */
     }
+  }
+
+  html[data-theme="dark"] {
+    --bg: #0F172A;         /* Slate 900 */
+    --bg-alt: #1E293B;     /* Slate 800 */
+    --text: #F1F5F9;       /* Slate 100 */
+    --text-muted: #94A3B8; /* Slate 400 */
+    --border: #334155;     /* Slate 700 */
+  }
+
+  html[data-theme="light"] {
+    --bg: #FFFFFF;           /* Pure white */
+    --text: #000000;         /* Pure black */
+    --text-muted: #333333;   /* Darker gray */
+    --border: #DDDDDD;       /* Light gray border */
   }
 
   * {
