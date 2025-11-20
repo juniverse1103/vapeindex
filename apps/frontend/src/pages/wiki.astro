@@ -1,0 +1,307 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageLayout from '../components/PageLayout.astro';
+
+// Wiki articles with AI-generated content tracking
+const wikiArticles = [
+  {
+    slug: 'battery-safety',
+    title: 'Battery Safety Guide',
+    category: 'Safety',
+    excerpt: 'Essential safety guidelines for vape batteries, charging, and storage.',
+    lastUpdated: '2025-01-15',
+    aiGenerated: true,
+    views: 15234,
+    comments: 89
+  },
+  {
+    slug: 'coil-building-101',
+    title: 'Coil Building 101',
+    category: 'Guides',
+    excerpt: 'Complete beginner guide to building your own coils.',
+    lastUpdated: '2025-01-14',
+    aiGenerated: true,
+    views: 8932,
+    comments: 45
+  },
+  {
+    slug: 'vape-juice-guide',
+    title: 'E-Liquid Guide',
+    category: 'Guides',
+    excerpt: 'Everything about PG/VG ratios, nicotine levels, and flavor profiles.',
+    lastUpdated: '2025-01-13',
+    aiGenerated: true,
+    views: 12456,
+    comments: 67
+  },
+  {
+    slug: 'mod-comparison-2025',
+    title: 'Best Mods of 2025',
+    category: 'Products',
+    excerpt: 'Comprehensive comparison of top vape mods released in 2025.',
+    lastUpdated: '2025-01-12',
+    aiGenerated: true,
+    views: 23145,
+    comments: 156
+  },
+  {
+    slug: 'pod-system-reviews',
+    title: 'Pod System Reviews',
+    category: 'Products',
+    excerpt: 'In-depth reviews of popular pod systems with user ratings.',
+    lastUpdated: '2025-01-11',
+    aiGenerated: true,
+    views: 18234,
+    comments: 123
+  },
+  {
+    slug: 'ohms-law-explained',
+    title: 'Ohm\'s Law Explained',
+    category: 'Technical',
+    excerpt: 'Understanding voltage, resistance, and wattage for safe vaping.',
+    lastUpdated: '2025-01-10',
+    aiGenerated: true,
+    views: 9876,
+    comments: 34
+  },
+];
+
+const categories = ['All', 'Safety', 'Guides', 'Products', 'Technical'];
+---
+
+<Layout title="VapeWiki - VapeIndex">
+  <Header />
+  <main class="main-content">
+    <PageLayout
+      title="VapeWiki"
+      description="AI-powered knowledge base for vape guides, product reviews, and safety information. Updated automatically."
+    >
+      <div class="wiki-container">
+        <!-- Category Filter -->
+        <div class="category-filter">
+          {categories.map(cat => (
+            <button class="category-btn" data-category={cat.toLowerCase()}>
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <!-- AI Update Status -->
+        <div class="ai-status">
+          <span class="status-indicator active"></span>
+          <span class="status-text">AI agent active - Last update: 2 hours ago</span>
+        </div>
+
+        <!-- Wiki Articles Grid -->
+        <div class="wiki-grid">
+          {wikiArticles.map(article => (
+            <article class="wiki-card">
+              <div class="wiki-header">
+                <span class="wiki-category">{article.category}</span>
+                {article.aiGenerated && (
+                  <span class="ai-badge" title="AI-generated and maintained">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    AI
+                  </span>
+                )}
+              </div>
+
+              <h2 class="wiki-title">
+                <a href={`/wiki/${article.slug}`}>{article.title}</a>
+              </h2>
+
+              <p class="wiki-excerpt">{article.excerpt}</p>
+
+              <div class="wiki-meta">
+                <span class="meta-item">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12z"/>
+                    <path d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H6a.5.5 0 0 1 0-1h1.5V4a.5.5 0 0 1 .5-.5z"/>
+                  </svg>
+                  {article.lastUpdated}
+                </span>
+                <span class="meta-item">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 4.5a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2h-2a.5.5 0 0 1 0-1h2v-2a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+                  </svg>
+                  {article.views.toLocaleString()} views
+                </span>
+                <span class="meta-item">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                  </svg>
+                  {article.comments} comments
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </PageLayout>
+  </main>
+</Layout>
+
+<style>
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+  }
+
+  .wiki-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Category Filter */
+  .category-filter {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+  }
+
+  .category-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+    background: none;
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.1s;
+  }
+
+  .category-btn:hover,
+  .category-btn.active {
+    background: var(--brand);
+    color: white;
+    border-color: var(--brand);
+  }
+
+  /* AI Status */
+  .ai-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-tertiary);
+  }
+
+  .status-indicator.active {
+    background: #22c55e;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* Wiki Grid */
+  .wiki-grid {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .wiki-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: border-color 0.1s;
+  }
+
+  .wiki-card:hover {
+    border-color: var(--brand);
+  }
+
+  .wiki-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .wiki-category {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--brand);
+    letter-spacing: 0.5px;
+  }
+
+  .ai-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: #22c55e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .wiki-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .wiki-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.1s;
+  }
+
+  .wiki-title a:hover {
+    color: var(--brand);
+  }
+
+  .wiki-excerpt {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
+
+  .wiki-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .wiki-meta {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+</style>

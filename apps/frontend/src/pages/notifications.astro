@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageLayout from '../components/PageLayout.astro';
+
+const notifications = [
+  { id: '1', type: 'reply', user: 'vape_expert', post: 'Best disposable vapes of 2025?', time: '5m', read: false },
+  { id: '2', type: 'upvote', user: 'authentic_only', post: 'PSA: Fake Elf Bars', time: '1h', read: false },
+  { id: '3', type: 'mention', user: 'newbie2025', post: 'Complete beginner guide', time: '2h', read: true },
+];
+---
+
+<Layout title="Notifications - VapeIndex">
+  <Header />
+  <main class="main-content">
+    <PageLayout title="Notifications" description="Your recent activity">
+      <div class="notifications-container">
+        <div class="notifications-header">
+          <button class="mark-all-read">mark all read</button>
+        </div>
+
+        <div class="notifications-list">
+          {notifications.map(notif => (
+            <div class={`notification ${!notif.read ? 'unread' : ''}`}>
+              <div class="notification-content">
+                <span class="notification-user">u/{notif.user}</span>
+                {notif.type === 'reply' && ' replied to your post '}
+                {notif.type === 'upvote' && ' upvoted your post '}
+                {notif.type === 'mention' && ' mentioned you in '}
+                <span class="notification-post">{notif.post}</span>
+              </div>
+              <div class="notification-time">{notif.time}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </PageLayout>
+  </main>
+</Layout>
+
+<style>
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+  }
+
+  .notifications-container {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+  }
+
+  .notifications-header {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--divider);
+    text-align: right;
+  }
+
+  .mark-all-read {
+    font-size: 0.75rem;
+    color: var(--brand);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .mark-all-read:hover {
+    text-decoration: underline;
+  }
+
+  .notifications-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notification {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--divider);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .notification:last-child {
+    border-bottom: none;
+  }
+
+  .notification.unread {
+    background: var(--bg-secondary);
+  }
+
+  .notification-content {
+    flex: 1;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .notification-user {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .notification-post {
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  .notification-time {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+</style>

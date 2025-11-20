@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageLayout from '../components/PageLayout.astro';
+
+const savedPosts = [
+  { id: '7', title: 'Battery safety - what EVERY vaper needs to know', board: 'Mods & Tanks', boardSlug: 'mods', score: 392, comments: 156, time: '16h' },
+  { id: '2', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', board: 'Disposables', boardSlug: 'disposables', score: 512, comments: 143, time: '5h' },
+];
+---
+
+<Layout title="Saved Posts - VapeIndex">
+  <Header />
+  <main class="main-content">
+    <PageLayout title="Saved Posts" description="Posts you've saved for later">
+      <div class="posts-container">
+        {savedPosts.map(post => (
+          <article class="post-card">
+            <div class="vote-column">
+              <span class="vote-score">{post.score}</span>
+            </div>
+
+            <div class="post-content">
+              <div class="post-meta">
+                <a href={`/b/${post.boardSlug}`} class="board-tag">b/{post.boardSlug}</a>
+                <span class="meta-separator">•</span>
+                <time class="post-time">{post.time}</time>
+              </div>
+
+              <h2 class="post-title">
+                <a href={`/post/${post.id}`}>{post.title}</a>
+              </h2>
+
+              <div class="post-actions">
+                <a href={`/post/${post.id}`} class="action-btn">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
+                  </svg>
+                  <span>{post.comments}</span>
+                </a>
+                <button class="action-btn action-unsave">unsave</button>
+              </div>
+            </div>
+          </article>
+        ))}
+
+        {savedPosts.length === 0 && (
+          <div class="empty-state">
+            <p>You haven't saved any posts yet.</p>
+            <a href="/">Browse posts</a>
+          </div>
+        )}
+      </div>
+    </PageLayout>
+  </main>
+</Layout>
+
+<style>
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+  }
+
+  .action-unsave {
+    color: var(--error) !important;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-tertiary);
+  }
+
+  .empty-state p {
+    margin: 0 0 1rem 0;
+    font-size: 0.875rem;
+  }
+
+  .empty-state a {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .empty-state a:hover {
+    text-decoration: underline;
+  }
+</style>

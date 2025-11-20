@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageLayout from '../components/PageLayout.astro';
+---
+
+<Layout title="Sign Up - VapeIndex">
+  <Header />
+  <main class="main-content">
+    <PageLayout title="Sign Up" description="Create your VapeIndex account">
+      <form class="auth-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required autocomplete="username" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required autocomplete="new-password" />
+        </div>
+
+        <div class="form-group">
+          <label for="confirm">Confirm Password</label>
+          <input type="password" id="confirm" name="confirm" required autocomplete="new-password" />
+        </div>
+
+        <button type="submit" class="btn-primary">Create Account</button>
+
+        <div class="form-footer">
+          Already have an account? <a href="/login">Log in</a>
+        </div>
+      </form>
+    </PageLayout>
+  </main>
+</Layout>
+
+<style>
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+  }
+
+  .auth-form {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1.5rem;
+    max-width: 400px;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-input);
+    color: var(--text-primary);
+  }
+
+  .form-group input:focus {
+    outline: 1px solid var(--brand);
+    border-color: var(--brand);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 0.625rem;
+    background: var(--brand);
+    color: white;
+    border: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.1s ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--brand-dark);
+  }
+
+  .form-footer {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .form-footer a {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .form-footer a:hover {
+    text-decoration: underline;
+  }
+</style>

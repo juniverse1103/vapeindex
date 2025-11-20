@@ -1,0 +1,51 @@
+---
+// Consistent page layout for all content pages
+const { title, description } = Astro.props;
+---
+
+<div class="page-container">
+  <div class="page-header">
+    <h1>{title}</h1>
+    {description && <p>{description}</p>}
+  </div>
+  <slot />
+</div>
+
+<style>
+  .page-container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    padding: var(--container-padding);
+  }
+
+  .page-header {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: var(--card-padding);
+    margin-bottom: var(--section-gap);
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 var(--space-1) 0;
+    color: var(--text-primary);
+  }
+
+  .page-header p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 768px) {
+    .page-container {
+      padding: var(--space-2);
+    }
+
+    .page-header {
+      padding: var(--card-padding-sm);
+    }
+  }
+</style>

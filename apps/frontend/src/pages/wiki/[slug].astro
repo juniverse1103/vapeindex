@@ -1,0 +1,715 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+const { slug } = Astro.params;
+
+// Mock wiki article data - will be fetched from API/database
+const articles = {
+  'battery-safety': {
+    title: 'Battery Safety Guide',
+    category: 'Safety',
+    lastUpdated: '2025-01-15',
+    aiGenerated: true,
+    author: 'AI Agent',
+    views: 15234,
+    rating: 4.8,
+    totalReviews: 342,
+    content: `# Battery Safety Guide
+
+## Why Battery Safety Matters
+
+Vape batteries are powerful lithium-ion cells that require proper handling. Misuse can lead to venting, fire, or even explosion. This guide covers everything you need to know.
+
+## Battery Types
+
+### 18650 Batteries
+The most common vape battery format. Name comes from dimensions: 18mm diameter, 65mm length.
+
+**Recommended brands:**
+- Sony VTC5A (25A CDR)
+- Samsung 25R (20A CDR)
+- LG HG2 (20A CDR)
+
+### 21700 Batteries
+Larger format with higher capacity and current ratings.
+
+**Top picks:**
+- Samsung 40T (35A CDR)
+- Molicel P42A (45A CDR)
+
+## Critical Safety Rules
+
+1. **Never use damaged batteries** - Check wraps before each use
+2. **Use correct amp rating** - Calculate your build's current draw
+3. **Store safely** - Use battery cases, never loose in pockets
+4. **Charge properly** - Use quality external chargers (e.g., Nitecore, XTAR)
+5. **Don't over-discharge** - Replace batteries when voltage drops below 3.2V
+
+## Ohm's Law for Battery Safety
+
+Current (A) = Voltage (V) / Resistance (Ω)
+
+For a 0.15Ω coil on a fresh 4.2V battery:
+- 4.2V / 0.15Ω = 28A draw
+- Requires battery with 30A+ CDR rating
+
+## Warning Signs
+
+🚨 **Immediately stop using if:**
+- Battery gets hot during use
+- Wrapper is torn or damaged
+- Positive terminal is dented
+- Battery has been dropped from height
+- Unusual odor or hissing sound
+
+## Proper Storage
+
+- Keep in plastic battery cases
+- Store at room temperature (avoid heat)
+- Charge to ~50% for long-term storage
+- Never store in direct sunlight
+- Keep away from metal objects
+
+## Disposal
+
+Take old batteries to recycling centers. Many vape shops accept them for proper disposal.`,
+    editHistory: [
+      { date: '2025-01-15', editor: 'AI Agent', changes: 'Updated with 2025 battery recommendations' },
+      { date: '2025-01-10', editor: 'AI Agent', changes: 'Added 21700 battery section' },
+      { date: '2024-12-28', editor: 'AI Agent', changes: 'Initial creation' },
+    ]
+  },
+  'coil-building-101': {
+    title: 'Coil Building 101',
+    category: 'Guides',
+    lastUpdated: '2025-01-14',
+    aiGenerated: true,
+    author: 'AI Agent',
+    views: 8932,
+    rating: 4.6,
+    totalReviews: 189,
+    content: `# Coil Building 101
+
+Learn the fundamentals of building your own coils for rebuildable atomizers.
+
+## Tools You'll Need
+
+- Coil jig or screwdriver set
+- Wire cutters (flush cutters preferred)
+- Ceramic tweezers
+- Ohm reader
+- Cotton (Japanese organic recommended)
+
+## Wire Types
+
+### Kanthal A1
+- Most beginner-friendly
+- Works in wattage mode only
+- 24-26 gauge for single coil, 26-28 for dual
+
+### Stainless Steel 316L
+- Works in wattage AND temperature control
+- Faster ramp-up than Kanthal
+- Clean flavor
+
+### Nichrome 80
+- Fastest heat-up time
+- Lower resistance per wrap
+- Not for temp control
+
+## Basic Round Wire Build
+
+**Simple 6-wrap coil (Kanthal 24g, 3mm ID):**
+
+1. Cut ~10cm of wire
+2. Wrap around 3mm coil jig 6 times
+3. Trim excess leads
+4. Install in RDA/RTA posts
+5. Pulse at low wattage to check hot spots
+6. Strum with ceramic tweezers
+7. Final resistance: ~0.5Ω
+
+## Wicking Technique
+
+1. Cut cotton strip (~6mm wide for 3mm coil)
+2. Twist one end to threading point
+3. Feed through coil
+4. Trim ends at deck edge
+5. Tuck into juice wells
+6. Prime with e-liquid
+7. Let sit 5 minutes before first hit
+
+## Safety Checklist
+
+✓ Check resistance before firing
+✓ Ensure coil doesn't touch cap/deck
+✓ Start at low wattage (20-30W)
+✓ Watch for hot spots
+✓ Verify battery can handle the load`,
+    editHistory: [
+      { date: '2025-01-14', editor: 'AI Agent', changes: 'Added nichrome wire information' },
+      { date: '2025-01-05', editor: 'AI Agent', changes: 'Initial creation' },
+    ]
+  },
+};
+
+const article = articles[slug as keyof typeof articles] || null;
+
+// Mock comments
+const comments = [
+  {
+    id: '1',
+    user: 'vape_veteran',
+    time: '2h',
+    content: 'Excellent guide! I\'d add that rewrapping batteries is cheap and easy with a heat gun.',
+    upvotes: 45,
+    replies: 3
+  },
+  {
+    id: '2',
+    user: 'safety_first',
+    time: '5h',
+    content: 'Please emphasize more that damaged batteries should NEVER be used. Seen too many accidents.',
+    upvotes: 89,
+    replies: 7
+  },
+  {
+    id: '3',
+    user: 'newbie2025',
+    time: '1d',
+    content: 'What about built-in battery mods? Do these same rules apply?',
+    upvotes: 12,
+    replies: 5
+  },
+];
+
+// Mock reviews
+const reviews = [
+  {
+    id: '1',
+    user: 'tech_reviewer',
+    rating: 5,
+    time: '3d',
+    content: 'Most comprehensive battery safety guide I\'ve found. The Ohm\'s law examples are perfect.',
+    helpful: 156
+  },
+  {
+    id: '2',
+    user: 'daily_vaper',
+    rating: 5,
+    time: '5d',
+    content: 'Shared this with my entire vape shop. Should be required reading for anyone using external batteries.',
+    helpful: 98
+  },
+  {
+    id: '3',
+    user: 'mod_enthusiast',
+    rating: 4,
+    time: '1w',
+    content: 'Great info. Would love to see more about parallel vs series configurations.',
+    helpful: 67
+  },
+];
+
+if (!article) {
+  return Astro.redirect('/wiki');
+}
+
+// Simple markdown-like rendering
+function renderContent(content: string) {
+  return content.split('\n').map(line => {
+    if (line.startsWith('# ')) return `<h1>${line.slice(2)}</h1>`;
+    if (line.startsWith('## ')) return `<h2>${line.slice(3)}</h2>`;
+    if (line.startsWith('### ')) return `<h3>${line.slice(4)}</h3>`;
+    if (line.startsWith('**') && line.endsWith('**')) return `<strong>${line.slice(2, -2)}</strong>`;
+    if (line.startsWith('- ')) return `<li>${line.slice(2)}</li>`;
+    if (line.startsWith('🚨')) return `<div class="warning-box">${line}</div>`;
+    if (line.startsWith('✓')) return `<div class="checklist-item">${line}</div>`;
+    if (line.trim() === '') return '<br>';
+    return `<p>${line}</p>`;
+  }).join('\n');
+}
+---
+
+<Layout title={`${article.title} - VapeWiki`}>
+  <Header />
+  <main class="main-content">
+    <div class="article-container">
+      <!-- Article Header -->
+      <header class="article-header">
+        <div class="header-top">
+          <a href="/wiki" class="back-link">← All Wiki Articles</a>
+          <span class="article-category">{article.category}</span>
+        </div>
+
+        <h1 class="article-title">{article.title}</h1>
+
+        <div class="article-metadata">
+          <div class="meta-left">
+            {article.aiGenerated && (
+              <span class="ai-badge" title="AI-generated and auto-updated">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                AI-Maintained
+              </span>
+            )}
+            <span class="meta-item">By {article.author}</span>
+            <span class="meta-item">Updated {article.lastUpdated}</span>
+            <span class="meta-item">{article.views.toLocaleString()} views</span>
+          </div>
+
+          <div class="rating-display">
+            <div class="stars">
+              {'★'.repeat(Math.floor(article.rating))}{'☆'.repeat(5 - Math.floor(article.rating))}
+            </div>
+            <span class="rating-text">{article.rating} ({article.totalReviews} reviews)</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Article Content -->
+      <article class="article-content" set:html={renderContent(article.content)} />
+
+      <!-- Edit History -->
+      <details class="edit-history">
+        <summary>Edit History ({article.editHistory.length} revisions)</summary>
+        <div class="history-list">
+          {article.editHistory.map(edit => (
+            <div class="history-item">
+              <div class="history-date">{edit.date}</div>
+              <div class="history-details">
+                <strong>{edit.editor}</strong>: {edit.changes}
+              </div>
+            </div>
+          ))}
+        </div>
+      </details>
+
+      <!-- Reviews Section -->
+      <section class="reviews-section">
+        <div class="section-header">
+          <h2>Reviews ({reviews.length})</h2>
+          <button class="btn-primary">Write Review</button>
+        </div>
+
+        <div class="reviews-list">
+          {reviews.map(review => (
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-user">
+                  <strong>u/{review.user}</strong>
+                  <div class="stars small">
+                    {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                  </div>
+                </div>
+                <span class="review-time">{review.time}</span>
+              </div>
+              <p class="review-content">{review.content}</p>
+              <div class="review-actions">
+                <button class="helpful-btn">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z"/>
+                  </svg>
+                  Helpful ({review.helpful})
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Comments Section -->
+      <section class="comments-section">
+        <div class="section-header">
+          <h2>Discussion ({comments.length})</h2>
+        </div>
+
+        <div class="comment-form">
+          <textarea placeholder="Add your comment or question..." rows="3"></textarea>
+          <button class="btn-primary">Post Comment</button>
+        </div>
+
+        <div class="comments-list">
+          {comments.map(comment => (
+            <div class="comment-card">
+              <div class="comment-header">
+                <strong>u/{comment.user}</strong>
+                <span class="comment-time">{comment.time}</span>
+              </div>
+              <p class="comment-content">{comment.content}</p>
+              <div class="comment-actions">
+                <button class="action-btn">
+                  ▲ {comment.upvotes}
+                </button>
+                <button class="action-btn">Reply ({comment.replies})</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+    padding: 1rem;
+  }
+
+  .article-container {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Article Header */
+  .article-header {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .back-link {
+    font-size: 0.875rem;
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .article-category {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--brand);
+    letter-spacing: 0.5px;
+  }
+
+  .article-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  .article-metadata {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-left {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+  }
+
+  .ai-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #22c55e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #22c55e;
+  }
+
+  .rating-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .stars {
+    color: #f59e0b;
+    font-size: 1rem;
+    letter-spacing: 2px;
+  }
+
+  .stars.small {
+    font-size: 0.875rem;
+  }
+
+  .rating-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  /* Article Content */
+  .article-content {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 2rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+
+  .article-content :global(h1) {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 2rem 0 1rem 0;
+    color: var(--text-primary);
+  }
+
+  .article-content :global(h1:first-child) {
+    margin-top: 0;
+  }
+
+  .article-content :global(h2) {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.75rem 0;
+    color: var(--text-primary);
+  }
+
+  .article-content :global(h3) {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem 0;
+    color: var(--text-primary);
+  }
+
+  .article-content :global(p) {
+    margin: 0.75rem 0;
+    font-size: 0.9375rem;
+  }
+
+  .article-content :global(strong) {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .article-content :global(li) {
+    margin: 0.25rem 0 0.25rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  .article-content :global(.warning-box) {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 3px solid #ef4444;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.9375rem;
+  }
+
+  .article-content :global(.checklist-item) {
+    padding: 0.25rem 0;
+    font-size: 0.9375rem;
+  }
+
+  /* Edit History */
+  .edit-history {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1rem;
+  }
+
+  .edit-history summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+  }
+
+  .history-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .history-item {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .history-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .history-date {
+    color: var(--text-tertiary);
+    min-width: 80px;
+  }
+
+  .history-details {
+    color: var(--text-secondary);
+  }
+
+  /* Reviews Section */
+  .reviews-section,
+  .comments-section {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .section-header h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .btn-primary {
+    padding: 0.5rem 1rem;
+    background: var(--brand);
+    color: white;
+    border: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .btn-primary:hover {
+    background: var(--brand-dark);
+  }
+
+  .reviews-list,
+  .comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .review-card,
+  .comment-card {
+    padding: 1rem;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-secondary);
+  }
+
+  .review-header,
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .review-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .review-time,
+  .comment-time {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .review-content,
+  .comment-content {
+    margin: 0.5rem 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+  }
+
+  .review-actions,
+  .comment-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .helpful-btn,
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: color 0.1s;
+  }
+
+  .helpful-btn:hover,
+  .action-btn:hover {
+    color: var(--brand);
+  }
+
+  /* Comment Form */
+  .comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .comment-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  @media (max-width: 768px) {
+    .article-title {
+      font-size: 1.5rem;
+    }
+
+    .article-content {
+      padding: 1rem;
+    }
+
+    .article-metadata {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

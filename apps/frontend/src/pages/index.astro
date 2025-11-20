@@ -1,20 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import { ChevronUp, ChevronDown, MessageSquare, Eye, Share2, Bookmark } from 'lucide-astro';
+import { fetchPosts, fetchBoards, fetchStats } from '../lib/api';
 
-// Complete community structure with boards, posts, and users
-const boards = [
-  { name: 'Disposables', slug: 'disposables', posts: 2847, members: 15234, description: 'Elf Bar, Puff Bar, and all disposable vapes', color: '#3B82F6' },
-  { name: 'Pod Systems', slug: 'pods', posts: 1923, members: 8901, description: 'Refillable pods, salt nic devices', color: '#8B5CF6' },
-  { name: 'Dry Herb', slug: 'dryherb', posts: 1456, members: 12456, description: 'Pax, Mighty, and dry herb vaporizers', color: '#10B981' },
-  { name: 'Mods & Tanks', slug: 'mods', posts: 3201, members: 19234, description: 'Box mods, sub-ohm tanks, coil builds', color: '#F59E0B' },
-  { name: 'Deals', slug: 'deals', posts: 892, members: 23456, description: 'Sales, coupons, and price drops', color: '#EF4444' },
-  { name: 'Reviews', slug: 'reviews', posts: 2156, members: 11234, description: 'In-depth product reviews', color: '#EC4899' },
-  { name: 'DIY', slug: 'diy', posts: 1534, members: 6789, description: 'Coil building, mixing e-liquid', color: '#6366F1' },
-  { name: 'Beginner', slug: 'beginner', posts: 2789, members: 18902, description: 'New to vaping? Start here', color: '#14B8A6' },
-];
+// Fetch real data from API
+const [topPosts, boards, stats] = await Promise.all([
+  fetchPosts('hot', 15),
+  fetchBoards(),
+  fetchStats()
+]);
 
-const topPosts = [
+const trendingBoards = boards.slice(0, 4);
+
+// Old mock data (backup):
+const oldPosts = [
   { id: '1', title: 'Best disposable vapes of 2025? Looking for recommendations', board: 'Disposables', boardSlug: 'disposables', score: 287, comments: 94, author: 'vapeenthusiast', authorKarma: 2847, time: '3h', views: 1847, hot: true, awarded: true },
   { id: '2', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', board: 'Disposables', boardSlug: 'disposables', score: 512, comments: 143, author: 'authentic_only', authorKarma: 5234, time: '5h', views: 4234, hot: true, awarded: true },
   { id: '3', title: 'Pax 3 vs Mighty+ - Full comparison with photos', board: 'Dry Herb', boardSlug: 'dryherb', score: 164, comments: 121, author: 'herb_connoisseur', authorKarma: 3456, time: '7h', views: 1923, hot: false, awarded: false },
@@ -31,14 +31,6 @@ const topPosts = [
   { id: '14', title: 'Lost Vape Thelema DNA250C - 6 month review', board: 'Reviews', boardSlug: 'reviews', score: 189, comments: 52, author: 'reviewer_pro', authorKarma: 9234, time: '1d', views: 2341, hot: false, awarded: false },
   { id: '15', title: 'Anyone tried the new Geek Bar Pulse? Thoughts?', board: 'Disposables', boardSlug: 'disposables', score: 134, comments: 48, author: 'disposable_fan', authorKarma: 1234, time: '2d', views: 1678, hot: false, awarded: false },
 ];
-
-const trendingBoards = boards.slice(0, 4);
-const stats = {
-  totalPosts: 16293,
-  totalMembers: 115406,
-  activeNow: 1834,
-  boardsCount: boards.length
-};
 ---
 
 <Layout>
@@ -104,15 +96,11 @@ const stats = {
               <!-- Voting Column -->
               <div class="vote-column">
                 <button class="vote-btn vote-up" aria-label="Upvote">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 3l5 5H3z"/>
-                  </svg>
+                  <ChevronUp size={16} />
                 </button>
                 <span class="vote-score">{post.score}</span>
                 <button class="vote-btn vote-down" aria-label="Downvote">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 13l-5-5h10z"/>
-                  </svg>
+                  <ChevronDown size={16} />
                 </button>
               </div>
 
@@ -142,27 +130,19 @@ const stats = {
                 <!-- Actions -->
                 <div class="post-actions">
                   <a href={`/post/${post.id}`} class="action-btn action-comment">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                      <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
-                    </svg>
+                    <MessageSquare size={14} />
                     <span>{post.comments}</span>
                   </a>
                   <span class="action-btn action-views">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                      <path d="M8 3C4.5 3 1.5 5.5 0 8c1.5 2.5 4.5 5 8 5s6.5-2.5 8-5c-1.5-2.5-4.5-5-8-5zm0 8a3 3 0 110-6 3 3 0 010 6z"/>
-                    </svg>
+                    <Eye size={14} />
                     <span>{post.views.toLocaleString()}</span>
                   </span>
                   <button class="action-btn action-share">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                      <path d="M13 7a2 2 0 100-4 2 2 0 000 4zm-2.5 1.5l-5 3a2 2 0 100 3 2 2 0 000-4l5-3z"/>
-                    </svg>
+                    <Share2 size={14} />
                     <span>Share</span>
                   </button>
                   <button class="action-btn action-save">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                      <path d="M3 2a1 1 0 00-1 1v11l6-3 6 3V3a1 1 0 00-1-1H3z"/>
-                    </svg>
+                    <Bookmark size={14} />
                     <span>Save</span>
                   </button>
                 </div>
@@ -241,9 +221,12 @@ const stats = {
     }
 
     .layout-container {
-      max-width: 960px;
+      max-width: var(--max-width-full);
       margin: 0 auto;
-      padding: 0.5rem;
+      padding: var(--container-padding);
+      display: grid;
+      gap: var(--layout-gap);
+      grid-template-columns: 1fr;
     }
 
     .sidebar-left,
@@ -251,26 +234,44 @@ const stats = {
       display: none;
     }
 
+    .sidebar-left {
+      display: flex;
+      flex-direction: column;
+      gap: var(--layout-gap);
+      position: sticky;
+      top: var(--space-2);
+      align-self: start;
+    }
+
+    .sidebar-right {
+      display: flex;
+      flex-direction: column;
+      gap: var(--layout-gap);
+      position: sticky;
+      top: var(--space-2);
+      align-self: start;
+    }
+
     .main-feed {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: var(--section-gap);
+      min-width: 0;
     }
 
     .filter-bar {
       background: var(--bg-elevated);
       border: 1px solid var(--border-primary);
-      padding: 0.5rem 0.75rem;
+      padding: var(--space-2) var(--space-3);
       display: flex;
-      gap: 0.75rem;
+      gap: var(--space-3);
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 0.5rem;
     }
 
     .filter-tabs {
       display: flex;
-      gap: 0.5rem;
+      gap: var(--space-2);
       flex-wrap: wrap;
       flex: 1;
     }
@@ -278,7 +279,7 @@ const stats = {
     .filter-tab {
       color: var(--text-tertiary);
       text-decoration: none;
-      padding: 0.25rem 0.5rem;
+      padding: var(--space-1) var(--space-2);
       font-weight: 400;
       font-size: 0.8125rem;
       white-space: nowrap;
@@ -311,11 +312,41 @@ const stats = {
       color: var(--brand-dark);
     }
 
-    /* Tablet */
-    @media (max-width: 1024px) {
+    /* Wide Desktop - Show all 3 columns */
+    @media (min-width: 1400px) {
       .layout-container {
+        grid-template-columns: var(--sidebar-left-width) 1fr var(--sidebar-right-width);
+        gap: var(--layout-gap);
+      }
+
+      .sidebar-left,
+      .sidebar-right {
+        display: flex;
+      }
+    }
+
+    /* Desktop - Show main + right sidebar */
+    @media (min-width: 1200px) and (max-width: 1399px) {
+      .layout-container {
+        grid-template-columns: 1fr var(--sidebar-right-width);
+        gap: var(--space-3);
+      }
+
+      .sidebar-left {
+        display: none;
+      }
+
+      .sidebar-right {
+        display: flex;
+      }
+    }
+
+    /* Tablet - Main content only */
+    @media (min-width: 769px) and (max-width: 1199px) {
+      .layout-container {
+        max-width: var(--max-width-content);
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: var(--layout-gap);
       }
 
       .sidebar-left,
@@ -327,21 +358,27 @@ const stats = {
     /* Mobile */
     @media (max-width: 768px) {
       .layout-container {
-        padding: 0.5rem;
+        padding: var(--space-2);
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar-left,
+      .sidebar-right {
+        display: none;
       }
 
       .filter-bar {
-        padding: 0.5rem;
-        gap: 0.5rem;
+        padding: var(--space-2);
+        gap: var(--space-2);
       }
 
       .filter-tabs {
-        gap: 0.25rem;
+        gap: var(--space-1);
         width: 100%;
       }
 
       .filter-tab {
-        padding: 0.5rem 0.625rem;
+        padding: var(--space-2) var(--space-3);
         font-size: 0.8125rem;
         flex: 1;
         text-align: center;
@@ -355,14 +392,14 @@ const stats = {
       .create-post-btn {
         width: 100%;
         text-align: center;
-        padding: 0.625rem;
+        padding: var(--space-3);
       }
     }
 
     @media (max-width: 480px) {
       .filter-tab {
         font-size: 0.75rem;
-        padding: 0.5rem 0.5rem;
+        padding: var(--space-2) var(--space-2);
       }
 
       .filter-tab:not(.active) {

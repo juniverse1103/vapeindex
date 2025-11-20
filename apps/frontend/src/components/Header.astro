@@ -1,5 +1,6 @@
 ---
 // Responsive header with hamburger menu
+import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
 ---
 
 <header class="main-header">
@@ -26,25 +27,25 @@
         <a href="/ask">ask</a>
         <a href="/show">show</a>
         <a href="/submit">submit</a>
+        <a href="/wiki">wiki</a>
       </div>
       <div class="nav-auth">
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"/>
-            <line x1="12" y1="1" x2="12" y2="3"/>
-            <line x1="12" y1="21" x2="12" y2="23"/>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-            <line x1="1" y1="12" x2="3" y2="12"/>
-            <line x1="21" y1="12" x2="23" y2="12"/>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-          </svg>
-          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
+        <a href="/search" class="nav-icon" title="Search">
+          <Search size={16} />
+        </a>
+        <a href="/notifications" class="nav-icon" title="Notifications">
+          <Bell size={16} />
+        </a>
+        <a href="/saved" class="nav-icon" title="Saved">
+          <Bookmark size={16} />
+        </a>
+        <button id="theme-toggle" class="theme-toggle nav-icon" aria-label="Toggle dark mode" title="Theme">
+          <Sun class="sun-icon" size={16} />
+          <Moon class="moon-icon" size={16} />
         </button>
-        <a href="/login" class="login-link">login</a>
+        <span class="nav-separator">|</span>
+        <a href="/settings" class="nav-link">settings</a>
+        <a href="/login" class="nav-link">login</a>
       </div>
     </nav>
   </div>
@@ -78,7 +79,7 @@
 <style>
   .main-header {
     background: var(--brand);
-    padding: 0.25rem 0.5rem;
+    padding: var(--space-1) 0;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -89,15 +90,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1400px;
+    max-width: var(--max-width-full);
     margin: 0 auto;
+    padding: 0 var(--container-padding);
     position: relative;
   }
 
   .header-left {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-3);
     z-index: 2;
   }
 
@@ -181,16 +183,42 @@
 
   .nav-auth {
     margin-left: auto;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-3);
   }
 
-  .login-link {
-    color: white;
+  .nav-icon {
+    color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
     text-decoration: none;
-    font-weight: 600;
+    transition: color 0.1s ease;
+  }
+
+  .nav-icon:hover {
+    color: white;
+  }
+
+  .nav-icon :global(svg) {
+    stroke: currentColor;
+  }
+
+  .nav-separator {
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 300;
+  }
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.1s ease;
+  }
+
+  .nav-link:hover {
+    color: white;
   }
 
   /* Theme Toggle */
@@ -199,37 +227,30 @@
     border: none;
     color: white;
     cursor: pointer;
-    padding: 0.25rem;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.2s;
   }
 
-  .theme-toggle:hover {
-    opacity: 0.8;
-  }
-
-  .sun-icon,
-  .moon-icon {
-    width: 20px;
-    height: 20px;
+  .theme-toggle :global(svg) {
+    stroke: white;
   }
 
   /* Show sun in dark mode, moon in light mode */
-  html[data-theme="dark"] .sun-icon {
+  html[data-theme="dark"] :global(.sun-icon) {
     display: block;
   }
 
-  html[data-theme="dark"] .moon-icon {
+  html[data-theme="dark"] :global(.moon-icon) {
     display: none;
   }
 
-  html:not([data-theme="dark"]) .sun-icon {
+  html:not([data-theme="dark"]) :global(.sun-icon) {
     display: none;
   }
 
-  html:not([data-theme="dark"]) .moon-icon {
+  html:not([data-theme="dark"]) :global(.moon-icon) {
     display: block;
   }
 
@@ -259,7 +280,7 @@
     }
 
     .menu-toggle:checked ~ .hamburger span:nth-child(1) {
-      transform: rotate(45deg) translate(7px, 7px);
+      transform: rotate(45deg) translate(5px, 5px);
     }
 
     .menu-toggle:checked ~ .hamburger span:nth-child(2) {
@@ -267,7 +288,7 @@
     }
 
     .menu-toggle:checked ~ .hamburger span:nth-child(3) {
-      transform: rotate(-45deg) translate(6px, -6px);
+      transform: rotate(-45deg) translate(5px, -5px);
     }
 
     .nav-links {
@@ -299,6 +320,12 @@
       border-radius: 0.375rem;
       text-align: center;
       font-weight: 700;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .header-container {
+      padding: 0 var(--space-2);
     }
   }
 

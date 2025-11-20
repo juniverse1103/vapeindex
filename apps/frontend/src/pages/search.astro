@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageLayout from '../components/PageLayout.astro';
+---
+
+<Layout title="Search - VapeIndex">
+  <Header />
+  <main class="main-content">
+    <PageLayout title="Search" description="Search posts, users, and boards">
+      <div class="search-container">
+        <form class="search-form">
+          <input
+            type="search"
+            placeholder="Search VapeIndex..."
+            class="search-input"
+            autofocus
+          />
+          <button type="submit" class="search-btn">Search</button>
+        </form>
+
+        <div class="search-filters">
+          <label><input type="radio" name="type" value="posts" checked /> Posts</label>
+          <label><input type="radio" name="type" value="users" /> Users</label>
+          <label><input type="radio" name="type" value="boards" /> Boards</label>
+        </div>
+
+        <div class="search-results">
+          <p class="placeholder">Enter a search query to find posts, users, or boards.</p>
+        </div>
+      </div>
+    </PageLayout>
+  </main>
+</Layout>
+
+<style>
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+  }
+
+  .search-container {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1rem;
+  }
+
+  .search-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-input);
+    color: var(--text-primary);
+  }
+
+  .search-btn {
+    padding: 0.5rem 1rem;
+    background: var(--brand);
+    color: white;
+    border: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .search-btn:hover {
+    background: var(--brand-dark);
+  }
+
+  .search-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .search-filters label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+  }
+
+  .search-results {
+    min-height: 200px;
+  }
+
+  .placeholder {
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+    padding: 2rem;
+  }
+</style>

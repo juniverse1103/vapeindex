@@ -1,178 +1,402 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import { ChevronUp, ChevronDown, MessageSquare, Eye, Share2, Bookmark } from 'lucide-astro';
+import '../styles/posts.css';
+import { fetchPosts, fetchBoards, fetchStats } from '../lib/api';
 
-const topPosts = [
-  { id: '301', title: 'I quit smoking 5 years ago thanks to vaping - AMA', board: 'Discussion', boardSlug: 'discussion', score: 3421, comments: 892, author: 'success_story', time: '8mo' },
-  { id: '302', title: 'Classic Vape Memes Megathread', board: 'Discussion', boardSlug: 'discussion', score: 2134, comments: 678, author: 'meme_lord', time: '1y' },
-  { id: '303', title: 'Best Vapes of 2024 - Community Awards Results', board: 'Reviews', boardSlug: 'reviews', score: 1567, comments: 423, author: 'award_master', time: '1y' },
-  { id: '304', title: 'The Great Vape Ban of 2023 - What Actually Happened', board: 'Discussion', boardSlug: 'discussion', score: 1243, comments: 456, author: 'history_buff', time: '2y' },
-  { id: '2', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', board: 'Disposables', boardSlug: 'disposables', score: 512, comments: 143, author: 'authentic_only', time: '5h' },
-  { id: '5', title: 'VaporDNA 30% off sale - today only! Code: VAPE30', board: 'Deals', boardSlug: 'deals', score: 456, comments: 87, author: 'deal_hunter', time: '11h' },
-  { id: '7', title: 'Battery safety - what EVERY vaper needs to know', board: 'Mods & Tanks', boardSlug: 'mods', score: 392, comments: 156, author: 'safety_first', time: '16h' },
-  { id: '1', title: 'Best disposable vapes of 2025? Looking for recommendations', board: 'Disposables', boardSlug: 'disposables', score: 287, comments: 94, author: 'vapeenthusiast', time: '3h' },
+// Fetch real data from API
+const [topPosts, boards, stats] = await Promise.all([
+  fetchPosts('top', 15),
+  fetchBoards(),
+  fetchStats()
+]);
+
+const trendingBoards = boards.slice(0, 4);
+
+// Old mock data (backup):
+const oldTopPosts = [
+  { id: '301', title: 'I quit smoking 5 years ago thanks to vaping - AMA', board: 'Discussion', boardSlug: 'discussion', score: 3421, comments: 892, author: 'success_story', authorKarma: 12453, time: '8mo', views: 145234, hot: false, awarded: true },
+  { id: '302', title: 'Classic Vape Memes Megathread', board: 'Discussion', boardSlug: 'discussion', score: 2134, comments: 678, author: 'meme_lord', authorKarma: 8934, time: '1y', views: 98234, hot: false, awarded: true },
+  { id: '303', title: 'Best Vapes of 2024 - Community Awards Results', board: 'Reviews', boardSlug: 'reviews', score: 1567, comments: 423, author: 'award_master', authorKarma: 15678, time: '1y', views: 76543, hot: false, awarded: true },
+  { id: '304', title: 'The Great Vape Ban of 2023 - What Actually Happened', board: 'Discussion', boardSlug: 'discussion', score: 1243, comments: 456, author: 'history_buff', authorKarma: 9876, time: '2y', views: 67890, hot: false, awarded: false },
+  { id: '2', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', board: 'Disposables', boardSlug: 'disposables', score: 512, comments: 143, author: 'authentic_only', authorKarma: 4567, time: '5h', views: 23456, hot: true, awarded: false },
+  { id: '5', title: 'VaporDNA 30% off sale - today only! Code: VAPE30', board: 'Deals', boardSlug: 'deals', score: 456, comments: 87, author: 'deal_hunter', authorKarma: 3456, time: '11h', views: 18765, hot: false, awarded: false },
+  { id: '7', title: 'Battery safety - what EVERY vaper needs to know', board: 'Mods & Tanks', boardSlug: 'mods', score: 392, comments: 156, author: 'safety_first', authorKarma: 5678, time: '16h', views: 12345, hot: false, awarded: false },
+  { id: '1', title: 'Best disposable vapes of 2025? Looking for recommendations', board: 'Disposables', boardSlug: 'disposables', score: 287, comments: 94, author: 'vapeenthusiast', authorKarma: 2345, time: '3h', views: 8976, hot: true, awarded: false },
 ];
 ---
 
-<Layout title="Top Posts - VapeIndex">
+<Layout>
   <Header />
 
   <main class="main-content">
-    <div class="layout-container content-page">
-      <div class="page-header">
-        <h1>🏆 Top Posts</h1>
-        <p>Most upvoted posts of all time</p>
-      </div>
+    <div class="layout-container">
 
-      <div class="time-filter">
-        <button class="time-btn active">All Time</button>
-        <button class="time-btn">This Year</button>
-        <button class="time-btn">This Month</button>
-        <button class="time-btn">This Week</button>
-        <button class="time-btn">Today</button>
-      </div>
+      <!-- Left Sidebar - Boards -->
+      <aside class="sidebar-left">
+        <!-- Create Board CTA -->
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border-primary); padding: 1rem;">
+          <div style="font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Create Your Community</div>
+          <p style="font-size: 0.8125rem; color: var(--text-secondary); margin: 0 0 0.75rem 0; line-height: 1.5;">
+            Start a new board and build your own community around any vaping topic.
+          </p>
+          <a href="/create-board" style="display: block; background: var(--brand); color: white; padding: 0.5rem 1rem; border-radius: 0; text-align: center; font-weight: 700; font-size: 0.875rem; text-decoration: none;">
+            + Create Board
+          </a>
+        </div>
 
-      <div class="posts-container">
-        {topPosts.map((post, index) => (
-          <article class="post-card">
-            <div class="rank-badge">#{index + 1}</div>
-            <div class="vote-column">
-              <button class="vote-btn vote-up">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M8 3l5 5H3z"/>
-                </svg>
-              </button>
-              <span class="vote-score">{post.score.toLocaleString()}</span>
-              <button class="vote-btn vote-down">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M8 13l-5-5h10z"/>
-                </svg>
-              </button>
-            </div>
+        <!-- Boards List -->
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border-primary);">
+          <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-primary);">
+            <h3 style="font-size: 0.875rem; font-weight: 800; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">
+              Browse Boards
+            </h3>
+          </div>
+          <div style="max-height: 500px; overflow-y: auto;">
+            {boards.map(board => (
+              <a href={`/b/${board.slug}`} style={`display: block; padding: 0.75rem 1rem; color: var(--text-primary); text-decoration: none; border-left: 3px solid ${board.color}; border-bottom: 1px solid var(--divider);`}>
+                <div style="font-weight: 700; font-size: 0.9375rem; margin-bottom: 0.25rem; color: var(--text-primary);">{board.name}</div>
+                <div style="font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 0.375rem;">{board.description}</div>
+                <div style="font-size: 0.75rem; color: var(--text-primary); display: flex; gap: 1rem; font-weight: 600;">
+                  <span>{board.posts.toLocaleString()} posts</span>
+                  <span>{board.members.toLocaleString()} members</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
 
-            <div class="post-content">
-              <div class="post-meta">
-                <a href={`/b/${post.boardSlug}`} class="board-tag">b/{post.boardSlug}</a>
-                <span class="meta-separator">•</span>
-                <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
-                <span class="meta-separator">•</span>
-                <time class="post-time">{post.time}</time>
+      <!-- Main Content - Posts Feed -->
+      <div class="main-feed">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-tabs">
+            <a href="/" class="filter-tab">hot</a>
+            <a href="/new" class="filter-tab">new</a>
+            <a href="/top" class="filter-tab active">top</a>
+            <a href="/rising" class="filter-tab">rising</a>
+          </div>
+          <div class="filter-actions">
+            <a href="/submit" class="create-post-btn">submit</a>
+          </div>
+        </div>
+
+        <!-- Posts List -->
+        <div class="posts-container">
+          {topPosts.map((post, i) => (
+            <article class="post-card">
+              <!-- Voting Column -->
+              <div class="vote-column">
+                <button class="vote-btn vote-up" aria-label="Upvote">
+                  <ChevronUp size={16} />
+                </button>
+                <span class="vote-score">{post.score.toLocaleString()}</span>
+                <button class="vote-btn vote-down" aria-label="Downvote">
+                  <ChevronDown size={16} />
+                </button>
               </div>
 
-              <h2 class="post-title">
-                <a href={`/post/${post.id}`}>{post.title}</a>
-              </h2>
+              <!-- Content Column -->
+              <div class="post-content">
+                <!-- Meta Info -->
+                <div class="post-meta">
+                  <a href={`/b/${post.boardSlug}`} class="board-tag" style={`color: ${boards.find(b => b.slug === post.boardSlug)?.color || '#7C3AED'}`}>
+                    b/{post.boardSlug}
+                  </a>
+                  <span class="meta-separator">•</span>
+                  <span class="post-author">
+                    <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a>
+                    <span class="author-karma">{post.authorKarma.toLocaleString()}</span>
+                  </span>
+                  <span class="meta-separator">•</span>
+                  <time class="post-time">{post.time}</time>
+                </div>
 
-              <div class="post-actions">
-                <a href={`/post/${post.id}`} class="action-btn action-comment">
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
-                  </svg>
-                  <span>{post.comments}</span>
-                </a>
+                <!-- Title -->
+                <h2 class="post-title">
+                  <a href={`/post/${post.id}`}>{post.title}</a>
+                </h2>
+
+                <!-- Actions -->
+                <div class="post-actions">
+                  <a href={`/post/${post.id}`} class="action-btn action-comment">
+                    <MessageSquare size={14} />
+                    <span>{post.comments}</span>
+                  </a>
+                  <span class="action-btn action-views">
+                    <Eye size={14} />
+                    <span>{post.views.toLocaleString()}</span>
+                  </span>
+                  <button class="action-btn action-share">
+                    <Share2 size={14} />
+                    <span>Share</span>
+                  </button>
+                  <button class="action-btn action-save">
+                    <Bookmark size={14} />
+                    <span>Save</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))}
+        </div>
+
+        <!-- Load More -->
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border-primary); padding: 1rem; text-align: center;">
+          <a href="/top/page/2" style="color: var(--brand); text-decoration: none; font-weight: 600; font-size: 0.875rem;">Load More Posts →</a>
+        </div>
       </div>
+
+      <!-- Right Sidebar - Stats & Info -->
+      <aside class="sidebar-right">
+        <!-- Community Stats -->
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border-primary); padding: 1rem;">
+          <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 1rem 0; color: var(--text-primary);">VapeIndex Community</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div>
+              <div style="font-size: 1.75rem; font-weight: 900; color: var(--text-primary);">{stats.totalMembers.toLocaleString()}</div>
+              <div style="font-size: 0.8125rem; color: var(--text-secondary); font-weight: 600;">Total Members</div>
+            </div>
+            <div>
+              <div style="font-size: 1.75rem; font-weight: 900; color: var(--text-primary);">{stats.activeNow.toLocaleString()}</div>
+              <div style="font-size: 0.8125rem; color: var(--text-secondary); font-weight: 600;">🟢 Active Now</div>
+            </div>
+            <div>
+              <div style="font-size: 1.75rem; font-weight: 900; color: var(--text-primary);">{stats.totalPosts.toLocaleString()}</div>
+              <div style="font-size: 0.8125rem; color: var(--text-secondary); font-weight: 600;">Total Posts</div>
+            </div>
+            <div>
+              <div style="font-size: 1.75rem; font-weight: 900; color: var(--text-primary);">{stats.boardsCount}</div>
+              <div style="font-size: 0.8125rem; color: var(--text-secondary); font-weight: 600;">Active Boards</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trending Boards -->
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border-primary); padding: 1rem;">
+          <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 0.75rem 0; color: var(--text-primary);">Trending Boards</h3>
+          {trendingBoards.map((board, i) => (
+            <a href={`/b/${board.slug}`} style="display: block; padding: 0.5rem 0; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--divider);">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-weight: 800; color: var(--text-primary); font-size: 1rem;">{i + 1}</span>
+                <div style="flex: 1;">
+                  <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary);">b/{board.slug}</div>
+                  <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">{board.members.toLocaleString()} members</div>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <!-- Quick Links -->
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border-primary); padding: 1rem;">
+          <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 0.75rem 0; color: var(--text-primary);">Quick Links</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem;">
+            <a href="/rules" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Community Rules</a>
+            <a href="/guidelines" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Posting Guidelines</a>
+            <a href="/faq" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">FAQ</a>
+            <a href="/prices" style="color: var(--brand); text-decoration: none; font-weight: 700;">Price Tracker</a>
+            <a href="/api" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">API Docs</a>
+          </div>
+        </div>
+      </aside>
+
     </div>
   </main>
 </Layout>
 
 <style>
-  .content-page {
-    max-width: 900px;
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+  }
+
+  .layout-container {
+    max-width: var(--max-width-full);
     margin: 0 auto;
-    padding: 1rem;
+    padding: var(--container-padding);
+    display: grid;
+    gap: var(--layout-gap);
+    grid-template-columns: 1fr;
   }
 
-  .page-header {
+  .sidebar-left,
+  .sidebar-right {
+    display: none;
+  }
+
+  .sidebar-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-gap);
+    position: sticky;
+    top: var(--space-2);
+    align-self: start;
+  }
+
+  .sidebar-right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-gap);
+    position: sticky;
+    top: var(--space-2);
+    align-self: start;
+  }
+
+  .main-feed {
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-gap);
+    min-width: 0;
+  }
+
+  .filter-bar {
     background: var(--bg-elevated);
     border: 1px solid var(--border-primary);
-    padding: 1rem;
-    margin-bottom: 0.5rem;
-    border-radius: 0;
-  }
-
-  .page-header h1 {
-    font-size: 1.25rem;
-    font-weight: 900;
-    margin: 0 0 0.5rem 0;
-  }
-
-  .page-header p {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    margin: 0;
-  }
-
-  .time-filter {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-primary);
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.5rem;
+    padding: var(--space-2) var(--space-3);
     display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    border-radius: 0;
-  }
-
-  .time-btn {
-    background: none;
-    border: none;
-    padding: 0.5rem 1rem;
-    font-weight: 700;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    cursor: pointer;
-    border-radius: 0;
-  }
-
-  .time-btn.active {
-    background: var(--brand);
-    color: white;
-  }
-
-  .post-card {
-    position: relative;
-  }
-
-  .rank-badge {
-    position: absolute;
-    top: 1rem;
-    left: -1rem;
-    background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
-    color: white;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    display: flex;
+    gap: var(--space-3);
     align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 0.875rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    justify-content: space-between;
   }
 
+  .filter-tabs {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  .filter-tab {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    padding: var(--space-1) var(--space-2);
+    font-weight: 400;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    transition: color 0.1s ease;
+  }
+
+  .filter-tab.active {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .filter-tab:hover {
+    color: var(--brand);
+  }
+
+  .filter-actions {
+    flex-shrink: 0;
+  }
+
+  .create-post-btn {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    transition: color 0.1s ease;
+  }
+
+  .create-post-btn:hover {
+    color: var(--brand-dark);
+  }
+
+  /* Wide Desktop - Show all 3 columns */
+  @media (min-width: 1400px) {
+    .layout-container {
+      grid-template-columns: var(--sidebar-left-width) 1fr var(--sidebar-right-width);
+      gap: var(--layout-gap);
+    }
+
+    .sidebar-left,
+    .sidebar-right {
+      display: flex;
+    }
+  }
+
+  /* Desktop - Show main + right sidebar */
+  @media (min-width: 1200px) and (max-width: 1399px) {
+    .layout-container {
+      grid-template-columns: 1fr var(--sidebar-right-width);
+      gap: var(--space-3);
+    }
+
+    .sidebar-left {
+      display: none;
+    }
+
+    .sidebar-right {
+      display: flex;
+    }
+  }
+
+  /* Tablet - Main content only */
+  @media (min-width: 769px) and (max-width: 1199px) {
+    .layout-container {
+      max-width: var(--max-width-content);
+      grid-template-columns: 1fr;
+      gap: var(--layout-gap);
+    }
+
+    .sidebar-left,
+    .sidebar-right {
+      display: none;
+    }
+  }
+
+  /* Mobile */
   @media (max-width: 768px) {
-    .content-page {
-      padding: 0.5rem;
+    .layout-container {
+      padding: var(--space-2);
+      grid-template-columns: 1fr;
     }
 
-    .page-header {
-      padding: 1rem;
+    .sidebar-left,
+    .sidebar-right {
+      display: none;
     }
 
-    .page-header h1 {
-      font-size: 1.25rem;
+    .filter-bar {
+      padding: var(--space-2);
+      gap: var(--space-2);
     }
 
-    .rank-badge {
-      position: static;
-      margin-bottom: 0.5rem;
-      width: 2rem;
-      height: 2rem;
+    .filter-tabs {
+      gap: var(--space-1);
+      width: 100%;
+    }
+
+    .filter-tab {
+      padding: var(--space-2) var(--space-3);
+      font-size: 0.8125rem;
+      flex: 1;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .filter-actions {
+      width: 100%;
+    }
+
+    .create-post-btn {
+      width: 100%;
+      text-align: center;
+      padding: var(--space-3);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .filter-tab {
       font-size: 0.75rem;
+      padding: var(--space-2) var(--space-2);
+    }
+
+    .filter-tab:not(.active) {
+      font-size: 0.6875rem;
     }
   }
 </style>

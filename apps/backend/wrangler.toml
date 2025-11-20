@@ -1,0 +1,25 @@
+name = "vapeindex-backend"
+main = "src/index.ts"
+compatibility_date = "2024-11-19"
+
+# Default local development database (in-memory, ephemeral)
+[[d1_databases]]
+binding = "DB"
+database_name = "vapeindex-db"
+database_id = "local"
+
+# Development Environment (remote dev database)
+[env.dev]
+name = "vapeindex-backend-dev"
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "vapeindex-db-dev"
+database_id = "" # Will be filled after creating dev database
+
+# Production Environment
+[env.production]
+name = "vapeindex-backend-prod"
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "vapeindex-db-prod"
+database_id = "7132d9ed-eceb-4b67-b340-0a072a1108ed"

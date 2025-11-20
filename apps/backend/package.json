@@ -1,0 +1,21 @@
+{
+  "name": "vapeindex-backend",
+  "version": "1.0.0",
+  "description": "VapeIndex API backend with Cloudflare Workers + D1",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create vapeindex-db",
+    "db:migrate": "wrangler d1 migrations apply vapeindex-db --local",
+    "db:migrate:prod": "wrangler d1 migrations apply vapeindex-db",
+    "db:seed": "wrangler d1 execute vapeindex-db --local --file=./seed.sql"
+  },
+  "dependencies": {
+    "hono": "^4.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "wrangler": "^3.114.15"
+  }
+}
