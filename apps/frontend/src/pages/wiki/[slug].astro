@@ -154,7 +154,8 @@ Learn the fundamentals of building your own coils for rebuildable atomizers.
 
 // Export static paths for build
 export function getStaticPaths() {
-  return Object.keys(articles).map(slug => ({
+  const slugs = ['battery-safety', 'coil-building-101'];
+  return slugs.map(slug => ({
     params: { slug }
   }));
 }
