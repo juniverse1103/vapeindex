@@ -2,8 +2,6 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 
-const { slug } = Astro.params;
-
 // Mock wiki article data - will be fetched from API/database
 const articles = {
   'battery-safety': {
@@ -154,6 +152,14 @@ Learn the fundamentals of building your own coils for rebuildable atomizers.
   },
 };
 
+// Export static paths for build
+export function getStaticPaths() {
+  return Object.keys(articles).map(slug => ({
+    params: { slug }
+  }));
+}
+
+const { slug } = Astro.params;
 const article = articles[slug as keyof typeof articles] || null;
 
 // Mock comments
