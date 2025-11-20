@@ -8,6 +8,12 @@ binding = "DB"
 database_name = "vapeindex-db"
 database_id = "local"
 
+# KV namespace for sessions (local dev uses in-memory preview)
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "preview_id"
+preview_id = "preview_id"
+
 # Development Environment (remote dev database)
 [env.dev]
 name = "vapeindex-backend-dev"
@@ -23,3 +29,7 @@ name = "vapeindex-backend-prod"
 binding = "DB"
 database_name = "vapeindex-db-production"
 database_id = "64e77794-8b09-48cd-b1a7-1cf83286c8d4"
+
+[[env.production.kv_namespaces]]
+binding = "SESSIONS"
+id = "45da4751cdf5441e85dd8d76c58b1ed5"

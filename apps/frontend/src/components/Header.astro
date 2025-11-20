@@ -44,14 +44,22 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
           <Moon class="moon-icon" size={16} />
         </button>
         <span class="nav-separator">|</span>
-        <a href="/settings" class="nav-link">settings</a>
-        <a href="/login" class="nav-link">login</a>
+
+        <!-- Auth state (dynamically updated) -->
+        <div id="auth-state" class="auth-state">
+          <a href="/login" class="nav-link">login</a>
+          <span class="nav-separator">|</span>
+          <a href="/register" class="nav-link">register</a>
+        </div>
       </div>
     </nav>
   </div>
 </header>
 
 <script>
+  import { $user, $isAuthenticated } from '../lib/authStore';
+  import { getStoredUser, logout } from '../lib/auth';
+
   // Dark mode toggle functionality
   const themeToggle = document.getElementById('theme-toggle');
   const html = document.documentElement;
@@ -73,6 +81,47 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
 
     html.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
+  });
+
+  // Auth state management
+  const authStateDiv = document.getElementById('auth-state');
+
+  function updateAuthState() {
+    const user = getStoredUser();
+
+    if (user && authStateDiv) {
+      // User is logged in - show username and logout
+      authStateDiv.innerHTML = `
+        <a href="/user/${user.username}" class="nav-link" title="${user.karma || 0} karma">
+          ${user.username} (${user.karma || 0})
+        </a>
+        <span class="nav-separator">|</span>
+        <a href="#" id="logout-btn" class="nav-link">logout</a>
+      `;
+
+      // Add logout handler
+      const logoutBtn = document.getElementById('logout-btn');
+      logoutBtn?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await logout();
+        window.location.href = '/';
+      });
+    } else {
+      // User is not logged in - show login/register
+      authStateDiv!.innerHTML = `
+        <a href="/login" class="nav-link">login</a>
+        <span class="nav-separator">|</span>
+        <a href="/register" class="nav-link">register</a>
+      `;
+    }
+  }
+
+  // Update auth state on load
+  updateAuthState();
+
+  // Listen for auth state changes (for when user logs in/out)
+  $isAuthenticated.subscribe(() => {
+    updateAuthState();
   });
 </script>
 
@@ -219,6 +268,12 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
 
   .nav-link:hover {
     color: white;
+  }
+
+  .auth-state {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
   }
 
   /* Theme Toggle */

@@ -1,18 +1,29 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import authRoutes from './routes/auth';
 
 type Bindings = {
   DB: D1Database;
+  SESSIONS: KVNamespace;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
 
 // Enable CORS for frontend
 app.use('/*', cors({
-  origin: ['http://localhost:4322', 'http://localhost:4321'],
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowHeaders: ['Content-Type'],
+  origin: [
+    'http://localhost:4322',
+    'http://localhost:4321',
+    'https://vapeindex.io',
+    'https://*.vapeindex.pages.dev'
+  ],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-Session-ID'],
+  exposeHeaders: ['X-Session-ID'],
 }));
+
+// Mount auth routes
+app.route('/api/auth', authRoutes);
 
 // Health check
 app.get('/', (c) => {

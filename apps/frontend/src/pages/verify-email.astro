@@ -1,0 +1,162 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Verify Email - VapeIndex">
+  <main class="verify-page">
+    <div class="verify-container">
+      <div id="verifying" class="status-box">
+        <div class="spinner"></div>
+        <h2>Verifying your email...</h2>
+        <p>Please wait while we verify your email address.</p>
+      </div>
+
+      <div id="success" class="status-box" style="display: none;">
+        <div class="icon success-icon">✓</div>
+        <h2>Email Verified!</h2>
+        <p>Your email has been successfully verified.</p>
+        <a href="/login" class="btn btn-primary">Log in to your account</a>
+      </div>
+
+      <div id="error" class="status-box" style="display: none;">
+        <div class="icon error-icon">✕</div>
+        <h2>Verification Failed</h2>
+        <p id="error-message">The verification link is invalid or has expired.</p>
+        <a href="/register" class="btn btn-secondary">Sign up again</a>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .verify-page {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .verify-container {
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .status-box {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 1.5rem;
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid #10b981;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+  }
+
+  .success-icon {
+    background: #d1fae5;
+    color: #059669;
+  }
+
+  .error-icon {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 1.75rem;
+    color: #1a1a1a;
+  }
+
+  p {
+    margin: 0 0 2rem;
+    color: #666;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: #10b981;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #059669;
+  }
+
+  .btn-secondary {
+    background: #6b7280;
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background: #4b5563;
+  }
+</style>
+
+<script>
+  import { verifyEmail } from '../lib/auth';
+
+  // Get token from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+
+  const verifyingDiv = document.getElementById('verifying');
+  const successDiv = document.getElementById('success');
+  const errorDiv = document.getElementById('error');
+  const errorMessage = document.getElementById('error-message');
+
+  if (!token) {
+    verifyingDiv!.style.display = 'none';
+    errorDiv!.style.display = 'block';
+    errorMessage!.textContent = 'No verification token provided.';
+  } else {
+    // Verify the email
+    verifyEmail(token).then((result) => {
+      verifyingDiv!.style.display = 'none';
+
+      if (result.success) {
+        successDiv!.style.display = 'block';
+      } else {
+        errorDiv!.style.display = 'block';
+        errorMessage!.textContent = result.error || 'Verification failed';
+      }
+    });
+  }
+</script>

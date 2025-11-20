@@ -12,7 +12,8 @@
     "db:seed": "wrangler d1 execute vapeindex-db --local --file=./seed.sql"
   },
   "dependencies": {
-    "hono": "^4.0.0"
+    "hono": "^4.0.0",
+    "jose": "^6.1.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241127.0",
