@@ -26,6 +26,8 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: apps/frontend
+        env:
+          PUBLIC_API_URL: ${{ secrets.PUBLIC_API_URL }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
