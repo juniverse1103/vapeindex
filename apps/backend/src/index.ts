@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import authRoutes from './routes/auth';
 import postsRoutes from './routes/posts';
+import moderationRoutes from './routes/moderation';
 import { authMiddleware } from './middleware/auth';
 
 type Bindings = {
@@ -28,6 +29,7 @@ app.use('/*', cors({
 // Mount routes
 app.route('/api/auth', authRoutes);
 app.route('/api/posts', postsRoutes);
+app.route('/api/moderation', moderationRoutes);
 
 // Health check
 app.get('/', (c) => {

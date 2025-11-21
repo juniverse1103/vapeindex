@@ -1,0 +1,553 @@
+---
+export const prerender = false;
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="Moderation - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="mod-container">
+      <div class="mod-header">
+        <h1>Moderation Dashboard</h1>
+        <p>Manage reports and moderate content</p>
+      </div>
+
+      <div class="mod-tabs">
+        <button class="tab-btn active" data-tab="reports">Reports</button>
+        <button class="tab-btn" data-tab="log">Mod Log</button>
+      </div>
+
+      <!-- Reports Tab -->
+      <div id="reports-tab" class="tab-content active">
+        <div class="reports-header">
+          <h2>Reported Content</h2>
+          <select id="report-status" class="status-filter">
+            <option value="pending">Pending</option>
+            <option value="resolved">Resolved</option>
+            <option value="dismissed">Dismissed</option>
+          </select>
+        </div>
+
+        <div id="reports-list" class="reports-list">
+          <div class="loading">Loading reports...</div>
+        </div>
+
+        <div id="no-reports" class="empty-state" style="display: none;">
+          <p>No reports to review</p>
+        </div>
+      </div>
+
+      <!-- Mod Log Tab -->
+      <div id="log-tab" class="tab-content" style="display: none;">
+        <div class="log-header">
+          <h2>Moderation Log</h2>
+        </div>
+
+        <div id="mod-log-list" class="mod-log-list">
+          <div class="loading">Loading moderation log...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+    padding: 1rem;
+  }
+
+  .mod-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .mod-header {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .mod-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+  }
+
+  .mod-header p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .mod-tabs {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    display: flex;
+    gap: 0;
+    margin-bottom: 1rem;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 1rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+
+  .tab-btn.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+  }
+
+  .tab-content {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1.5rem;
+  }
+
+  .reports-header,
+  .log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .reports-header h2,
+  .log-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .status-filter {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-secondary);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-secondary);
+  }
+
+  .report-item {
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: var(--bg-secondary);
+  }
+
+  .report-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .report-content {
+    margin-bottom: 1rem;
+  }
+
+  .report-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .report-reason {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    background: var(--bg-elevated);
+    padding: 0.75rem;
+    border-left: 2px solid var(--brand);
+    margin: 0.75rem 0;
+  }
+
+  .report-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-resolve {
+    background: #10b981;
+    color: white;
+  }
+
+  .btn-dismiss {
+    background: #6b7280;
+    color: white;
+  }
+
+  .btn-remove {
+    background: #ef4444;
+    color: white;
+  }
+
+  .btn-view {
+    background: var(--brand);
+    color: white;
+  }
+
+  .log-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .log-item:last-child {
+    border-bottom: none;
+  }
+
+  .log-info {
+    flex: 1;
+  }
+
+  .log-action {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .log-details {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .log-time {
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+  }
+
+  @media (max-width: 768px) {
+    .mod-header {
+      padding: 1.5rem;
+    }
+    .reports-header,
+    .log-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .status-filter {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  import { isAuthenticated } from '../lib/auth';
+
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+
+  // Check authentication
+  if (!isAuthenticated()) {
+    window.location.href = '/login';
+  }
+
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabName = btn.getAttribute('data-tab');
+
+      // Update active tab
+      document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Show corresponding content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      document.getElementById(`${tabName}-tab`)!.style.display = 'block';
+
+      // Load data
+      if (tabName === 'reports') {
+        loadReports();
+      } else if (tabName === 'log') {
+        loadModLog();
+      }
+    });
+  });
+
+  // Load reports
+  async function loadReports(status = 'pending') {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_URL}/api/moderation/reports?status=${status}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const reportsList = document.getElementById('reports-list');
+      const noReports = document.getElementById('no-reports');
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.reports.length === 0) {
+          if (reportsList) reportsList.style.display = 'none';
+          if (noReports) noReports.style.display = 'block';
+          return;
+        }
+
+        if (reportsList) {
+          reportsList.style.display = 'block';
+          if (noReports) noReports.style.display = 'none';
+
+          reportsList.innerHTML = data.reports.map((report: any) => {
+            const contentType = report.post_id ? 'Post' : 'Comment';
+            const contentText = report.post_title || report.comment_content?.substring(0, 100);
+
+            return `
+              <div class="report-item">
+                <div class="report-meta">
+                  <span><strong>${contentType}:</strong> ${report.board_name}</span>
+                  <span>•</span>
+                  <span>Reported by: u/${report.reporter}</span>
+                  <span>•</span>
+                  <span>${formatTime(report.created_at)}</span>
+                </div>
+                <div class="report-content">
+                  <div class="report-title">${contentText}...</div>
+                  <div class="report-reason"><strong>Reason:</strong> ${report.reason}</div>
+                </div>
+                <div class="report-actions">
+                  <button class="btn btn-view" onclick="window.location.href='/post/${report.post_id || ''}'">View</button>
+                  ${status === 'pending' ? `
+                    <button class="btn btn-remove" data-report-id="${report.id}" data-post-id="${report.post_id || ''}" data-comment-id="${report.comment_id || ''}">Remove Content</button>
+                    <button class="btn btn-resolve" data-report-id="${report.id}">Mark Resolved</button>
+                    <button class="btn btn-dismiss" data-report-id="${report.id}">Dismiss</button>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Attach event handlers
+          if (status === 'pending') {
+            document.querySelectorAll('.btn-resolve').forEach(btn => {
+              btn.addEventListener('click', () => handleReportAction(btn.getAttribute('data-report-id')!, 'resolved'));
+            });
+
+            document.querySelectorAll('.btn-dismiss').forEach(btn => {
+              btn.addEventListener('click', () => handleReportAction(btn.getAttribute('data-report-id')!, 'dismissed'));
+            });
+
+            document.querySelectorAll('.btn-remove').forEach(btn => {
+              btn.addEventListener('click', () => {
+                const reportId = btn.getAttribute('data-report-id')!;
+                const postId = btn.getAttribute('data-post-id');
+                const commentId = btn.getAttribute('data-comment-id');
+                handleRemoveContent(reportId, postId, commentId);
+              });
+            });
+          }
+        }
+      } else {
+        if (reportsList) {
+          reportsList.innerHTML = '<div class="loading">Failed to load reports or you do not have moderator permissions</div>';
+        }
+      }
+    } catch (error) {
+      console.error('Load reports error:', error);
+      const reportsList = document.getElementById('reports-list');
+      if (reportsList) {
+        reportsList.innerHTML = '<div class="loading">Failed to load reports</div>';
+      }
+    }
+  }
+
+  // Handle report action
+  async function handleReportAction(reportId: string, action: string) {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_URL}/api/moderation/reports/${reportId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ action })
+      });
+
+      if (response.ok) {
+        alert(`Report ${action} successfully`);
+        loadReports();
+      } else {
+        alert('Failed to update report');
+      }
+    } catch (error) {
+      console.error('Report action error:', error);
+      alert('Failed to update report');
+    }
+  }
+
+  // Handle remove content
+  async function handleRemoveContent(reportId: string, postId: string | null, commentId: string | null) {
+    const reason = prompt('Enter removal reason:');
+    if (!reason) return;
+
+    if (!confirm('Are you sure you want to remove this content? This cannot be undone.')) return;
+
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_URL}/api/moderation/remove`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ postId, commentId, reason })
+      });
+
+      if (response.ok) {
+        // Also mark report as resolved
+        await handleReportAction(reportId, 'resolved');
+        alert('Content removed successfully');
+        loadReports();
+      } else {
+        alert('Failed to remove content');
+      }
+    } catch (error) {
+      console.error('Remove content error:', error);
+      alert('Failed to remove content');
+    }
+  }
+
+  // Load moderation log
+  async function loadModLog() {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_URL}/api/moderation/log`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const logList = document.getElementById('mod-log-list');
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.log.length === 0) {
+          if (logList) {
+            logList.innerHTML = '<div class="empty-state">No moderation actions yet</div>';
+          }
+          return;
+        }
+
+        if (logList) {
+          logList.innerHTML = data.log.map((item: any) => `
+            <div class="log-item">
+              <div class="log-info">
+                <div class="log-action">${formatAction(item.action)}</div>
+                <div class="log-details">
+                  by u/${item.moderator} in b/${item.board_slug}
+                  ${item.reason ? ` • ${item.reason}` : ''}
+                </div>
+              </div>
+              <div class="log-time">${formatTime(item.created_at)}</div>
+            </div>
+          `).join('');
+        }
+      } else {
+        if (logList) {
+          logList.innerHTML = '<div class="loading">Failed to load moderation log</div>';
+        }
+      }
+    } catch (error) {
+      console.error('Load mod log error:', error);
+      const logList = document.getElementById('mod-log-list');
+      if (logList) {
+        logList.innerHTML = '<div class="loading">Failed to load moderation log</div>';
+      }
+    }
+  }
+
+  // Format time
+  function formatTime(timestamp: number): string {
+    const now = Math.floor(Date.now() / 1000);
+    const age = now - timestamp;
+
+    if (age < 60) return `${age}s ago`;
+    if (age < 3600) return `${Math.floor(age / 60)}m ago`;
+    if (age < 86400) return `${Math.floor(age / 3600)}h ago`;
+    if (age < 2592000) return `${Math.floor(age / 86400)}d ago`;
+    if (age < 31536000) return `${Math.floor(age / 2592000)}mo ago`;
+    return `${Math.floor(age / 31536000)}y ago`;
+  }
+
+  // Format action
+  function formatAction(action: string): string {
+    const actions: {[key: string]: string} = {
+      'remove_post': '🗑️ Removed Post',
+      'remove_comment': '🗑️ Removed Comment',
+      'ban_user': '🚫 Banned User',
+      'unban_user': '✅ Unbanned User'
+    };
+    return actions[action] || action;
+  }
+
+  // Status filter change handler
+  document.getElementById('report-status')?.addEventListener('change', (e) => {
+    const status = (e.target as HTMLSelectElement).value;
+    loadReports(status);
+  });
+
+  // Load initial data
+  loadReports();
+</script>
