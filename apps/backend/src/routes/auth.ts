@@ -5,6 +5,7 @@ import { hashPassword, verifyPassword } from '../lib/auth/password';
 import { generateToken, verifyToken } from '../lib/auth/jwt';
 import { generateVerificationToken, generatePasswordResetToken, isTokenExpired } from '../lib/auth/tokens';
 import { EmailService } from '../lib/email';
+import { authMiddleware } from '../middleware/auth';
 
 type Bindings = {
   DB: D1Database;
@@ -330,6 +331,119 @@ auth.post('/reset-password', async (c) => {
   } catch (error) {
     console.error('Reset password error:', error);
     return c.json({ error: 'Password reset failed' }, 500);
+  }
+});
+
+/**
+ * GET /api/auth/settings
+ * Get current user settings
+ */
+auth.get('/settings', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+
+    const settings = await c.env.DB.prepare(`
+      SELECT
+        id, username, email, bio, location, avatar_url,
+        show_nsfw, email_notifications, compact_mode,
+        profile_private, hide_online, karma, created_at
+      FROM users
+      WHERE id = ?
+    `).bind(user.userId).first() as any;
+
+    if (!settings) {
+      return c.json({ error: 'User not found' }, 404);
+    }
+
+    return c.json({
+      user: {
+        id: settings.id,
+        username: settings.username,
+        email: settings.email,
+        karma: settings.karma,
+        createdAt: settings.created_at
+      },
+      profile: {
+        bio: settings.bio || '',
+        location: settings.location || '',
+        avatarUrl: settings.avatar_url || ''
+      },
+      preferences: {
+        showNsfw: Boolean(settings.show_nsfw),
+        emailNotifications: Boolean(settings.email_notifications),
+        compactMode: Boolean(settings.compact_mode),
+        profilePrivate: Boolean(settings.profile_private),
+        hideOnline: Boolean(settings.hide_online)
+      }
+    });
+  } catch (error) {
+    console.error('Get settings error:', error);
+    return c.json({ error: 'Failed to get settings' }, 500);
+  }
+});
+
+/**
+ * PATCH /api/auth/settings/profile
+ * Update user profile (bio, location)
+ */
+auth.patch('/settings/profile', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const { bio, location } = await c.req.json();
+
+    // Validate
+    if (bio && bio.length > 500) {
+      return c.json({ error: 'Bio must be 500 characters or less' }, 400);
+    }
+    if (location && location.length > 100) {
+      return c.json({ error: 'Location must be 100 characters or less' }, 400);
+    }
+
+    await c.env.DB.prepare(`
+      UPDATE users
+      SET bio = COALESCE(?, bio),
+          location = COALESCE(?, location)
+      WHERE id = ?
+    `).bind(bio || null, location || null, user.userId).run();
+
+    return c.json({ message: 'Profile updated successfully' });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    return c.json({ error: 'Failed to update profile' }, 500);
+  }
+});
+
+/**
+ * PATCH /api/auth/settings/preferences
+ * Update user preferences
+ */
+auth.patch('/settings/preferences', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const { showNsfw, emailNotifications, compactMode, profilePrivate, hideOnline } = await c.req.json();
+
+    await c.env.DB.prepare(`
+      UPDATE users
+      SET
+        show_nsfw = COALESCE(?, show_nsfw),
+        email_notifications = COALESCE(?, email_notifications),
+        compact_mode = COALESCE(?, compact_mode),
+        profile_private = COALESCE(?, profile_private),
+        hide_online = COALESCE(?, hide_online)
+      WHERE id = ?
+    `).bind(
+      showNsfw !== undefined ? (showNsfw ? 1 : 0) : null,
+      emailNotifications !== undefined ? (emailNotifications ? 1 : 0) : null,
+      compactMode !== undefined ? (compactMode ? 1 : 0) : null,
+      profilePrivate !== undefined ? (profilePrivate ? 1 : 0) : null,
+      hideOnline !== undefined ? (hideOnline ? 1 : 0) : null,
+      user.userId
+    ).run();
+
+    return c.json({ message: 'Preferences updated successfully' });
+  } catch (error) {
+    console.error('Update preferences error:', error);
+    return c.json({ error: 'Failed to update preferences' }, 500);
   }
 });
 
