@@ -1,7 +1,8 @@
 // Subscription management endpoints
-import { Hono } from 'hono';
+import { Context, Hono, Next } from 'hono';
 import { createStripeClient, getOrCreateCustomer, PLANS, calculateMRR, formatCurrency, type PlanKey } from '../lib/stripe';
 import { sendDiscordWebhook, DiscordNotifications } from '../lib/discord';
+import { extractToken, verifyToken, type JWTPayload } from '../lib/auth';
 
 type Bindings = {
   DB: D1Database;
@@ -9,9 +10,39 @@ type Bindings = {
   STRIPE_SECRET_KEY: string;
   STRIPE_PUBLISHABLE_KEY: string;
   DISCORD_WEBHOOK_REVENUE: string;
+  JWT_SECRET: string;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+type AppEnv = {
+  Bindings: Bindings;
+  Variables: {
+    user: JWTPayload;
+  };
+};
+
+const app = new Hono<AppEnv>();
+
+async function authMiddleware(c: Context<AppEnv>, next: Next) {
+  try {
+    const token = extractToken(c.req.header('Authorization'));
+
+    if (!token) {
+      return c.json({ error: 'Not authenticated' }, 401);
+    }
+
+    const payload = await verifyToken(token, c.env.JWT_SECRET);
+
+    if (!payload) {
+      return c.json({ error: 'Invalid or expired token' }, 401);
+    }
+
+    c.set('user', payload);
+    await next();
+  } catch (error) {
+    console.error('[Auth] Failed to authenticate request:', error);
+    return c.json({ error: 'Authentication failed' }, 401);
+  }
+}
 
 // Get available plans
 app.get('/plans', (c) => {
@@ -28,8 +59,10 @@ app.get('/plans', (c) => {
 });
 
 // Create checkout session for subscription
-app.post('/subscribe', async (c) => {
-  const { userId, planKey } = await c.req.json();
+app.post('/subscribe', authMiddleware, async (c) => {
+  const { planKey } = await c.req.json();
+  const authUser = c.get('user');
+  const userId = String(authUser.userId);
 
   if (!PLANS[planKey as PlanKey]) {
     return c.json({ error: 'Invalid plan' }, 400);
@@ -86,8 +119,14 @@ app.post('/subscribe', async (c) => {
 });
 
 // Get user's subscription status
-app.get('/subscription/:userId', async (c) => {
-  const { userId } = c.req.param();
+app.get('/subscription/:userId', authMiddleware, async (c) => {
+  const { userId: pathUserId } = c.req.param();
+  const authUser = c.get('user');
+  const userId = String(authUser.userId);
+
+  if (pathUserId !== userId) {
+    return c.json({ error: 'Forbidden' }, 403);
+  }
 
   const subscription = await c.env.DB.prepare(`
     SELECT * FROM subscriptions
@@ -113,8 +152,14 @@ app.get('/subscription/:userId', async (c) => {
 });
 
 // Cancel subscription
-app.post('/subscription/:userId/cancel', async (c) => {
-  const { userId } = c.req.param();
+app.post('/subscription/:userId/cancel', authMiddleware, async (c) => {
+  const { userId: pathUserId } = c.req.param();
+  const authUser = c.get('user');
+  const userId = String(authUser.userId);
+
+  if (pathUserId !== userId) {
+    return c.json({ error: 'Forbidden' }, 403);
+  }
 
   const subscription = await c.env.DB.prepare(`
     SELECT * FROM subscriptions
@@ -174,8 +219,14 @@ app.post('/subscription/:userId/cancel', async (c) => {
 });
 
 // Reactivate canceled subscription
-app.post('/subscription/:userId/reactivate', async (c) => {
-  const { userId } = c.req.param();
+app.post('/subscription/:userId/reactivate', authMiddleware, async (c) => {
+  const { userId: pathUserId } = c.req.param();
+  const authUser = c.get('user');
+  const userId = String(authUser.userId);
+
+  if (pathUserId !== userId) {
+    return c.json({ error: 'Forbidden' }, 403);
+  }
 
   const subscription = await c.env.DB.prepare(`
     SELECT * FROM subscriptions
@@ -213,8 +264,14 @@ app.post('/subscription/:userId/reactivate', async (c) => {
 });
 
 // Get customer portal link (for managing subscription)
-app.get('/customer-portal/:userId', async (c) => {
-  const { userId } = c.req.param();
+app.get('/customer-portal/:userId', authMiddleware, async (c) => {
+  const { userId: pathUserId } = c.req.param();
+  const authUser = c.get('user');
+  const userId = String(authUser.userId);
+
+  if (pathUserId !== userId) {
+    return c.json({ error: 'Forbidden' }, 403);
+  }
 
   const subscription = await c.env.DB.prepare(`
     SELECT stripe_customer_id FROM subscriptions

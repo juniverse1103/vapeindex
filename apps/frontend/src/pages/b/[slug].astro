@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import { ChevronUp, ChevronDown, MessageSquare, Eye, Share2, Bookmark } from 'lucide-astro';
 
 const { slug } = Astro.params;
+const sort = Astro.url.searchParams.get('sort') || 'hot';
 const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
 
 let board: any = null;
@@ -21,8 +22,8 @@ try {
   if (!board) {
     error = 'Board not found';
   } else {
-    // Fetch posts for this board
-    const postsRes = await fetch(`${API_URL}/api/posts?board=${slug}&limit=20`);
+    // Fetch posts for this board with sorting
+    const postsRes = await fetch(`${API_URL}/api/posts?board=${slug}&sort=${sort}&limit=20`);
     if (postsRes.ok) {
       posts = await postsRes.json();
     }
@@ -61,10 +62,10 @@ try {
         <!-- Filter Bar -->
         <div class="filter-bar">
           <div class="filter-tabs">
-            <a href={`/b/${slug}`} class="filter-tab active">hot</a>
-            <a href={`/b/${slug}/new`} class="filter-tab">new</a>
-            <a href={`/b/${slug}/top`} class="filter-tab">top</a>
-            <a href={`/b/${slug}/rising`} class="filter-tab">rising</a>
+            <a href={`/b/${slug}`} class={`filter-tab ${sort === 'hot' ? 'active' : ''}`}>hot</a>
+            <a href={`/b/${slug}?sort=new`} class={`filter-tab ${sort === 'new' ? 'active' : ''}`}>new</a>
+            <a href={`/b/${slug}?sort=top`} class={`filter-tab ${sort === 'top' ? 'active' : ''}`}>top</a>
+            <a href={`/b/${slug}?sort=rising`} class={`filter-tab ${sort === 'rising' ? 'active' : ''}`}>rising</a>
           </div>
         </div>
 

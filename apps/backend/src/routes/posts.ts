@@ -246,6 +246,171 @@ posts.post('/:id/comments', authMiddleware, async (c) => {
 });
 
 /**
+ * PATCH /api/posts/:id
+ * Edit a post (requires auth, must be author)
+ */
+posts.patch('/:id', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const postId = c.req.param('id');
+    const { title, content } = await c.req.json();
+
+    // Check if post exists and user is author
+    const post = await c.env.DB.prepare(
+      'SELECT id, author_id, url FROM posts WHERE id = ?'
+    ).bind(postId).first() as any;
+
+    if (!post) {
+      return c.json({ error: 'Post not found' }, 404);
+    }
+
+    if (post.author_id !== user.userId) {
+      return c.json({ error: 'Not authorized to edit this post' }, 403);
+    }
+
+    // Can't edit URL posts
+    if (post.url) {
+      return c.json({ error: 'URL posts cannot be edited' }, 400);
+    }
+
+    // Validate input
+    if (title && (title.length < 3 || title.length > 300)) {
+      return c.json({ error: 'Title must be between 3 and 300 characters' }, 400);
+    }
+
+    // Update post
+    await c.env.DB.prepare(`
+      UPDATE posts
+      SET title = COALESCE(?, title),
+          content = COALESCE(?, content),
+          edited_at = unixepoch()
+      WHERE id = ?
+    `).bind(title || null, content || null, postId).run();
+
+    return c.json({ success: true, message: 'Post updated successfully' });
+  } catch (error) {
+    console.error('Edit post error:', error);
+    return c.json({ error: 'Failed to edit post' }, 500);
+  }
+});
+
+/**
+ * DELETE /api/posts/:id
+ * Delete a post (requires auth, must be author)
+ */
+posts.delete('/:id', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const postId = c.req.param('id');
+
+    // Check if post exists and user is author
+    const post = await c.env.DB.prepare(
+      'SELECT id, author_id FROM posts WHERE id = ?'
+    ).bind(postId).first() as any;
+
+    if (!post) {
+      return c.json({ error: 'Post not found' }, 404);
+    }
+
+    if (post.author_id !== user.userId) {
+      return c.json({ error: 'Not authorized to delete this post' }, 403);
+    }
+
+    // Delete post (cascade will delete comments, votes)
+    await c.env.DB.prepare('DELETE FROM posts WHERE id = ?').bind(postId).run();
+
+    return c.json({ success: true, message: 'Post deleted successfully' });
+  } catch (error) {
+    console.error('Delete post error:', error);
+    return c.json({ error: 'Failed to delete post' }, 500);
+  }
+});
+
+/**
+ * PATCH /api/posts/comments/:id
+ * Edit a comment (requires auth, must be author)
+ */
+posts.patch('/comments/:id', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const commentId = c.req.param('id');
+    const { content } = await c.req.json();
+
+    // Validate input
+    if (!content || content.trim().length === 0) {
+      return c.json({ error: 'Comment content is required' }, 400);
+    }
+
+    if (content.length > 10000) {
+      return c.json({ error: 'Comment is too long (max 10000 characters)' }, 400);
+    }
+
+    // Check if comment exists and user is author
+    const comment = await c.env.DB.prepare(
+      'SELECT id, author_id FROM comments WHERE id = ?'
+    ).bind(commentId).first() as any;
+
+    if (!comment) {
+      return c.json({ error: 'Comment not found' }, 404);
+    }
+
+    if (comment.author_id !== user.userId) {
+      return c.json({ error: 'Not authorized to edit this comment' }, 403);
+    }
+
+    // Update comment
+    await c.env.DB.prepare(`
+      UPDATE comments
+      SET content = ?,
+          edited_at = unixepoch()
+      WHERE id = ?
+    `).bind(content, commentId).run();
+
+    return c.json({ success: true, message: 'Comment updated successfully' });
+  } catch (error) {
+    console.error('Edit comment error:', error);
+    return c.json({ error: 'Failed to edit comment' }, 500);
+  }
+});
+
+/**
+ * DELETE /api/posts/comments/:id
+ * Delete a comment (requires auth, must be author)
+ */
+posts.delete('/comments/:id', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const commentId = c.req.param('id');
+
+    // Check if comment exists and user is author
+    const comment = await c.env.DB.prepare(
+      'SELECT id, author_id, post_id FROM comments WHERE id = ?'
+    ).bind(commentId).first() as any;
+
+    if (!comment) {
+      return c.json({ error: 'Comment not found' }, 404);
+    }
+
+    if (comment.author_id !== user.userId) {
+      return c.json({ error: 'Not authorized to delete this comment' }, 403);
+    }
+
+    // Delete comment (cascade will delete child comments and votes)
+    await c.env.DB.prepare('DELETE FROM comments WHERE id = ?').bind(commentId).run();
+
+    // Update post comment count
+    await c.env.DB.prepare(
+      'UPDATE posts SET comment_count = comment_count - 1 WHERE id = ?'
+    ).bind(comment.post_id).run();
+
+    return c.json({ success: true, message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Delete comment error:', error);
+    return c.json({ error: 'Failed to delete comment' }, 500);
+  }
+});
+
+/**
  * GET /api/posts/:id/comments
  * Get all comments for a post
  */
@@ -270,6 +435,8 @@ posts.get('/:id/comments', async (c) => {
         c.content,
         c.score,
         c.created_at,
+        c.edited_at,
+        c.author_id,
         u.username as author,
         u.karma as author_karma
       FROM comments c
@@ -290,8 +457,10 @@ posts.get('/:id/comments', async (c) => {
         content: row.content,
         score: row.score,
         author: row.author,
+        authorId: row.author_id,
         authorKarma: row.author_karma,
         createdAt: row.created_at,
+        editedAt: row.edited_at,
         replies: [],
       };
       commentsById.set(row.id, comment);

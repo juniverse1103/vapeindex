@@ -179,8 +179,10 @@ app.get('/api/posts/:id', async (c) => {
     comments: post.comment_count,
     views: post.view_count,
     author: post.author,
+    authorId: post.author_id,
     authorKarma: post.author_karma,
-    createdAt: post.created_at
+    createdAt: post.created_at,
+    editedAt: post.edited_at
   });
 });
 
@@ -269,6 +271,78 @@ app.get('/api/users/:username', async (c) => {
       createdAt: c.created_at,
     })) || [],
   });
+});
+
+// Search posts
+app.get('/api/search', async (c) => {
+  const query = c.req.query('q') || '';
+  const board = c.req.query('board');
+  const limit = parseInt(c.req.query('limit') || '20');
+
+  if (!query || query.trim().length < 2) {
+    return c.json({ posts: [] });
+  }
+
+  const searchTerm = `%${query}%`;
+  let sql = `
+    SELECT
+      p.id,
+      p.title,
+      p.url,
+      p.score,
+      p.comment_count as comments,
+      p.view_count as views,
+      p.created_at,
+      b.slug as board_slug,
+      b.name as board,
+      b.color as board_color,
+      u.username as author,
+      u.karma as author_karma
+    FROM posts p
+    JOIN boards b ON p.board_id = b.id
+    JOIN users u ON p.author_id = u.id
+    WHERE (p.title LIKE ? OR p.content LIKE ?)
+  `;
+
+  const params: any[] = [searchTerm, searchTerm];
+
+  if (board) {
+    sql += ` AND b.slug = ?`;
+    params.push(board);
+  }
+
+  sql += ` ORDER BY p.score DESC LIMIT ?`;
+  params.push(limit);
+
+  const { results } = await c.env.DB.prepare(sql).bind(...params).all();
+
+  const now = Math.floor(Date.now() / 1000);
+  const posts = results?.map(p => {
+    const age = now - p.created_at;
+    let time = '';
+    if (age < 3600) time = `${Math.floor(age / 60)}m`;
+    else if (age < 86400) time = `${Math.floor(age / 3600)}h`;
+    else if (age < 2592000) time = `${Math.floor(age / 86400)}d`;
+    else if (age < 31536000) time = `${Math.floor(age / 2592000)}mo`;
+    else time = `${Math.floor(age / 31536000)}y`;
+
+    return {
+      id: p.id.toString(),
+      title: p.title,
+      url: p.url,
+      board: p.board,
+      boardSlug: p.board_slug,
+      boardColor: p.board_color,
+      score: p.score,
+      comments: p.comments,
+      views: p.views,
+      author: p.author,
+      authorKarma: p.author_karma,
+      time,
+    };
+  }) || [];
+
+  return c.json({ posts });
 });
 
 // Get community stats

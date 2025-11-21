@@ -29,19 +29,19 @@ const { postId } = Astro.props;
   .comment-actions button { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; }
   .comment-actions button:hover { color: var(--brand); }
   .replies { margin-left: 1.5rem; margin-top: 1rem; }
-  .reply-form { display: none; margin-top: 0.5rem; }
-  .reply-form.show { display: flex; flex-direction: column; gap: 0.5rem; }
-  .reply-form textarea { padding: 0.5rem; border: 1px solid var(--border); min-height: 60px; font-family: inherit; resize: vertical; width: 100%; }
-  .reply-form button[type="submit"] { background: var(--brand); color: white; padding: 0.35rem 1rem; border: none; font-size: 0.875rem; cursor: pointer; font-weight: 600; }
-  .reply-form .cancel-reply { background: none; color: var(--text-secondary); padding: 0.35rem 1rem; border: 1px solid var(--border); font-size: 0.875rem; cursor: pointer; }
-  .reply-form .cancel-reply:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+  .reply-form, .edit-comment-form { display: none; margin-top: 0.5rem; }
+  .reply-form.show, .edit-comment-form { display: flex; flex-direction: column; gap: 0.5rem; }
+  .reply-form textarea, .edit-comment-form textarea { padding: 0.5rem; border: 1px solid var(--border); min-height: 60px; font-family: inherit; resize: vertical; width: 100%; }
+  .reply-form button[type="submit"], .edit-comment-form button[type="submit"] { background: var(--brand); color: white; padding: 0.35rem 1rem; border: none; font-size: 0.875rem; cursor: pointer; font-weight: 600; }
+  .reply-form .cancel-reply, .edit-comment-form .cancel-edit-comment { background: none; color: var(--text-secondary); padding: 0.35rem 1rem; border: 1px solid var(--border); font-size: 0.875rem; cursor: pointer; }
+  .reply-form .cancel-reply:hover, .edit-comment-form .cancel-edit-comment:hover { color: var(--text-primary); border-color: var(--text-secondary); }
   .vote-comment-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 0.8125rem; font-weight: 600; padding: 0; }
   .vote-comment-btn:hover { color: var(--brand); }
   .comment-score { font-weight: 600; color: var(--text-primary); margin: 0 0.25rem; }
 </style>
 
 <script>
-  import { isAuthenticated } from '../lib/auth';
+  import { isAuthenticated, getStoredUser } from '../lib/auth';
   const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
 
   const section = document.querySelector('.comments-section');
@@ -64,21 +64,32 @@ const { postId } = Astro.props;
 
   function renderComment(comment: any, depth: number = 0): string {
     const replyFormId = `reply-form-${comment.id}`;
+    const editFormId = `edit-form-${comment.id}`;
+    const editedText = comment.editedAt ? ` (edited ${formatTimeAgo(comment.editedAt)})` : '';
 
     return `
-      <div class="comment" style="margin-left: ${depth * 1.5}rem;">
+      <div class="comment" data-comment-id="${comment.id}" data-author-id="${comment.authorId}" style="margin-left: ${depth * 1.5}rem;">
         <div class="comment-header">
           <span class="comment-author">${comment.author}</span>
           <span>${comment.authorKarma || 0} karma</span>
           <span>•</span>
-          <span>${formatTimeAgo(comment.createdAt)}</span>
+          <span>${formatTimeAgo(comment.createdAt)}${editedText}</span>
         </div>
-        <div class="comment-content">${comment.content}</div>
+        <div class="comment-content" id="content-${comment.id}">${comment.content}</div>
+        <form class="edit-comment-form" id="${editFormId}" style="display: none;">
+          <textarea required>${comment.content}</textarea>
+          <div style="display: flex; gap: 0.5rem; align-self: flex-end;">
+            <button type="submit">Save</button>
+            <button type="button" class="cancel-edit-comment">Cancel</button>
+          </div>
+        </form>
         <div class="comment-actions">
           <button class="vote-comment-btn" data-comment-id="${comment.id}" data-value="1">▲ upvote</button>
           <span class="comment-score" data-comment-id="${comment.id}">${comment.score}</span>
           <button class="vote-comment-btn" data-comment-id="${comment.id}" data-value="-1">▼ downvote</button>
           <button class="reply-btn" data-comment-id="${comment.id}">reply</button>
+          <button class="edit-comment-btn" data-comment-id="${comment.id}" style="display: none;">edit</button>
+          <button class="delete-comment-btn" data-comment-id="${comment.id}" style="display: none;">delete</button>
         </div>
         <form class="reply-form" id="${replyFormId}" data-parent-id="${comment.id}">
           <textarea placeholder="Write your reply..." required></textarea>
@@ -121,6 +132,21 @@ const { postId } = Astro.props;
   }
 
   function attachCommentEventListeners() {
+    // Show edit/delete buttons for comment authors
+    const user = getStoredUser();
+    if (user) {
+      document.querySelectorAll('.comment').forEach(comment => {
+        const authorId = parseInt(comment.getAttribute('data-author-id') || '0');
+        if (user.id === authorId) {
+          const commentId = comment.getAttribute('data-comment-id');
+          const editBtn = comment.querySelector(`.edit-comment-btn[data-comment-id="${commentId}"]`) as HTMLElement;
+          const deleteBtn = comment.querySelector(`.delete-comment-btn[data-comment-id="${commentId}"]`) as HTMLElement;
+          if (editBtn) editBtn.style.display = 'inline';
+          if (deleteBtn) deleteBtn.style.display = 'inline';
+        }
+      });
+    }
+
     // Reply button handlers
     document.querySelectorAll('.reply-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -180,6 +206,85 @@ const { postId } = Astro.props;
           const data = await res.json();
           const scoreSpan = document.querySelector(`.comment-score[data-comment-id="${commentId}"]`);
           if (scoreSpan) scoreSpan.textContent = data.score;
+        }
+      });
+    });
+
+    // Edit comment handlers
+    document.querySelectorAll('.edit-comment-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const commentId = btn.getAttribute('data-comment-id');
+        const contentDiv = document.getElementById(`content-${commentId}`);
+        const editForm = document.getElementById(`edit-form-${commentId}`) as HTMLFormElement;
+        if (contentDiv && editForm) {
+          contentDiv.style.display = 'none';
+          editForm.style.display = 'flex';
+        }
+      });
+    });
+
+    document.querySelectorAll('.cancel-edit-comment').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const form = btn.closest('.edit-comment-form') as HTMLFormElement;
+        const commentId = form?.id.replace('edit-form-', '');
+        const contentDiv = document.getElementById(`content-${commentId}`);
+        if (contentDiv && form) {
+          contentDiv.style.display = 'block';
+          form.style.display = 'none';
+        }
+      });
+    });
+
+    document.querySelectorAll('.edit-comment-form').forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!isAuthenticated()) {
+          window.location.href = '/login';
+          return;
+        }
+
+        const formEl = e.target as HTMLFormElement;
+        const commentId = formEl.id.replace('edit-form-', '');
+        const textarea = formEl.querySelector('textarea') as HTMLTextAreaElement;
+        const token = localStorage.getItem('auth_token');
+
+        const res = await fetch(`${API_URL}/api/posts/comments/${commentId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ content: textarea.value }),
+        });
+
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          const data = await res.json();
+          alert(data.error || 'Failed to edit comment');
+        }
+      });
+    });
+
+    // Delete comment handlers
+    document.querySelectorAll('.delete-comment-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this comment? This cannot be undone.')) return;
+        if (!isAuthenticated()) {
+          window.location.href = '/login';
+          return;
+        }
+
+        const commentId = btn.getAttribute('data-comment-id');
+        const token = localStorage.getItem('auth_token');
+
+        const res = await fetch(`${API_URL}/api/posts/comments/${commentId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          const data = await res.json();
+          alert(data.error || 'Failed to delete comment');
         }
       });
     });

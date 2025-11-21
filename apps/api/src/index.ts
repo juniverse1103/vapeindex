@@ -11,6 +11,7 @@ type Bindings = {
   STRIPE_SECRET_KEY: string;
   STRIPE_PUBLISHABLE_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
+  JWT_SECRET: string;
   // Discord webhooks
   DISCORD_WEBHOOK_REVENUE: string;
   DISCORD_WEBHOOK_ALERTS: string;

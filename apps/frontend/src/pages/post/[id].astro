@@ -1,678 +1,289 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
-
-// Mock post with comments - testing different engagement densities
-const posts = {
-  '1': {
-    id: '1',
-    title: 'Best disposable vapes of 2025? Looking for recommendations',
-    board: 'Disposables',
-    boardSlug: 'disposables',
-    boardColor: '#3B82F6',
-    author: 'vapeenthusiast',
-    authorKarma: 2847,
-    time: '3h ago',
-    score: 287,
-    views: 1847,
-    content: `I've been using disposables for about 6 months now and want to upgrade. Currently using basic gas station brands but looking for something better.
-
-**What I'm looking for:**
-- Good flavor variety
-- Long battery life (5000+ puffs)
-- Reliable and doesn't die early
-- Under $20
-
-What do you all recommend? I've heard good things about Elf Bar and Lost Mary but want to hear real experiences.`,
-    comments: [
-      {
-        id: 'c1',
-        author: 'authentic_only',
-        authorKarma: 5234,
-        time: '2h ago',
-        score: 156,
-        content: 'Elf Bar BC5000 is the gold standard. Just make sure you buy from reputable sellers - there are tons of fakes out there. I wrote a guide on spotting fakes [here](/post/2).',
-        replies: [
-          { id: 'c1r1', author: 'vapeenthusiast', authorKarma: 2847, time: '2h ago', score: 45, content: 'Thanks! Where do you usually buy from?' },
-          { id: 'c1r2', author: 'authentic_only', authorKarma: 5234, time: '1h ago', score: 89, content: 'I stick to VaporDNA and Element Vape. Both have authentication systems.' }
-        ]
-      },
-      {
-        id: 'c2',
-        author: 'flavor_king',
-        authorKarma: 1823,
-        time: '2h ago',
-        score: 234,
-        content: `Lost Mary OS5000 is my daily driver. Flavors are incredible - especially Watermelon Ice and Blue Razz Lemonade.
-
-**Pros:**
-- Amazing flavor quality
-- Consistent performance
-- Rechargeable (USB-C)
-- Actually lasts 5000 puffs
-
-**Cons:**
-- Slightly more expensive ($18-22)
-- Limited availability in some areas
-
-Totally worth it though. I've tried 15+ disposable brands and Lost Mary is top tier.`,
-        replies: [
-          { id: 'c2r1', author: 'disposable_fan', authorKarma: 1234, time: '1h ago', score: 67, content: 'Lost Mary gang! The flavors really are next level.' },
-          { id: 'c2r2', author: 'newbie_vaper', authorKarma: 45, time: '1h ago', score: 23, content: 'Are they available online? My local shops don\'t carry them.' },
-          { id: 'c2r3', author: 'flavor_king', authorKarma: 1823, time: '45m ago', score: 34, content: '@newbie_vaper Yes! Check VapeRanger or DirectVapor. Both ship fast.' }
-        ]
-      },
-      {
-        id: 'c3',
-        author: 'budget_minded',
-        authorKarma: 892,
-        time: '1h ago',
-        score: 78,
-        content: 'If you want to save money, consider switching to a refillable pod system. I was spending $60/week on disposables, now I spend $30/month on pods + juice.',
-        replies: []
-      },
-      {
-        id: 'c4',
-        author: 'tech_vaper',
-        authorKarma: 4567,
-        time: '45m ago',
-        score: 123,
-        content: `Here's my ranking after testing 20+ brands:
-
-**S-Tier:**
-1. Lost Mary OS5000
-2. Elf Bar BC5000
-3. Geek Bar Pulse
-
-**A-Tier:**
-1. Hyde Edge Rave
-2. Breeze Pro
-3. Funky Republic Ti7000
-
-**B-Tier:**
-Everything else
-
-The S-tier options are worth the extra $2-3. They actually last the advertised puff count and have better QC.`,
-        replies: [
-          { id: 'c4r1', author: 'vapeenthusiast', authorKarma: 2847, time: '30m ago', score: 45, content: 'This is super helpful! Going with Lost Mary based on all these recommendations.' },
-          { id: 'c4r2', author: 'comparison_guy', authorKarma: 3456, time: '20m ago', score: 56, content: 'Agreed on the ranking. Geek Bar Pulse has the smoothest airflow IMO.' }
-        ]
-      }
-    ]
-  },
-  '2': {
-    id: '2',
-    title: 'PSA: Fake Elf Bars flooding the market - How to spot them',
-    board: 'Disposables',
-    boardSlug: 'disposables',
-    boardColor: '#3B82F6',
-    author: 'authentic_only',
-    authorKarma: 5234,
-    time: '5h ago',
-    score: 512,
-    views: 4234,
-    content: `**IMPORTANT: The fake Elf Bar problem is getting worse.**
-
-I've been seeing more and more people posting about "defective" Elf Bars that die after 500 puffs or taste burnt immediately. 99% of the time, these are counterfeits.
-
-**How to spot fakes:**
-
-1. **Check the authentication code** - Scan the QR code or enter the code at elfbar.com/verification
-2. **Packaging quality** - Real Elf Bars have crisp printing, no smudges
-3. **Weight** - Fakes feel lighter (missing juice/smaller battery)
-4. **Flavor** - If it tastes chemically or burns easily, it's fake
-5. **Price** - If it's under $12, it's probably fake
-
-**Where fakes come from:**
-- Gas stations (high risk)
-- Sketchy online sellers
-- Instagram/TikTok sellers
-- Flea markets
-
-**Safe places to buy:**
-- VaporDNA
-- Element Vape
-- DirectVapor
-- Authorized local vape shops
-
-Stay safe out there. Fakes can have dangerous ingredients.`,
-    comments: [
-      {
-        id: 'c10',
-        author: 'saved_by_this',
-        authorKarma: 234,
-        time: '4h ago',
-        score: 289,
-        content: 'Holy crap, I just checked my "Elf Bar" with the verification code and it\'s fake. I bought it from a gas station. Thank you for posting this!',
-        replies: [
-          { id: 'c10r1', author: 'authentic_only', authorKarma: 5234, time: '4h ago', score: 134, content: 'Glad I could help! Throw it away and buy from a verified seller. Your health isn\'t worth the $5 savings.' }
-        ]
-      },
-      {
-        id: 'c11',
-        author: 'vape_shop_owner',
-        authorKarma: 8901,
-        time: '3h ago',
-        score: 456,
-        content: `Shop owner here. This is a HUGE problem. We've had customers bring in fakes thinking they bought from us (they didn't - we're not even in that city).
-
-The fakes are getting better. Some even have QR codes that go to fake verification sites. Always check the URL - it should be elfbar.com, not elfbar-verify.com or similar.
-
-We've started giving customers a receipt with our store info and encouraging them to report fakes to local authorities.`,
-        replies: [
-          { id: 'c11r1', author: 'concerned_user', authorKarma: 567, time: '2h ago', score: 178, content: 'What should we do if we find a store selling fakes?' },
-          { id: 'c11r2', author: 'vape_shop_owner', authorKarma: 8901, time: '2h ago', score: 234, content: 'Report to your state\'s tobacco/vape regulatory agency and FDA. Also warn others on local community groups.' }
-        ]
-      }
-    ]
-  }
-};
-
-export function getStaticPaths() {
-  const postIds = ['1', '2'];
-  return postIds.map(id => ({ params: { id } }));
-}
+import VoteButtons from '../../components/VoteButtons.astro';
+import Comments from '../../components/Comments.astro';
 
 const { id } = Astro.params;
-const post = posts[id as keyof typeof posts];
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
 
-if (!post) {
-  return Astro.redirect('/404');
+let post: any = null;
+let error = null;
+
+try {
+  const response = await fetch(`${API_URL}/api/posts/${id}`);
+  if (response.ok) {
+    post = await response.json();
+  } else {
+    error = 'Post not found';
+  }
+} catch (e) {
+  error = 'Failed to load post';
 }
 ---
 
-<Layout title={`${post.title} - VapeIndex`}>
+<Layout title={post ? post.title : 'Post'}>
   <Header />
 
   <main class="main-content">
-    <div class="layout-container post-detail-layout">
-
-      <!-- Main Content -->
-      <div class="post-detail-main">
-        <!-- Breadcrumb -->
-        <div class="breadcrumb">
-          <a href="/">Home</a>
-          <span>›</span>
-          <a href={`/b/${post.boardSlug}`}>b/{post.boardSlug}</a>
-          <span>›</span>
-          <span>Post</span>
-        </div>
-
-        <!-- Post Card -->
-        <article class="post-detail-card">
-          <div class="vote-column-large">
-            <button class="vote-btn vote-up">
-              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 3l5 5H3z"/>
-              </svg>
-            </button>
-            <span class="vote-score-large">{post.score}</span>
-            <button class="vote-btn vote-down">
-              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 13l-5-5h10z"/>
-              </svg>
-            </button>
+    {error ? (
+      <div class="error-container">
+        <h2>Error</h2>
+        <p>{error}</p>
+        <a href="/">← Back to home</a>
+      </div>
+    ) : post && (
+      <div class="post-container">
+        <article class="post-detail">
+          <div class="post-vote">
+            <VoteButtons postId={post.id} score={post.score} type="post" />
           </div>
 
-          <div class="post-detail-content">
-            <div class="post-header">
-              <div class="post-meta">
-                <a href={`/b/${post.boardSlug}`} class="board-tag" style={`color: ${post.boardColor}`}>
-                  b/{post.boardSlug}
+          <div class="post-main">
+            <div class="post-meta">
+              <a href={`/b/${post.boardSlug}`} class="board-link" style={`color: ${post.boardColor}`}>
+                b/{post.boardSlug}
+              </a>
+              <span>•</span>
+              <span>Posted by</span>
+              <a href={`/user/${post.author}`} class="author-link">u/{post.author}</a>
+              <span>•</span>
+              <span class="post-time" data-timestamp={post.createdAt}></span>
+              {post.editedAt && (
+                <span class="edited-indicator" data-edited={post.editedAt}></span>
+              )}
+            </div>
+
+            <h1 class="post-title">{post.title}</h1>
+
+            {post.url ? (
+              <div class="post-url">
+                <a href={post.url} target="_blank" rel="noopener noreferrer" class="external-link">
+                  {post.url}
+                  <span class="external-icon">↗</span>
                 </a>
-                <span class="meta-separator">•</span>
-                <span>Posted by <a href={`/u/${post.author}`} class="author-link">u/{post.author}</a></span>
-                <span class="author-karma">{post.authorKarma.toLocaleString()}</span>
-                <span class="meta-separator">•</span>
-                <time>{post.time}</time>
               </div>
+            ) : post.content && (
+              <div class="post-content" id="post-content">{post.content}</div>
+            )}
 
-              <h1 class="post-detail-title">{post.title}</h1>
-
-              <div class="post-stats">
-                <span class="stat-item">👁 {post.views.toLocaleString()} views</span>
-                <span class="stat-item">💬 {post.comments.length} comments</span>
-              </div>
+            <div class="post-actions" id="post-actions" data-post-id={post.id} data-author-id={post.authorId}>
+              <button class="action-btn edit-post-btn" style="display: none;">Edit</button>
+              <button class="action-btn delete-post-btn" style="display: none;">Delete</button>
+              <button class="action-btn share-btn">Share</button>
             </div>
 
-            <div class="post-body" set:html={post.content.replace(/\n/g, '<br>')} />
-
-            <div class="post-actions-large">
-              <button class="action-btn-large action-comment-btn">
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
-                </svg>
-                <span>Comment</span>
-              </button>
-              <button class="action-btn-large">
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M13 7a2 2 0 100-4 2 2 0 000 4zm-2.5 1.5l-5 3a2 2 0 100 3 2 2 0 000-4l5-3z"/>
-                </svg>
-                <span>Share</span>
-              </button>
-              <button class="action-btn-large">
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M3 2a1 1 0 00-1 1v11l6-3 6 3V3a1 1 0 00-1-1H3z"/>
-                </svg>
-                <span>Save</span>
-              </button>
-            </div>
+            <form class="edit-form" id="edit-post-form" style="display: none;">
+              <input type="text" id="edit-post-title" placeholder="Title" />
+              <textarea id="edit-post-content" placeholder="Content" required></textarea>
+              <div class="form-actions">
+                <button type="submit">Save</button>
+                <button type="button" class="cancel-edit">Cancel</button>
+              </div>
+            </form>
           </div>
         </article>
 
-        <!-- Comments Section -->
-        <div class="comments-section">
-          <div class="comments-header">
-            <h2>Comments ({post.comments.length})</h2>
-            <select class="sort-select">
-              <option>Best</option>
-              <option>Top</option>
-              <option>New</option>
-              <option>Old</option>
-            </select>
-          </div>
-
-          <!-- Comment Form -->
-          <div class="comment-form">
-            <textarea placeholder="What are your thoughts?" rows="4"></textarea>
-            <div class="comment-form-actions">
-              <button class="btn-submit-comment">Comment</button>
-            </div>
-          </div>
-
-          <!-- Comments List -->
-          <div class="comments-list">
-            {post.comments.map(comment => (
-              <div class="comment">
-                <div class="comment-vote">
-                  <button class="vote-btn-small vote-up">▲</button>
-                  <span class="vote-score-small">{comment.score}</span>
-                  <button class="vote-btn-small vote-down">▼</button>
-                </div>
-                <div class="comment-content">
-                  <div class="comment-meta">
-                    <a href={`/u/${comment.author}`} class="comment-author">{comment.author}</a>
-                    <span class="comment-karma">{comment.authorKarma.toLocaleString()}</span>
-                    <span class="comment-time">• {comment.time}</span>
-                  </div>
-                  <div class="comment-text" set:html={comment.content.replace(/\n/g, '<br>')} />
-                  <div class="comment-actions">
-                    <button class="comment-action-btn">Reply</button>
-                    <button class="comment-action-btn">Share</button>
-                    <button class="comment-action-btn">Report</button>
-                  </div>
-
-                  {comment.replies && comment.replies.length > 0 && (
-                    <div class="comment-replies">
-                      {comment.replies.map(reply => (
-                        <div class="comment reply-comment">
-                          <div class="comment-vote">
-                            <button class="vote-btn-small vote-up">▲</button>
-                            <span class="vote-score-small">{reply.score}</span>
-                            <button class="vote-btn-small vote-down">▼</button>
-                          </div>
-                          <div class="comment-content">
-                            <div class="comment-meta">
-                              <a href={`/u/${reply.author}`} class="comment-author">{reply.author}</a>
-                              <span class="comment-karma">{reply.authorKarma.toLocaleString()}</span>
-                              <span class="comment-time">• {reply.time}</span>
-                            </div>
-                            <div class="comment-text">{reply.content}</div>
-                            <div class="comment-actions">
-                              <button class="comment-action-btn">Reply</button>
-                              <button class="comment-action-btn">Share</button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <Comments postId={post.id} />
       </div>
-
-      <!-- Sidebar -->
-      <aside class="post-detail-sidebar">
-        <div class="sidebar-card">
-          <h3>b/{post.boardSlug}</h3>
-          <p>{post.board} community</p>
-          <button class="btn-join-full">+ Join</button>
-        </div>
-
-        <div class="sidebar-card">
-          <h3>Related Posts</h3>
-          <div class="related-posts">
-            <a href="/post/3" class="related-post">Elf Bar alternatives worth trying</a>
-            <a href="/post/4" class="related-post">Best online vape shops 2025</a>
-            <a href="/post/5" class="related-post">Disposable vs Pod System comparison</a>
-          </div>
-        </div>
-      </aside>
-
-    </div>
+    )}
   </main>
 </Layout>
 
 <style>
-  .post-detail-layout {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 1rem;
-    align-items: start;
-  }
+  .main-content { background: var(--bg-secondary); min-height: 100vh; padding: 1rem; }
+  .error-container { text-align: center; padding: 4rem 2rem; max-width: 600px; margin: 0 auto; }
+  .error-container h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+  .error-container a { color: var(--brand); text-decoration: none; }
 
-  .breadcrumb {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
+  .post-container { max-width: 800px; margin: 0 auto; }
 
-  .breadcrumb a {
-    color: var(--text-secondary);
-    text-decoration: none;
-  }
-
-  .breadcrumb a:hover {
-    color: var(--brand);
-  }
-
-  .post-detail-card {
+  .post-detail {
     background: var(--bg-elevated);
     border: 1px solid var(--border-primary);
-    border-radius: 0;
-    padding: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
     display: flex;
-    gap: 1.5rem;
-    margin-bottom: 0.5rem;
+    gap: 1rem;
   }
 
-  .vote-column-large {
+  .post-vote { flex-shrink: 0; }
+  .post-main { flex: 1; min-width: 0; }
+
+  .post-meta {
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    min-width: 50px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
   }
 
-  .vote-score-large {
-    font-size: 1.125rem;
-    font-weight: 900;
+  .board-link { font-weight: 700; text-decoration: none; }
+  .author-link { color: var(--text-primary); text-decoration: none; font-weight: 600; }
+  .author-link:hover { color: var(--brand); }
+  .edited-indicator { font-size: 0.8125rem; font-style: italic; color: var(--text-tertiary); }
+
+  .post-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
     color: var(--text-primary);
   }
 
-  .post-detail-content {
-    flex: 1;
-    min-width: 0;
+  .post-url {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
   }
 
-  .post-detail-title {
-    font-size: 1.75rem;
-    font-weight: 800;
-    margin: 0.75rem 0 1rem 0;
-    line-height: 1.3;
-  }
-
-  .post-stats {
-    display: flex;
-    gap: 1.5rem;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--divider);
-  }
-
-  .stat-item {
-    font-weight: 600;
-  }
-
-  .post-body {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-  }
-
-  .post-actions-large {
-    display: flex;
-    gap: 0.75rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--divider);
-  }
-
-  .action-btn-large {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--border-primary);
-    background: var(--bg-elevated);
-    border-radius: 0;
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .action-btn-large:hover {
-    background: var(--bg-hover);
-    border-color: #ccc;
-  }
-
-  .action-comment-btn:hover {
-    background: rgba(124, 58, 237, 0.08);
-    border-color: var(--brand);
+  .external-link {
     color: var(--brand);
-  }
-
-  /* Comments */
-  .comments-section {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-primary);
-    border-radius: 0;
-    padding: 0.75rem;
-  }
-
-  .comments-header {
-    display: flex;
-    justify-content: space-between;
+    text-decoration: none;
+    word-break: break-all;
+    display: inline-flex;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--divider);
+    gap: 0.25rem;
+  }
+  .external-link:hover { text-decoration: underline; }
+
+  .post-content {
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
 
-  .comments-header h2 {
-    font-size: 1.25rem;
-    font-weight: 800;
-    margin: 0;
+  .post-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
   }
 
-  .sort-select {
-    padding: 0.375rem 0.75rem;
-    border: 1px solid var(--border-primary);
-    border-radius: 0;
+  .action-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
     font-size: 0.875rem;
     font-weight: 600;
-    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+  }
+  .action-btn:hover { color: var(--brand); }
+
+  .edit-form {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
   }
 
-  .comment-form {
-    margin-bottom: 2rem;
-  }
-
-  .comment-form textarea {
+  .edit-form input,
+  .edit-form textarea {
     width: 100%;
     padding: 0.75rem;
-    border: 2px solid var(--border);
-    border-radius: 0;
-    font-size: 0.9375rem;
+    border: 1px solid var(--border);
     font-family: inherit;
-    resize: vertical;
     margin-bottom: 0.75rem;
   }
 
-  .comment-form textarea:focus {
-    outline: none;
-    border-color: var(--brand);
-  }
+  .edit-form textarea { min-height: 150px; resize: vertical; }
 
-  .comment-form-actions {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .btn-submit-comment {
-    background: var(--brand);
-    color: white;
-    border: none;
-    padding: 0.5rem 1.5rem;
-    border-radius: 0;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  .comment {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .comment-vote {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    min-width: 30px;
-  }
-
-  .vote-btn-small {
-    background: none;
-    border: none;
-    color: var(--text-tertiary);
-    cursor: pointer;
-    font-size: 0.75rem;
-    padding: 0.125rem;
-  }
-
-  .vote-btn-small:hover {
-    color: var(--brand);
-  }
-
-  .vote-score-small {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-  }
-
-  .comment-content {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .comment-meta {
-    margin-bottom: 0.5rem;
-    font-size: 0.8125rem;
-  }
-
-  .comment-author {
-    font-weight: 700;
-    color: var(--text-primary);
-    text-decoration: none;
-  }
-
-  .comment-karma {
-    background: var(--bg-hover);
-    padding: 0.125rem 0.375rem;
-    border-radius: 0;
-    font-size: 0.6875rem;
-    color: var(--text-secondary);
-    font-weight: 600;
-  }
-
-  .comment-time {
-    color: var(--text-tertiary);
-  }
-
-  .comment-text {
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: var(--text-secondary);
-    margin-bottom: 0.5rem;
-  }
-
-  .comment-actions {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .comment-action-btn {
-    background: none;
-    border: none;
-    color: var(--text-tertiary);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0;
-  }
-
-  .comment-action-btn:hover {
-    color: var(--brand);
-  }
-
-  .comment-replies {
-    margin-top: 1rem;
-    padding-left: 1rem;
-    border-left: 2px solid #f0f0f0;
-  }
-
-  .related-posts {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .related-post {
-    font-size: 0.875rem;
-    color: var(--text-primary);
-    text-decoration: none;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  .related-post:hover {
-    color: var(--brand);
-  }
-
-  @media (max-width: 1024px) {
-    .post-detail-layout {
-      grid-template-columns: 1fr;
-    }
-
-    .post-detail-sidebar {
-      display: none;
-    }
-  }
+  .form-actions { display: flex; gap: 0.5rem; }
+  .form-actions button { padding: 0.5rem 1rem; font-weight: 600; cursor: pointer; }
+  .form-actions button[type="submit"] { background: var(--brand); color: white; border: none; }
+  .form-actions .cancel-edit { background: none; border: 1px solid var(--border); color: var(--text-secondary); }
 
   @media (max-width: 768px) {
-    .post-detail-card {
-      padding: 1rem;
-      gap: 1rem;
-    }
-
-    .post-detail-title {
-      font-size: 1.375rem;
-    }
-
-    .comments-section {
-      padding: 1rem;
-    }
+    .post-detail { flex-direction: column; padding: 1rem; }
   }
 </style>
+
+<script>
+  import { isAuthenticated, getStoredUser } from '../../lib/auth';
+
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+
+  // Format time
+  document.querySelectorAll('.post-time').forEach(el => {
+    const timestamp = parseInt(el.getAttribute('data-timestamp') || '0');
+    const now = Math.floor(Date.now() / 1000);
+    const age = now - timestamp;
+    let time = '';
+    if (age < 3600) time = `${Math.floor(age / 60)}m ago`;
+    else if (age < 86400) time = `${Math.floor(age / 3600)}h ago`;
+    else if (age < 2592000) time = `${Math.floor(age / 86400)}d ago`;
+    else if (age < 31536000) time = `${Math.floor(age / 2592000)}mo ago`;
+    else time = `${Math.floor(age / 31536000)}y ago`;
+    el.textContent = time;
+  });
+
+  // Show edit/delete if author
+  const postActions = document.getElementById('post-actions');
+  if (postActions) {
+    const authorId = parseInt(postActions.getAttribute('data-author-id') || '0');
+    const user = getStoredUser();
+    if (user && user.id === authorId) {
+      const editBtn = postActions.querySelector('.edit-post-btn') as HTMLElement;
+      const deleteBtn = postActions.querySelector('.delete-post-btn') as HTMLElement;
+      if (editBtn) editBtn.style.display = 'block';
+      if (deleteBtn) deleteBtn.style.display = 'block';
+    }
+  }
+
+  // Edit/delete handlers
+  const editBtn = document.querySelector('.edit-post-btn');
+  const editForm = document.getElementById('edit-post-form') as HTMLFormElement;
+  const postContent = document.getElementById('post-content');
+
+  editBtn?.addEventListener('click', () => {
+    if (postContent && editForm) {
+      (document.getElementById('edit-post-content') as HTMLTextAreaElement).value = postContent.textContent || '';
+      postContent.style.display = 'none';
+      editForm.style.display = 'block';
+    }
+  });
+
+  document.querySelector('.cancel-edit')?.addEventListener('click', () => {
+    if (postContent && editForm) {
+      postContent.style.display = 'block';
+      editForm.style.display = 'none';
+    }
+  });
+
+  editForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated()) { window.location.href = '/login'; return; }
+    const postId = postActions?.getAttribute('data-post-id');
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch(`${API_URL}/api/posts/${postId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({
+        title: (document.getElementById('edit-post-title') as HTMLInputElement).value,
+        content: (document.getElementById('edit-post-content') as HTMLTextAreaElement).value
+      }),
+    });
+    if (res.ok) window.location.reload();
+    else alert((await res.json()).error || 'Failed to edit post');
+  });
+
+  document.querySelector('.delete-post-btn')?.addEventListener('click', async () => {
+    if (!confirm('Delete this post? This cannot be undone.')) return;
+    if (!isAuthenticated()) { window.location.href = '/login'; return; }
+    const postId = postActions?.getAttribute('data-post-id');
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch(`${API_URL}/api/posts/${postId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (res.ok) window.location.href = '/';
+    else alert((await res.json()).error || 'Failed to delete post');
+  });
+</script>
+</Layout>

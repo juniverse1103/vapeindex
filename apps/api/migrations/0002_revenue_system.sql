@@ -7,7 +7,15 @@ CREATE TABLE subscriptions (
   user_id TEXT NOT NULL,
   stripe_customer_id TEXT NOT NULL,
   stripe_subscription_id TEXT NOT NULL,
-  plan TEXT NOT NULL CHECK(plan IN ('premium', 'pro')),
+  plan TEXT NOT NULL CHECK(plan IN (
+    'premium',
+    'pro',
+    'sponsor_basic',
+    'sponsor_premium',
+    'api_starter',
+    'api_professional',
+    'api_enterprise'
+  )),
   status TEXT NOT NULL CHECK(status IN ('active', 'canceled', 'past_due', 'trialing')),
   current_period_start INTEGER NOT NULL,
   current_period_end INTEGER NOT NULL,
