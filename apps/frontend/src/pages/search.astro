@@ -1,102 +1,283 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import PageLayout from '../components/PageLayout.astro';
+import { MessageSquare, Eye } from 'lucide-astro';
+
+const query = Astro.url.searchParams.get('q') || '';
+const board = Astro.url.searchParams.get('board') || '';
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+
+let posts: any[] = [];
+let error = null;
+
+if (query && query.trim().length >= 2) {
+  try {
+    const searchUrl = board
+      ? `${API_URL}/api/search?q=${encodeURIComponent(query)}&board=${encodeURIComponent(board)}`
+      : `${API_URL}/api/search?q=${encodeURIComponent(query)}`;
+
+    const response = await fetch(searchUrl);
+    if (response.ok) {
+      const data = await response.json();
+      posts = data.posts || [];
+    } else {
+      error = 'Search failed';
+    }
+  } catch (e) {
+    error = 'Failed to search';
+  }
+}
 ---
 
-<Layout title="Search - VapeIndex">
+<Layout title={query ? `Search: ${query}` : 'Search'}>
   <Header />
+
   <main class="main-content">
-    <PageLayout title="Search" description="Search posts, users, and boards">
-      <div class="search-container">
-        <form class="search-form">
-          <input
-            type="search"
-            placeholder="Search VapeIndex..."
-            class="search-input"
-            autofocus
-          />
-          <button type="submit" class="search-btn">Search</button>
+    <div class="search-container">
+      <!-- Search Form -->
+      <div class="search-header">
+        <h1>Search VapeIndex</h1>
+        <form class="search-form" method="get" action="/search">
+          <div class="search-input-wrapper">
+            <input
+              type="text"
+              name="q"
+              placeholder="Search posts..."
+              value={query}
+              required
+              minlength="2"
+              class="search-input"
+            />
+            <button type="submit" class="search-btn">Search</button>
+          </div>
+          <div class="search-filters">
+            <label>
+              <span>Board:</span>
+              <input
+                type="text"
+                name="board"
+                placeholder="e.g. vaping (optional)"
+                value={board}
+                class="board-filter"
+              />
+            </label>
+          </div>
         </form>
-
-        <div class="search-filters">
-          <label><input type="radio" name="type" value="posts" checked /> Posts</label>
-          <label><input type="radio" name="type" value="users" /> Users</label>
-          <label><input type="radio" name="type" value="boards" /> Boards</label>
-        </div>
-
-        <div class="search-results">
-          <p class="placeholder">Enter a search query to find posts, users, or boards.</p>
-        </div>
       </div>
-    </PageLayout>
+
+      <!-- Results -->
+      {query && query.trim().length >= 2 ? (
+        <div class="search-results">
+          {error ? (
+            <div class="error-message">
+              <p>{error}</p>
+            </div>
+          ) : posts.length === 0 ? (
+            <div class="no-results">
+              <p>No results found for "{query}"</p>
+              <p class="hint">Try different keywords or check your spelling</p>
+            </div>
+          ) : (
+            <>
+              <div class="results-header">
+                <p>Found {posts.length} result{posts.length !== 1 ? 's' : ''} for "{query}"</p>
+              </div>
+              <div class="posts-list">
+                {posts.map((post) => (
+                  <article class="post-card">
+                    <div class="post-score">{post.score}</div>
+                    <div class="post-content">
+                      <div class="post-meta">
+                        <a href={`/b/${post.boardSlug}`} class="board-link">b/{post.boardSlug}</a>
+                        <span>•</span>
+                        <a href={`/user/${post.author}`} class="author-link">u/{post.author}</a>
+                      </div>
+                      <h2 class="post-title">
+                        <a href={`/post/${post.id}`}>{post.title}</a>
+                      </h2>
+                      {post.url && (
+                        <a href={post.url} class="post-url" target="_blank" rel="noopener noreferrer">
+                          {post.url} ↗
+                        </a>
+                      )}
+                      <div class="post-actions">
+                        <a href={`/post/${post.id}`} class="action-btn">
+                          <MessageSquare size={14} />
+                          <span>{post.comments}</span>
+                        </a>
+                        <span class="action-btn">
+                          <Eye size={14} />
+                          <span>{post.views.toLocaleString()}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      ) : query && query.trim().length < 2 ? (
+        <div class="search-hint">
+          <p>Please enter at least 2 characters to search</p>
+        </div>
+      ) : (
+        <div class="search-hint">
+          <p>Enter a search term above to find posts</p>
+        </div>
+      )}
+    </div>
   </main>
 </Layout>
 
 <style>
-  .main-content {
-    background: var(--bg-secondary);
-    min-height: 100vh;
-  }
+  .main-content { background: var(--bg-secondary); min-height: 100vh; padding: 1rem; }
+  .search-container { max-width: 800px; margin: 0 auto; }
 
-  .search-container {
+  .search-header {
     background: var(--bg-elevated);
     border: 1px solid var(--border-primary);
-    padding: 1rem;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
   }
 
-  .search-form {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
+  .search-header h1 { font-size: 1.75rem; margin: 0 0 1.5rem 0; color: var(--text-primary); }
+
+  .search-form { display: flex; flex-direction: column; gap: 1rem; }
+  .search-input-wrapper { display: flex; gap: 0.5rem; }
 
   .search-input {
     flex: 1;
-    padding: 0.5rem;
-    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
     border: 1px solid var(--border-primary);
-    background: var(--bg-input);
+    background: var(--bg-secondary);
     color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
   }
+  .search-input:focus { outline: 2px solid var(--brand); border-color: var(--brand); }
 
   .search-btn {
-    padding: 0.5rem 1rem;
     background: var(--brand);
     color: white;
+    padding: 0.75rem 2rem;
     border: none;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .search-btn:hover { opacity: 0.9; }
+
+  .search-filters { display: flex; gap: 1rem; }
+  .search-filters label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-secondary); }
+  .board-filter {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     font-size: 0.875rem;
-    cursor: pointer;
+    font-family: inherit;
+    width: 200px;
   }
 
-  .search-btn:hover {
-    background: var(--brand-dark);
-  }
-
-  .search-filters {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    font-size: 0.8125rem;
-  }
-
-  .search-filters label {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    cursor: pointer;
+  .results-header {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
     color: var(--text-secondary);
   }
 
-  .search-results {
-    min-height: 200px;
+  .no-results, .search-hint, .error-message {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .no-results p:first-child, .search-hint p { font-size: 1.125rem; color: var(--text-secondary); margin: 0; }
+  .no-results .hint { font-size: 0.9375rem; color: var(--text-tertiary); margin-top: 0.5rem; }
+  .error-message p { color: var(--error, #ef4444); font-weight: 600; }
+
+  .posts-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .post-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    transition: border-color 0.2s;
+  }
+  .post-card:hover { border-color: var(--border-hover); }
+
+  .post-score {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    min-width: 50px;
+    text-align: center;
   }
 
-  .placeholder {
-    text-align: center;
-    color: var(--text-tertiary);
+  .post-content { flex: 1; min-width: 0; }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .board-link { color: var(--brand); text-decoration: none; font-weight: 700; }
+  .board-link:hover { text-decoration: underline; }
+  .author-link { color: var(--text-secondary); text-decoration: none; }
+  .author-link:hover { color: var(--text-primary); }
+
+  .post-title { margin: 0 0 0.5rem 0; }
+  .post-title a {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    line-height: 1.4;
+  }
+  .post-title a:hover { color: var(--brand); }
+
+  .post-url {
+    display: block;
     font-size: 0.875rem;
-    padding: 2rem;
+    color: var(--brand);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+  }
+  .post-url:hover { text-decoration: underline; }
+
+  .post-actions {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  a.action-btn:hover { color: var(--brand); }
+
+  @media (max-width: 768px) {
+    .search-header { padding: 1.5rem; }
+    .search-input-wrapper { flex-direction: column; }
+    .search-btn { width: 100%; }
+    .board-filter { width: 100%; }
   }
 </style>

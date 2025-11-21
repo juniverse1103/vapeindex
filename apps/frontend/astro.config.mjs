@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://vapeindex.io',
-  output: 'hybrid', // Hybrid mode for dynamic + static pages
+  output: 'server', // Server mode for SSR
   adapter: cloudflare({
     imageService: 'passthrough',
   }),
