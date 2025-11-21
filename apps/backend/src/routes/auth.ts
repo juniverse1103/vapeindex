@@ -9,6 +9,7 @@ import { EmailService } from '../lib/email';
 type Bindings = {
   DB: D1Database;
   SESSIONS: KVNamespace;
+  JWT_SECRET: string;
 };
 
 const auth = new Hono<{ Bindings: Bindings }>();
@@ -114,11 +115,14 @@ auth.post('/login', async (c) => {
     // }
 
     // Generate JWT
-    const token = await generateToken({
-      userId: user.id,
-      email: user.email,
-      username: user.username,
-    });
+    const token = await generateToken(
+      {
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+      },
+      c.env.JWT_SECRET
+    );
 
     // Store session in KV
     const sessionId = crypto.randomUUID();

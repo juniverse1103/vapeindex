@@ -6,6 +6,7 @@ import postsRoutes from './routes/posts';
 type Bindings = {
   DB: D1Database;
   SESSIONS: KVNamespace;
+  JWT_SECRET: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -16,7 +17,7 @@ app.use('/*', cors({
     'http://localhost:4322',
     'http://localhost:4321',
     'https://vapeindex.io',
-    'https://*.vapeindex.pages.dev'
+    /^https:\/\/[a-zA-Z0-9-]+\.vapeindex\.pages\.dev$/
   ],
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowHeaders: ['Content-Type', 'Authorization', 'X-Session-ID'],
@@ -180,6 +181,93 @@ app.get('/api/posts/:id', async (c) => {
     author: post.author,
     authorKarma: post.author_karma,
     createdAt: post.created_at
+  });
+});
+
+// Get user profile
+app.get('/api/users/:username', async (c) => {
+  const username = c.req.param('username');
+
+  // Get user info
+  const user = await c.env.DB.prepare(`
+    SELECT id, username, karma, created_at
+    FROM users
+    WHERE username = ?
+  `).bind(username).first() as any;
+
+  if (!user) {
+    return c.json({ error: 'User not found' }, 404);
+  }
+
+  // Get user's posts
+  const { results: posts } = await c.env.DB.prepare(`
+    SELECT
+      p.id,
+      p.title,
+      p.score,
+      p.comment_count,
+      p.created_at,
+      b.slug as board_slug,
+      b.name as board_name
+    FROM posts p
+    JOIN boards b ON p.board_id = b.id
+    WHERE p.author_id = ?
+    ORDER BY p.created_at DESC
+    LIMIT 20
+  `).bind(user.id).all();
+
+  // Get user's comments
+  const { results: comments } = await c.env.DB.prepare(`
+    SELECT
+      c.id,
+      c.content,
+      c.score,
+      c.created_at,
+      p.id as post_id,
+      p.title as post_title,
+      b.slug as board_slug
+    FROM comments c
+    JOIN posts p ON c.post_id = p.id
+    JOIN boards b ON p.board_id = b.id
+    WHERE c.author_id = ?
+    ORDER BY c.created_at DESC
+    LIMIT 20
+  `).bind(user.id).all();
+
+  // Calculate account age
+  const now = Math.floor(Date.now() / 1000);
+  const age = now - user.created_at;
+  let accountAge = '';
+  if (age < 86400) accountAge = `${Math.floor(age / 3600)} hours`;
+  else if (age < 2592000) accountAge = `${Math.floor(age / 86400)} days`;
+  else if (age < 31536000) accountAge = `${Math.floor(age / 2592000)} months`;
+  else accountAge = `${Math.floor(age / 31536000)} years`;
+
+  return c.json({
+    user: {
+      username: user.username,
+      karma: user.karma,
+      accountAge,
+      createdAt: user.created_at,
+    },
+    posts: posts?.map((p: any) => ({
+      id: p.id,
+      title: p.title,
+      score: p.score,
+      comments: p.comment_count,
+      board: p.board_name,
+      boardSlug: p.board_slug,
+      createdAt: p.created_at,
+    })) || [],
+    comments: comments?.map((c: any) => ({
+      id: c.id,
+      content: c.content.substring(0, 200) + (c.content.length > 200 ? '...' : ''),
+      score: c.score,
+      postId: c.post_id,
+      postTitle: c.post_title,
+      boardSlug: c.board_slug,
+      createdAt: c.created_at,
+    })) || [],
   });
 });
 

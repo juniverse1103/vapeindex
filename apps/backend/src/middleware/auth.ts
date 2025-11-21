@@ -6,6 +6,7 @@ import { verifyToken, extractToken } from '../lib/auth/jwt';
 type Bindings = {
   DB: D1Database;
   SESSIONS: KVNamespace;
+  JWT_SECRET: string;
 };
 
 /**
@@ -22,7 +23,7 @@ export async function authMiddleware(c: Context<{ Bindings: Bindings }>, next: N
     }
 
     // Verify JWT
-    const payload = await verifyToken(token);
+    const payload = await verifyToken(token, c.env.JWT_SECRET);
 
     if (!payload) {
       return c.json({ error: 'Invalid or expired token' }, 401);
@@ -47,7 +48,7 @@ export async function optionalAuthMiddleware(c: Context<{ Bindings: Bindings }>,
     const token = extractToken(authHeader);
 
     if (token) {
-      const payload = await verifyToken(token);
+      const payload = await verifyToken(token, c.env.JWT_SECRET);
       if (payload) {
         c.set('user', payload);
       }
