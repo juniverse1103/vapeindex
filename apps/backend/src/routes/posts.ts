@@ -246,6 +246,77 @@ posts.post('/:id/comments', authMiddleware, async (c) => {
 });
 
 /**
+ * GET /api/posts/:id/comments
+ * Get all comments for a post
+ */
+posts.get('/:id/comments', async (c) => {
+  try {
+    const postId = c.req.param('id');
+
+    // Check if post exists
+    const post = await c.env.DB.prepare(
+      'SELECT id FROM posts WHERE id = ?'
+    ).bind(postId).first();
+
+    if (!post) {
+      return c.json({ error: 'Post not found' }, 404);
+    }
+
+    // Get all comments for the post
+    const { results } = await c.env.DB.prepare(`
+      SELECT
+        c.id,
+        c.parent_id,
+        c.content,
+        c.score,
+        c.created_at,
+        u.username as author,
+        u.karma as author_karma
+      FROM comments c
+      JOIN users u ON c.author_id = u.id
+      WHERE c.post_id = ?
+      ORDER BY c.created_at ASC
+    `).bind(postId).all();
+
+    // Build nested comment tree
+    const commentsById = new Map();
+    const rootComments: any[] = [];
+
+    // First pass: create all comment objects
+    results?.forEach((row: any) => {
+      const comment = {
+        id: row.id,
+        parentId: row.parent_id,
+        content: row.content,
+        score: row.score,
+        author: row.author,
+        authorKarma: row.author_karma,
+        createdAt: row.created_at,
+        replies: [],
+      };
+      commentsById.set(row.id, comment);
+    });
+
+    // Second pass: build tree structure
+    commentsById.forEach((comment) => {
+      if (comment.parentId) {
+        const parent = commentsById.get(comment.parentId);
+        if (parent) {
+          parent.replies.push(comment);
+        }
+      } else {
+        rootComments.push(comment);
+      }
+    });
+
+    return c.json({ comments: rootComments });
+  } catch (error) {
+    console.error('Get comments error:', error);
+    return c.json({ error: 'Failed to get comments' }, 500);
+  }
+});
+
+/**
  * POST /api/comments/:id/vote
  * Vote on a comment (requires auth)
  */

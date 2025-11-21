@@ -31,8 +31,13 @@ const { postId } = Astro.props;
   .replies { margin-left: 1.5rem; margin-top: 1rem; }
   .reply-form { display: none; margin-top: 0.5rem; }
   .reply-form.show { display: flex; flex-direction: column; gap: 0.5rem; }
-  .reply-form textarea { padding: 0.5rem; border: 1px solid var(--border); min-height: 60px; }
-  .reply-form button { align-self: flex-end; background: var(--brand); color: white; padding: 0.35rem 1rem; border: none; font-size: 0.875rem; cursor: pointer; }
+  .reply-form textarea { padding: 0.5rem; border: 1px solid var(--border); min-height: 60px; font-family: inherit; resize: vertical; width: 100%; }
+  .reply-form button[type="submit"] { background: var(--brand); color: white; padding: 0.35rem 1rem; border: none; font-size: 0.875rem; cursor: pointer; font-weight: 600; }
+  .reply-form .cancel-reply { background: none; color: var(--text-secondary); padding: 0.35rem 1rem; border: 1px solid var(--border); font-size: 0.875rem; cursor: pointer; }
+  .reply-form .cancel-reply:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+  .vote-comment-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 0.8125rem; font-weight: 600; padding: 0; }
+  .vote-comment-btn:hover { color: var(--brand); }
+  .comment-score { font-weight: 600; color: var(--text-primary); margin: 0 0.25rem; }
 </style>
 
 <script>
@@ -45,9 +50,139 @@ const { postId } = Astro.props;
   const textarea = form?.querySelector('textarea') as HTMLTextAreaElement;
   const list = section?.querySelector('.comments-list');
 
+  function formatTimeAgo(timestamp: number): string {
+    const now = Math.floor(Date.now() / 1000);
+    const age = now - timestamp;
+
+    if (age < 60) return `${age}s ago`;
+    if (age < 3600) return `${Math.floor(age / 60)}m ago`;
+    if (age < 86400) return `${Math.floor(age / 3600)}h ago`;
+    if (age < 2592000) return `${Math.floor(age / 86400)}d ago`;
+    if (age < 31536000) return `${Math.floor(age / 2592000)}mo ago`;
+    return `${Math.floor(age / 31536000)}y ago`;
+  }
+
+  function renderComment(comment: any, depth: number = 0): string {
+    const replyFormId = `reply-form-${comment.id}`;
+
+    return `
+      <div class="comment" style="margin-left: ${depth * 1.5}rem;">
+        <div class="comment-header">
+          <span class="comment-author">${comment.author}</span>
+          <span>${comment.authorKarma || 0} karma</span>
+          <span>•</span>
+          <span>${formatTimeAgo(comment.createdAt)}</span>
+        </div>
+        <div class="comment-content">${comment.content}</div>
+        <div class="comment-actions">
+          <button class="vote-comment-btn" data-comment-id="${comment.id}" data-value="1">▲ upvote</button>
+          <span class="comment-score" data-comment-id="${comment.id}">${comment.score}</span>
+          <button class="vote-comment-btn" data-comment-id="${comment.id}" data-value="-1">▼ downvote</button>
+          <button class="reply-btn" data-comment-id="${comment.id}">reply</button>
+        </div>
+        <form class="reply-form" id="${replyFormId}" data-parent-id="${comment.id}">
+          <textarea placeholder="Write your reply..." required></textarea>
+          <div style="display: flex; gap: 0.5rem; align-self: flex-end;">
+            <button type="submit">Reply</button>
+            <button type="button" class="cancel-reply">Cancel</button>
+          </div>
+        </form>
+        ${comment.replies && comment.replies.length > 0
+          ? `<div class="replies">${comment.replies.map((reply: any) => renderComment(reply, depth + 1)).join('')}</div>`
+          : ''}
+      </div>
+    `;
+  }
+
   async function loadComments() {
-    // For now, show placeholder - will implement GET comments endpoint later
-    if (list) list.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">No comments yet. Be the first!</p>';
+    try {
+      const res = await fetch(`${API_URL}/api/posts/${postId}/comments`);
+
+      if (!res.ok) {
+        if (list) list.innerHTML = '<p style="color: var(--text-secondary);">Failed to load comments.</p>';
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!data.comments || data.comments.length === 0) {
+        if (list) list.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">No comments yet. Be the first!</p>';
+        return;
+      }
+
+      if (list) {
+        list.innerHTML = data.comments.map((c: any) => renderComment(c, 0)).join('');
+        attachCommentEventListeners();
+      }
+    } catch (error) {
+      console.error('Load comments error:', error);
+      if (list) list.innerHTML = '<p style="color: var(--text-secondary);">Failed to load comments.</p>';
+    }
+  }
+
+  function attachCommentEventListeners() {
+    // Reply button handlers
+    document.querySelectorAll('.reply-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const commentId = btn.getAttribute('data-comment-id');
+        const replyForm = document.getElementById(`reply-form-${commentId}`) as HTMLFormElement;
+        if (replyForm) {
+          replyForm.classList.toggle('show');
+        }
+      });
+    });
+
+    // Cancel reply handlers
+    document.querySelectorAll('.cancel-reply').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const form = btn.closest('.reply-form') as HTMLFormElement;
+        if (form) {
+          form.classList.remove('show');
+          form.reset();
+        }
+      });
+    });
+
+    // Reply form submit handlers
+    document.querySelectorAll('.reply-form').forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formEl = e.target as HTMLFormElement;
+        const textarea = formEl.querySelector('textarea') as HTMLTextAreaElement;
+        const parentId = formEl.getAttribute('data-parent-id');
+
+        if (await postComment(textarea.value, parseInt(parentId!))) {
+          textarea.value = '';
+          formEl.classList.remove('show');
+        }
+      });
+    });
+
+    // Vote comment handlers
+    document.querySelectorAll('.vote-comment-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!isAuthenticated()) {
+          window.location.href = '/login';
+          return;
+        }
+
+        const commentId = btn.getAttribute('data-comment-id');
+        const value = parseInt(btn.getAttribute('data-value')!);
+        const token = localStorage.getItem('auth_token');
+
+        const res = await fetch(`${API_URL}/api/posts/comments/${commentId}/vote`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ value }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const scoreSpan = document.querySelector(`.comment-score[data-comment-id="${commentId}"]`);
+          if (scoreSpan) scoreSpan.textContent = data.score;
+        }
+      });
+    });
   }
 
   async function postComment(content: string, parentId?: number) {
