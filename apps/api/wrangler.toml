@@ -21,7 +21,19 @@ class_name = "TrendingCalculator"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["TrendingCalculator"]
+new_sqlite_classes = ["TrendingCalculator"]
 
 [env.production]
 name = "vapeindex-api-production"
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "vapeindex-db"
+database_id = "7132d9ed-eceb-4b67-b340-0a072a1108ed"
+
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "5cd8f247fd864875b86930be5fc98d35"
+
+[[env.production.durable_objects.bindings]]
+name = "TRENDING"
+class_name = "TrendingCalculator"
