@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import authRoutes from './routes/auth';
 import postsRoutes from './routes/posts';
 import moderationRoutes from './routes/moderation';
+import notificationsRoutes from './routes/notifications';
 import { authMiddleware } from './middleware/auth';
 
 type Bindings = {
@@ -30,6 +31,7 @@ app.use('/*', cors({
 app.route('/api/auth', authRoutes);
 app.route('/api/posts', postsRoutes);
 app.route('/api/moderation', moderationRoutes);
+app.route('/api/notifications', notificationsRoutes);
 
 // Health check
 app.get('/', (c) => {

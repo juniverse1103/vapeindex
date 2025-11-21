@@ -33,9 +33,21 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
         <a href="/search" class="nav-icon" title="Search">
           <Search size={16} />
         </a>
-        <a href="/notifications" class="nav-icon" title="Notifications">
-          <Bell size={16} />
-        </a>
+        <div class="notifications-wrapper">
+          <button id="notifications-btn" class="nav-icon notifications-btn" title="Notifications">
+            <Bell size={16} />
+            <span id="notif-badge" class="notif-badge" style="display: none;"></span>
+          </button>
+          <div id="notifications-dropdown" class="notifications-dropdown" style="display: none;">
+            <div class="notif-header">
+              <h3>Notifications</h3>
+              <button id="mark-all-read" class="mark-all-btn">Mark all read</button>
+            </div>
+            <div id="notifications-list" class="notifications-list">
+              <div class="notif-loading">Loading...</div>
+            </div>
+          </div>
+        </div>
         <a href="/saved" class="nav-icon" title="Saved">
           <Bookmark size={16} />
         </a>
@@ -123,6 +135,166 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
   $isAuthenticated.subscribe(() => {
     updateAuthState();
   });
+
+  // Notifications functionality
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+  const notificationsBtn = document.getElementById('notifications-btn');
+  const notificationsDropdown = document.getElementById('notifications-dropdown');
+  const notificationsList = document.getElementById('notifications-list');
+  const notifBadge = document.getElementById('notif-badge');
+  const markAllReadBtn = document.getElementById('mark-all-read');
+
+  let notificationsOpen = false;
+
+  // Fetch unread count
+  async function fetchUnreadCount() {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_URL}/api/notifications/unread-count`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.count > 0) {
+          notifBadge!.textContent = data.count > 99 ? '99+' : data.count.toString();
+          notifBadge!.style.display = 'flex';
+        } else {
+          notifBadge!.style.display = 'none';
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch unread count:', error);
+    }
+  }
+
+  // Fetch notifications
+  async function fetchNotifications() {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_URL}/api/notifications?limit=10`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        renderNotifications(data.notifications);
+      }
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+      notificationsList!.innerHTML = '<div class="notif-error">Failed to load notifications</div>';
+    }
+  }
+
+  // Render notifications
+  function renderNotifications(notifications: any[]) {
+    if (notifications.length === 0) {
+      notificationsList!.innerHTML = '<div class="notif-empty">No notifications</div>';
+      return;
+    }
+
+    notificationsList!.innerHTML = notifications.map(notif => `
+      <div class="notif-item ${notif.is_read ? '' : 'unread'}" data-id="${notif.id}" data-link="${notif.link}">
+        <div class="notif-content">
+          <div class="notif-text">${notif.content}</div>
+          <div class="notif-time">${formatNotifTime(notif.created_at)}</div>
+        </div>
+        ${!notif.is_read ? '<div class="notif-dot"></div>' : ''}
+      </div>
+    `).join('');
+
+    // Add click handlers
+    document.querySelectorAll('.notif-item').forEach(item => {
+      item.addEventListener('click', async () => {
+        const notifId = item.getAttribute('data-id');
+        const link = item.getAttribute('data-link');
+
+        // Mark as read
+        if (item.classList.contains('unread')) {
+          await markAsRead(notifId!);
+        }
+
+        // Navigate to link
+        window.location.href = link!;
+      });
+    });
+  }
+
+  // Mark notification as read
+  async function markAsRead(notifId: string) {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
+
+    try {
+      await fetch(`${API_URL}/api/notifications/${notifId}/read`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      fetchUnreadCount();
+    } catch (error) {
+      console.error('Failed to mark as read:', error);
+    }
+  }
+
+  // Mark all as read
+  markAllReadBtn?.addEventListener('click', async () => {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
+
+    try {
+      await fetch(`${API_URL}/api/notifications/mark-all-read`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      fetchUnreadCount();
+      fetchNotifications();
+    } catch (error) {
+      console.error('Failed to mark all as read:', error);
+    }
+  });
+
+  // Toggle notifications dropdown
+  notificationsBtn?.addEventListener('click', () => {
+    notificationsOpen = !notificationsOpen;
+    notificationsDropdown!.style.display = notificationsOpen ? 'block' : 'none';
+
+    if (notificationsOpen) {
+      fetchNotifications();
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (notificationsOpen &&
+        !notificationsBtn?.contains(e.target as Node) &&
+        !notificationsDropdown?.contains(e.target as Node)) {
+      notificationsOpen = false;
+      notificationsDropdown!.style.display = 'none';
+    }
+  });
+
+  // Format notification time
+  function formatNotifTime(timestamp: number): string {
+    const now = Math.floor(Date.now() / 1000);
+    const age = now - timestamp;
+
+    if (age < 60) return 'just now';
+    if (age < 3600) return `${Math.floor(age / 60)}m ago`;
+    if (age < 86400) return `${Math.floor(age / 3600)}h ago`;
+    if (age < 2592000) return `${Math.floor(age / 86400)}d ago`;
+    return `${Math.floor(age / 2592000)}mo ago`;
+  }
+
+  // Fetch unread count on load (if authenticated)
+  if (getStoredUser()) {
+    fetchUnreadCount();
+    // Poll for new notifications every 30 seconds
+    setInterval(fetchUnreadCount, 30000);
+  }
 </script>
 
 <style>
@@ -309,6 +481,144 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
     display: block;
   }
 
+  /* Notifications */
+  .notifications-wrapper {
+    position: relative;
+  }
+
+  .notifications-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+  }
+
+  .notif-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.625rem;
+    font-weight: 700;
+    padding: 0.125rem 0.3rem;
+    border-radius: 10px;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .notifications-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 360px;
+    max-height: 480px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  .notif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .notif-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .mark-all-btn {
+    background: none;
+    border: none;
+    color: var(--brand);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .mark-all-btn:hover {
+    text-decoration: underline;
+  }
+
+  .notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .notif-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .notif-item:hover {
+    background: var(--bg-hover);
+  }
+
+  .notif-item.unread {
+    background: rgba(124, 58, 237, 0.05);
+  }
+
+  .notif-item:last-child {
+    border-bottom: none;
+  }
+
+  .notif-content {
+    flex: 1;
+  }
+
+  .notif-text {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+  }
+
+  .notif-time {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .notif-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--brand);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .notif-loading,
+  .notif-empty,
+  .notif-error {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .notif-error {
+    color: #ef4444;
+  }
+
   /* Mobile Responsive */
   @media (max-width: 768px) {
     .hamburger {
@@ -375,6 +685,14 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
       border-radius: 0.375rem;
       text-align: center;
       font-weight: 700;
+    }
+
+    .notifications-dropdown {
+      width: calc(100vw - 2rem);
+      max-width: 360px;
+      right: auto;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
 

@@ -2,6 +2,7 @@
 
 import { Hono } from 'hono';
 import { authMiddleware } from '../middleware/auth';
+import { notifyCommentReply, notifyPostComment } from '../lib/notifications';
 
 type Bindings = {
   DB: D1Database;
@@ -233,6 +234,20 @@ posts.post('/:id/comments', authMiddleware, async (c) => {
     await c.env.DB.prepare(
       'UPDATE posts SET comment_count = comment_count + 1 WHERE id = ?'
     ).bind(postId).run();
+
+    // Get commenter username for notifications
+    const commenter = await c.env.DB.prepare(
+      'SELECT username FROM users WHERE id = ?'
+    ).bind(user.userId).first() as any;
+
+    // Send notifications
+    if (parentId) {
+      // Reply to a comment - notify parent comment author
+      await notifyCommentReply(c.env.DB, parseInt(parentId), commenter.username, parseInt(postId), commentId);
+    } else {
+      // Top-level comment on post - notify post author
+      await notifyPostComment(c.env.DB, parseInt(postId), commenter.username, commentId);
+    }
 
     return c.json({
       success: true,
