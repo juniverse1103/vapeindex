@@ -14,6 +14,12 @@ binding = "SESSIONS"
 id = "preview_id"
 preview_id = "preview_id"
 
+# R2 bucket for images (local dev uses preview)
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "vapeindex-images"
+preview_bucket_name = "vapeindex-images"
+
 # Development Environment (remote dev database)
 [env.dev]
 name = "vapeindex-backend-dev"
@@ -33,3 +39,7 @@ database_id = "64e77794-8b09-48cd-b1a7-1cf83286c8d4"
 [[env.production.kv_namespaces]]
 binding = "SESSIONS"
 id = "45da4751cdf5441e85dd8d76c58b1ed5"
+
+[[env.production.r2_buckets]]
+binding = "IMAGES"
+bucket_name = "vapeindex-images"

@@ -127,6 +127,15 @@ const oldPosts = [
                   <a href={`/post/${post.id}`}>{post.title}</a>
                 </h2>
 
+                <!-- Image Thumbnail -->
+                {post.imageUrl && (
+                  <div class="post-thumbnail">
+                    <a href={`/post/${post.id}`}>
+                      <img src={post.imageUrl} alt={post.title} loading="lazy" />
+                    </a>
+                  </div>
+                )}
+
                 <!-- Actions -->
                 <div class="post-actions">
                   <a href={`/post/${post.id}`} class="action-btn action-comment">
@@ -405,6 +414,26 @@ const oldPosts = [
       .filter-tab:not(.active) {
         font-size: 0.6875rem;
       }
+    }
+
+    /* Image thumbnail */
+    .post-thumbnail {
+      margin: 0.75rem 0;
+      max-height: 300px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .post-thumbnail img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      max-height: 300px;
+    }
+
+    .post-thumbnail a {
+      display: block;
     }
   </style>
 

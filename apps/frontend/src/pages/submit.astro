@@ -604,4 +604,168 @@ const boards = [
       titleCount.textContent = titleInput.value.length.toString();
     });
   }
+
+  // Image upload functionality
+  import { isAuthenticated } from '../lib/auth';
+
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+
+  if (!isAuthenticated()) {
+    window.location.href = '/login';
+  }
+
+  let selectedImage: File | null = null;
+  let uploadedImageUrl: string | null = null;
+
+  const imageInput = document.getElementById('image') as HTMLInputElement;
+  const uploadArea = document.querySelector('.upload-area') as HTMLElement;
+
+  // Handle image selection
+  imageInput?.addEventListener('change', async (e) => {
+    const files = (e.target as HTMLInputElement).files;
+    if (files && files.length > 0) {
+      await handleImageUpload(files[0]);
+    }
+  });
+
+  // Drag and drop
+  uploadArea?.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.style.borderColor = 'var(--brand)';
+  });
+
+  uploadArea?.addEventListener('dragleave', () => {
+    uploadArea.style.borderColor = 'var(--border)';
+  });
+
+  uploadArea?.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    uploadArea.style.borderColor = 'var(--border)';
+
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) {
+      await handleImageUpload(files[0]);
+    }
+  });
+
+  async function handleImageUpload(file: File) {
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.');
+      return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File too large. Maximum size is 10MB.');
+      return;
+    }
+
+    selectedImage = file;
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const uploadLabel = uploadArea.querySelector('.upload-label') as HTMLElement;
+      uploadLabel.innerHTML = `
+        <img src="${e.target!.result}" style="max-width: 100%; max-height: 300px; display: block; margin: 0 auto;" />
+        <small style="margin-top: 0.5rem;">Click to change image</small>
+      `;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Form submission
+  const submitForm = document.querySelector('.submit-form') as HTMLFormElement;
+  const submitBtn = submitForm?.querySelector('.btn-submit') as HTMLButtonElement;
+
+  submitForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const board = (document.getElementById('board') as HTMLSelectElement).value;
+    const title = (document.getElementById('title') as HTMLInputElement).value;
+
+    if (!board || !title) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    const activeTab = document.querySelector('.type-tab.active');
+    const postType = activeTab?.getAttribute('data-type');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Posting...';
+
+    try {
+      const token = localStorage.getItem('auth_token');
+
+      // Upload image if it's an image post
+      if (postType === 'image' && selectedImage) {
+        const formData = new FormData();
+        formData.append('image', selectedImage);
+
+        const uploadResponse = await fetch(`${API_URL}/api/upload/image`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        const uploadData = await uploadResponse.json();
+        uploadedImageUrl = uploadData.url;
+      }
+
+      // Create post
+      const postData: any = {
+        title,
+        boardSlug: board
+      };
+
+      if (postType === 'link') {
+        const url = (document.getElementById('url') as HTMLInputElement).value;
+        if (!url) {
+          throw new Error('Please enter a URL');
+        }
+        postData.url = url;
+      } else if (postType === 'image') {
+        if (!uploadedImageUrl) {
+          throw new Error('Please upload an image');
+        }
+        postData.imageUrl = uploadedImageUrl;
+      } else {
+        const content = (document.getElementById('content') as HTMLTextAreaElement).value;
+        if (content) {
+          postData.content = content;
+        }
+      }
+
+      const response = await fetch(`${API_URL}/api/posts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(postData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        window.location.href = `/post/${data.postId}`;
+      } else {
+        throw new Error(data.error || 'Failed to create post');
+      }
+    } catch (error: any) {
+      console.error('Submit error:', error);
+      alert(error.message || 'Failed to create post');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Post';
+    }
+  });
 </script>

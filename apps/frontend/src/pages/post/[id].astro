@@ -58,7 +58,11 @@ try {
 
             <h1 class="post-title">{post.title}</h1>
 
-            {post.url ? (
+            {post.imageUrl ? (
+              <div class="post-image">
+                <img src={post.imageUrl} alt={post.title} loading="lazy" />
+              </div>
+            ) : post.url ? (
               <div class="post-url">
                 <a href={post.url} target="_blank" rel="noopener noreferrer" class="external-link">
                   {post.url}
@@ -133,6 +137,18 @@ try {
     margin: 0 0 1rem 0;
     line-height: 1.3;
     color: var(--text-primary);
+  }
+
+  .post-image {
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .post-image img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   .post-url {

@@ -18,7 +18,7 @@ const posts = new Hono<{ Bindings: Bindings }>();
 posts.post('/', authMiddleware, async (c) => {
   try {
     const user = c.get('user');
-    const { title, url, content, boardSlug } = await c.req.json();
+    const { title, url, content, imageUrl, boardSlug } = await c.req.json();
 
     // Validate input
     if (!title || !boardSlug) {
@@ -29,13 +29,14 @@ posts.post('/', authMiddleware, async (c) => {
       return c.json({ error: 'Title must be between 3 and 300 characters' }, 400);
     }
 
-    // Must have either URL or content, not both
-    if (url && content) {
-      return c.json({ error: 'Post can have either URL or content, not both' }, 400);
+    // Must have either URL, content, or image - only one
+    const contentTypes = [url, content, imageUrl].filter(Boolean);
+    if (contentTypes.length > 1) {
+      return c.json({ error: 'Post can have either URL, content, or image - not multiple' }, 400);
     }
 
-    if (!url && !content) {
-      return c.json({ error: 'Post must have either URL or content' }, 400);
+    if (contentTypes.length === 0) {
+      return c.json({ error: 'Post must have either URL, content, or image' }, 400);
     }
 
     // Validate URL if provided
@@ -58,9 +59,9 @@ posts.post('/', authMiddleware, async (c) => {
 
     // Create post
     const result = await c.env.DB.prepare(`
-      INSERT INTO posts (title, url, content, board_id, author_id, score, comment_count, view_count)
-      VALUES (?, ?, ?, ?, ?, 1, 0, 0)
-    `).bind(title, url || null, content || null, board.id, user.userId).run();
+      INSERT INTO posts (title, url, content, image_url, board_id, author_id, score, comment_count, view_count)
+      VALUES (?, ?, ?, ?, ?, ?, 1, 0, 0)
+    `).bind(title, url || null, content || null, imageUrl || null, board.id, user.userId).run();
 
     const postId = result.meta.last_row_id;
 

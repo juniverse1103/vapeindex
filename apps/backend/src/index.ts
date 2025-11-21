@@ -4,11 +4,13 @@ import authRoutes from './routes/auth';
 import postsRoutes from './routes/posts';
 import moderationRoutes from './routes/moderation';
 import notificationsRoutes from './routes/notifications';
+import uploadRoutes from './routes/upload';
 import { authMiddleware } from './middleware/auth';
 
 type Bindings = {
   DB: D1Database;
   SESSIONS: KVNamespace;
+  IMAGES: R2Bucket;
   JWT_SECRET: string;
 };
 
@@ -32,6 +34,8 @@ app.route('/api/auth', authRoutes);
 app.route('/api/posts', postsRoutes);
 app.route('/api/moderation', moderationRoutes);
 app.route('/api/notifications', notificationsRoutes);
+app.route('/api/upload', uploadRoutes);
+app.route('/api', uploadRoutes); // For /api/images/:key route
 
 // Health check
 app.get('/', (c) => {
@@ -126,6 +130,7 @@ app.get('/api/posts', async (c) => {
       p.id,
       p.title,
       p.url,
+      p.image_url,
       p.score,
       p.comment_count as comments,
       p.view_count as views,
@@ -186,6 +191,7 @@ app.get('/api/posts', async (c) => {
       id: p.id.toString(),
       title: p.title,
       url: p.url,
+      imageUrl: p.image_url,
       board: p.board,
       boardSlug: p.board_slug,
       boardColor: p.board_color,
@@ -231,6 +237,7 @@ app.get('/api/posts/:id', async (c) => {
     title: post.title,
     url: post.url,
     content: post.content,
+    imageUrl: post.image_url,
     board: post.board,
     boardSlug: post.board_slug,
     boardColor: post.board_color,
@@ -348,6 +355,7 @@ app.get('/api/search', async (c) => {
       p.id,
       p.title,
       p.url,
+      p.image_url,
       p.score,
       p.comment_count as comments,
       p.view_count as views,
@@ -389,6 +397,7 @@ app.get('/api/search', async (c) => {
       id: p.id.toString(),
       title: p.title,
       url: p.url,
+      imageUrl: p.image_url,
       board: p.board,
       boardSlug: p.board_slug,
       boardColor: p.board_color,
