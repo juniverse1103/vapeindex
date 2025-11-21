@@ -581,4 +581,133 @@ posts.post('/comments/:id/vote', authMiddleware, async (c) => {
   }
 });
 
+/**
+ * POST /api/posts/:id/save
+ * Save a post (requires auth)
+ */
+posts.post('/:id/save', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const postId = c.req.param('id');
+
+    // Check if post exists
+    const post = await c.env.DB.prepare(
+      'SELECT id FROM posts WHERE id = ?'
+    ).bind(postId).first();
+
+    if (!post) {
+      return c.json({ error: 'Post not found' }, 404);
+    }
+
+    // Check if already saved
+    const existing = await c.env.DB.prepare(
+      'SELECT id FROM saved_posts WHERE user_id = ? AND post_id = ?'
+    ).bind(user.userId, postId).first();
+
+    if (existing) {
+      return c.json({ message: 'Post already saved', saved: true });
+    }
+
+    // Save the post
+    await c.env.DB.prepare(
+      'INSERT INTO saved_posts (user_id, post_id) VALUES (?, ?)'
+    ).bind(user.userId, postId).run();
+
+    return c.json({ success: true, message: 'Post saved', saved: true });
+  } catch (error) {
+    console.error('Save post error:', error);
+    return c.json({ error: 'Failed to save post' }, 500);
+  }
+});
+
+/**
+ * DELETE /api/posts/:id/save
+ * Unsave a post (requires auth)
+ */
+posts.delete('/:id/save', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const postId = c.req.param('id');
+
+    // Remove the save
+    await c.env.DB.prepare(
+      'DELETE FROM saved_posts WHERE user_id = ? AND post_id = ?'
+    ).bind(user.userId, postId).run();
+
+    return c.json({ success: true, message: 'Post unsaved', saved: false });
+  } catch (error) {
+    console.error('Unsave post error:', error);
+    return c.json({ error: 'Failed to unsave post' }, 500);
+  }
+});
+
+/**
+ * GET /api/posts/saved
+ * Get all saved posts for the current user (requires auth)
+ */
+posts.get('/saved', authMiddleware, async (c) => {
+  try {
+    const user = c.get('user');
+    const limit = parseInt(c.req.query('limit') || '50');
+    const offset = parseInt(c.req.query('offset') || '0');
+
+    const { results } = await c.env.DB.prepare(`
+      SELECT
+        p.id,
+        p.title,
+        p.url,
+        p.score,
+        p.comment_count as comments,
+        p.view_count as views,
+        p.created_at,
+        b.slug as board_slug,
+        b.name as board,
+        b.color as board_color,
+        u.username as author,
+        u.karma as author_karma,
+        sp.created_at as saved_at
+      FROM saved_posts sp
+      JOIN posts p ON sp.post_id = p.id
+      JOIN boards b ON p.board_id = b.id
+      JOIN users u ON p.author_id = u.id
+      WHERE sp.user_id = ?
+      ORDER BY sp.created_at DESC
+      LIMIT ? OFFSET ?
+    `).bind(user.userId, limit, offset).all();
+
+    // Format posts
+    const now = Math.floor(Date.now() / 1000);
+    const posts = results?.map(p => {
+      const age = now - p.created_at;
+      let time = '';
+      if (age < 3600) time = `${Math.floor(age / 60)}m`;
+      else if (age < 86400) time = `${Math.floor(age / 3600)}h`;
+      else if (age < 2592000) time = `${Math.floor(age / 86400)}d`;
+      else if (age < 31536000) time = `${Math.floor(age / 2592000)}mo`;
+      else time = `${Math.floor(age / 31536000)}y`;
+
+      return {
+        id: p.id.toString(),
+        title: p.title,
+        url: p.url,
+        board: p.board,
+        boardSlug: p.board_slug,
+        boardColor: p.board_color,
+        score: p.score,
+        comments: p.comments,
+        views: p.views,
+        author: p.author,
+        authorKarma: p.author_karma,
+        time,
+        savedAt: p.saved_at,
+      };
+    }) || [];
+
+    return c.json({ posts, count: posts.length });
+  } catch (error) {
+    console.error('Get saved posts error:', error);
+    return c.json({ error: 'Failed to get saved posts' }, 500);
+  }
+});
+
 export default posts;

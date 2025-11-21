@@ -1,57 +1,31 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import PageLayout from '../components/PageLayout.astro';
-
-const savedPosts = [
-  { id: '7', title: 'Battery safety - what EVERY vaper needs to know', board: 'Mods & Tanks', boardSlug: 'mods', score: 392, comments: 156, time: '16h' },
-  { id: '2', title: 'PSA: Fake Elf Bars flooding the market - How to spot them', board: 'Disposables', boardSlug: 'disposables', score: 512, comments: 143, time: '5h' },
-];
+import { MessageSquare, Eye, Bookmark } from 'lucide-astro';
 ---
 
 <Layout title="Saved Posts - VapeIndex">
   <Header />
+
   <main class="main-content">
-    <PageLayout title="Saved Posts" description="Posts you've saved for later">
-      <div class="posts-container">
-        {savedPosts.map(post => (
-          <article class="post-card">
-            <div class="vote-column">
-              <span class="vote-score">{post.score}</span>
-            </div>
-
-            <div class="post-content">
-              <div class="post-meta">
-                <a href={`/b/${post.boardSlug}`} class="board-tag">b/{post.boardSlug}</a>
-                <span class="meta-separator">•</span>
-                <time class="post-time">{post.time}</time>
-              </div>
-
-              <h2 class="post-title">
-                <a href={`/post/${post.id}`}>{post.title}</a>
-              </h2>
-
-              <div class="post-actions">
-                <a href={`/post/${post.id}`} class="action-btn">
-                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L3.586 12H3a1 1 0 01-1-1V3z"/>
-                  </svg>
-                  <span>{post.comments}</span>
-                </a>
-                <button class="action-btn action-unsave">unsave</button>
-              </div>
-            </div>
-          </article>
-        ))}
-
-        {savedPosts.length === 0 && (
-          <div class="empty-state">
-            <p>You haven't saved any posts yet.</p>
-            <a href="/">Browse posts</a>
-          </div>
-        )}
+    <div class="saved-container">
+      <div class="saved-header">
+        <h1>Saved Posts</h1>
+        <p>Posts you've saved for later</p>
       </div>
-    </PageLayout>
+
+      <div id="posts-container" class="posts-list">
+        <div class="loading">Loading your saved posts...</div>
+      </div>
+
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <Bookmark size={48} />
+        <p>You haven't saved any posts yet</p>
+        <a href="/" class="browse-link">Browse posts</a>
+      </div>
+    </div>
   </main>
 </Layout>
 
@@ -59,31 +33,331 @@ const savedPosts = [
   .main-content {
     background: var(--bg-secondary);
     min-height: 100vh;
+    padding: 1rem;
+  }
+
+  .saved-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .saved-header {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .saved-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+  }
+
+  .saved-header p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .loading {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+
+  .post-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .post-card:hover {
+    border-color: var(--border-hover);
+  }
+
+  .post-score {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .post-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .board-link {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .board-link:hover {
+    text-decoration: underline;
+  }
+
+  .author-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .author-link:hover {
+    color: var(--text-primary);
+  }
+
+  .post-title {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .post-title a {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    line-height: 1.4;
+  }
+
+  .post-title a:hover {
+    color: var(--brand);
+  }
+
+  .post-url {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--brand);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+  }
+
+  .post-url:hover {
+    text-decoration: underline;
+  }
+
+  .post-actions {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  a.action-btn:hover,
+  button.action-btn:hover {
+    color: var(--brand);
   }
 
   .action-unsave {
-    color: var(--error) !important;
+    color: #ef4444;
+  }
+
+  .action-unsave:hover {
+    color: #dc2626;
   }
 
   .empty-state {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: 4rem 2rem;
     text-align: center;
-    padding: 3rem 1rem;
     color: var(--text-tertiary);
   }
 
+  .empty-state svg {
+    margin: 0 auto 1rem;
+    opacity: 0.5;
+  }
+
   .empty-state p {
-    margin: 0 0 1rem 0;
-    font-size: 0.875rem;
+    font-size: 1.125rem;
+    margin: 0 0 1.5rem 0;
+    color: var(--text-secondary);
   }
 
-  .empty-state a {
-    color: var(--brand);
+  .browse-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--brand);
+    color: white;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.875rem;
+    font-weight: 700;
+    transition: opacity 0.2s;
   }
 
-  .empty-state a:hover {
-    text-decoration: underline;
+  .browse-link:hover {
+    opacity: 0.9;
+  }
+
+  @media (max-width: 768px) {
+    .saved-header {
+      padding: 1.5rem;
+    }
+    .post-card {
+      flex-direction: column;
+    }
   }
 </style>
+
+<script>
+  import { isAuthenticated } from '../lib/auth';
+
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+
+  // Check authentication
+  if (!isAuthenticated()) {
+    window.location.href = '/login';
+  }
+
+  // Load saved posts
+  async function loadSavedPosts() {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_URL}/api/posts/saved`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const postsContainer = document.getElementById('posts-container');
+      const emptyState = document.getElementById('empty-state');
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.posts.length === 0) {
+          if (postsContainer) postsContainer.style.display = 'none';
+          if (emptyState) emptyState.style.display = 'block';
+          return;
+        }
+
+        // Render posts
+        if (postsContainer) {
+          postsContainer.innerHTML = data.posts.map((post: any) => `
+            <article class="post-card">
+              <div class="post-score">${post.score}</div>
+              <div class="post-content">
+                <div class="post-meta">
+                  <a href="/b/${post.boardSlug}" class="board-link">b/${post.boardSlug}</a>
+                  <span>•</span>
+                  <a href="/user/${post.author}" class="author-link">u/${post.author}</a>
+                  <span>•</span>
+                  <span>${post.time}</span>
+                </div>
+                <h2 class="post-title">
+                  <a href="/post/${post.id}">${post.title}</a>
+                </h2>
+                ${post.url ? `
+                  <a href="${post.url}" class="post-url" target="_blank" rel="noopener noreferrer">
+                    ${post.url} ↗
+                  </a>
+                ` : ''}
+                <div class="post-actions">
+                  <a href="/post/${post.id}" class="action-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>${post.comments}</span>
+                  </a>
+                  <span class="action-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span>${post.views.toLocaleString()}</span>
+                  </span>
+                  <button class="action-btn action-unsave" data-post-id="${post.id}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Unsave</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          `).join('');
+
+          // Attach unsave handlers
+          document.querySelectorAll('.action-unsave').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const postId = btn.getAttribute('data-post-id');
+              await unsavePost(postId!);
+            });
+          });
+        }
+      } else {
+        if (postsContainer) {
+          postsContainer.innerHTML = '<div class="loading">Failed to load saved posts</div>';
+        }
+      }
+    } catch (error) {
+      console.error('Load saved posts error:', error);
+      const postsContainer = document.getElementById('posts-container');
+      if (postsContainer) {
+        postsContainer.innerHTML = '<div class="loading">Failed to load saved posts</div>';
+      }
+    }
+  }
+
+  // Unsave post
+  async function unsavePost(postId: string) {
+    if (!confirm('Remove this post from your saved list?')) return;
+
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_URL}/api/posts/${postId}/save`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        // Reload the page to refresh the list
+        window.location.reload();
+      } else {
+        alert('Failed to unsave post');
+      }
+    } catch (error) {
+      console.error('Unsave post error:', error);
+      alert('Failed to unsave post');
+    }
+  }
+
+  // Load posts on page load
+  loadSavedPosts();
+</script>
