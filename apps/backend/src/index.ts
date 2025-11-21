@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import authRoutes from './routes/auth';
 import postsRoutes from './routes/posts';
+import { authMiddleware } from './middleware/auth';
 
 type Bindings = {
   DB: D1Database;
@@ -53,6 +54,60 @@ app.get('/api/boards', async (c) => {
     posts: b.posts,
     members: b.members
   })) || []);
+});
+
+// Create a new board
+app.post('/api/boards', authMiddleware, async (c) => {
+  const user = c.get('user');
+  const { name, slug, description, color } = await c.req.json();
+
+  // Validate required fields
+  if (!name || !slug || !description) {
+    return c.json({ error: 'Missing required fields: name, slug, description' }, 400);
+  }
+
+  // Validate slug format (lowercase, alphanumeric, hyphens only)
+  if (!/^[a-z0-9-]+$/.test(slug)) {
+    return c.json({ error: 'Slug must contain only lowercase letters, numbers, and hyphens' }, 400);
+  }
+
+  // Check if slug already exists
+  const existing = await c.env.DB.prepare(
+    'SELECT id FROM boards WHERE slug = ?'
+  ).bind(slug).first();
+
+  if (existing) {
+    return c.json({ error: 'A board with this slug already exists' }, 409);
+  }
+
+  // Insert new board
+  try {
+    const result = await c.env.DB.prepare(`
+      INSERT INTO boards (name, slug, description, color, created_by, created_at)
+      VALUES (?, ?, ?, ?, ?, unixepoch())
+    `).bind(
+      name,
+      slug,
+      description,
+      color || '#7C3AED',
+      user.userId
+    ).run();
+
+    return c.json({
+      success: true,
+      message: 'Board created successfully',
+      board: {
+        id: result.meta.last_row_id,
+        name,
+        slug,
+        description,
+        color: color || '#7C3AED'
+      }
+    }, 201);
+  } catch (error: any) {
+    console.error('Create board error:', error);
+    return c.json({ error: 'Failed to create board' }, 500);
+  }
 });
 
 // Get posts with filters
