@@ -1,0 +1,81 @@
+---
+const { postId } = Astro.props;
+---
+
+<div class="comments-section" data-post-id={postId}>
+  <h3>Comments</h3>
+
+  <div class="comment-form-container">
+    <form class="comment-form">
+      <textarea placeholder="What are your thoughts?" required></textarea>
+      <button type="submit">Comment</button>
+    </form>
+  </div>
+
+  <div class="comments-list"></div>
+</div>
+
+<style>
+  .comments-section { margin-top: 2rem; }
+  h3 { font-size: 1.25rem; margin-bottom: 1rem; }
+  .comment-form { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
+  .comment-form textarea { width: 100%; min-height: 100px; padding: 0.75rem; border: 1px solid var(--border); resize: vertical; font-family: inherit; }
+  .comment-form button { align-self: flex-end; background: var(--brand); color: white; padding: 0.5rem 1.5rem; border: none; font-weight: 600; cursor: pointer; }
+  .comment { border-left: 2px solid var(--border); padding-left: 1rem; margin-bottom: 1rem; }
+  .comment-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--text-secondary); }
+  .comment-author { font-weight: 600; color: var(--text-primary); }
+  .comment-content { margin-bottom: 0.5rem; line-height: 1.6; }
+  .comment-actions { display: flex; gap: 1rem; font-size: 0.8125rem; }
+  .comment-actions button { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; }
+  .comment-actions button:hover { color: var(--brand); }
+  .replies { margin-left: 1.5rem; margin-top: 1rem; }
+  .reply-form { display: none; margin-top: 0.5rem; }
+  .reply-form.show { display: flex; flex-direction: column; gap: 0.5rem; }
+  .reply-form textarea { padding: 0.5rem; border: 1px solid var(--border); min-height: 60px; }
+  .reply-form button { align-self: flex-end; background: var(--brand); color: white; padding: 0.35rem 1rem; border: none; font-size: 0.875rem; cursor: pointer; }
+</style>
+
+<script>
+  import { isAuthenticated } from '../lib/auth';
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+
+  const section = document.querySelector('.comments-section');
+  const postId = section?.getAttribute('data-post-id');
+  const form = section?.querySelector('.comment-form') as HTMLFormElement;
+  const textarea = form?.querySelector('textarea') as HTMLTextAreaElement;
+  const list = section?.querySelector('.comments-list');
+
+  async function loadComments() {
+    // For now, show placeholder - will implement GET comments endpoint later
+    if (list) list.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">No comments yet. Be the first!</p>';
+  }
+
+  async function postComment(content: string, parentId?: number) {
+    if (!isAuthenticated()) {
+      window.location.href = '/login';
+      return;
+    }
+
+    const token = localStorage.getItem('auth_token');
+    const res = await fetch(`${API_URL}/api/posts/${postId}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ content, parentId }),
+    });
+
+    if (res.ok) {
+      loadComments();
+      return true;
+    }
+    return false;
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (await postComment(textarea.value)) {
+      textarea.value = '';
+    }
+  });
+
+  loadComments();
+</script>

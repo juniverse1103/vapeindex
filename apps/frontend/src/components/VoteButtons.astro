@@ -1,0 +1,66 @@
+---
+const { postId, score, type = 'post' } = Astro.props;
+---
+
+<div class="vote-controls" data-id={postId} data-type={type} data-score={score}>
+  <button class="vote-btn up" aria-label="Upvote">▲</button>
+  <span class="score">{score}</span>
+  <button class="vote-btn down" aria-label="Downvote">▼</button>
+</div>
+
+<style>
+  .vote-controls { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+  .vote-btn { background: none; border: none; cursor: pointer; font-size: 1.25rem; color: var(--text-tertiary); padding: 0.25rem; }
+  .vote-btn:hover { color: var(--brand); }
+  .vote-btn.voted { color: var(--brand); font-weight: bold; }
+  .score { font-weight: 700; font-size: 0.875rem; }
+</style>
+
+<script>
+  import { isAuthenticated } from '../lib/auth';
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+
+  document.querySelectorAll('.vote-controls').forEach(el => {
+    const id = el.getAttribute('data-id');
+    const type = el.getAttribute('data-type');
+    const upBtn = el.querySelector('.up');
+    const downBtn = el.querySelector('.down');
+    const scoreSpan = el.querySelector('.score');
+
+    async function vote(value: number) {
+      if (!isAuthenticated()) {
+        window.location.href = '/login';
+        return;
+      }
+
+      const token = localStorage.getItem('auth_token');
+      const endpoint = type === 'post'
+        ? `${API_URL}/api/posts/${id}/vote`
+        : `${API_URL}/api/posts/comments/${id}/vote`;
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ value }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        scoreSpan!.textContent = data.score;
+
+        upBtn!.classList.toggle('voted', data.userVote === 1);
+        downBtn!.classList.toggle('voted', data.userVote === -1);
+      }
+    }
+
+    upBtn?.addEventListener('click', () => {
+      const current = upBtn.classList.contains('voted');
+      vote(current ? 0 : 1);
+    });
+
+    downBtn?.addEventListener('click', () => {
+      const current = downBtn.classList.contains('voted');
+      vote(current ? 0 : -1);
+    });
+  });
+</script>

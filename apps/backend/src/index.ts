@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import authRoutes from './routes/auth';
+import postsRoutes from './routes/posts';
 
 type Bindings = {
   DB: D1Database;
@@ -22,8 +23,9 @@ app.use('/*', cors({
   exposeHeaders: ['X-Session-ID'],
 }));
 
-// Mount auth routes
+// Mount routes
 app.route('/api/auth', authRoutes);
+app.route('/api/posts', postsRoutes);
 
 // Health check
 app.get('/', (c) => {

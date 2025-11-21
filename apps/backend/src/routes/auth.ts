@@ -108,9 +108,10 @@ auth.post('/login', async (c) => {
     }
 
     // Check if email is verified
-    if (!user.email_verified) {
-      return c.json({ error: 'Please verify your email before logging in' }, 403);
-    }
+    // TODO: Re-enable after DNS is configured
+    // if (!user.email_verified) {
+    //   return c.json({ error: 'Please verify your email before logging in' }, 403);
+    // }
 
     // Generate JWT
     const token = await generateToken({
