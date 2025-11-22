@@ -304,7 +304,8 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(8px);
   }
 
   .header-container {
@@ -313,7 +314,7 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
     justify-content: space-between;
     max-width: var(--max-width-full);
     margin: 0 auto;
-    padding: 0 var(--container-padding);
+    padding: 0 var(--space-4);
     position: relative;
   }
 
@@ -387,11 +388,13 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
   .nav-links a {
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    padding: 0 0.5rem;
-    border-left: 1px solid rgba(255,255,255,0.2);
+    padding: 0 var(--space-2);
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
     white-space: nowrap;
-    transition: color 0.1s ease;
-    font-weight: 400;
+    transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: var(--font-regular);
+    font-size: var(--text-sm);
   }
 
   .nav-links a:first-child {
@@ -400,11 +403,16 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
 
   .nav-links a:hover {
     color: white;
+    opacity: 1;
+  }
+
+  .nav-links a:active {
+    opacity: 0.7;
   }
 
   .nav-auth {
     margin-left: auto;
-    font-size: 0.8125rem;
+    font-size: var(--text-sm);
     display: flex;
     align-items: center;
     gap: var(--space-3);
@@ -415,11 +423,18 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
     display: flex;
     align-items: center;
     text-decoration: none;
-    transition: color 0.1s ease;
+    transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
   }
 
   .nav-icon:hover {
     color: white;
+    opacity: 1;
+  }
+
+  .nav-icon:active {
+    opacity: 0.7;
   }
 
   .nav-icon :global(svg) {
@@ -427,19 +442,26 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
   }
 
   .nav-separator {
-    color: rgba(255, 255, 255, 0.3);
-    font-weight: 300;
+    color: rgba(255, 255, 255, 0.25);
+    font-weight: var(--font-regular);
+    user-select: none;
   }
 
   .nav-link {
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    font-weight: 400;
-    transition: color 0.1s ease;
+    font-weight: var(--font-regular);
+    transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .nav-link:hover {
     color: white;
+    opacity: 1;
+  }
+
+  .nav-link:active {
+    opacity: 0.7;
   }
 
   .auth-state {
@@ -514,13 +536,13 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
 
   .notifications-dropdown {
     position: absolute;
-    top: calc(100% + 8px);
+    top: calc(100% + var(--space-2));
     right: 0;
     width: 360px;
     max-height: 480px;
     background: var(--bg-elevated);
     border: 1px solid var(--border-primary);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
     z-index: 1000;
     overflow: hidden;
   }
@@ -529,13 +551,13 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--border-primary);
   }
 
   .notif-header h3 {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
     margin: 0;
     color: var(--text-primary);
   }
@@ -544,14 +566,19 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
     background: none;
     border: none;
     color: var(--brand);
-    font-size: 0.8125rem;
-    font-weight: 600;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
     cursor: pointer;
     padding: 0;
+    transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .mark-all-btn:hover {
-    text-decoration: underline;
+    opacity: 0.8;
+  }
+
+  .mark-all-btn:active {
+    opacity: 0.6;
   }
 
   .notifications-list {
@@ -560,22 +587,26 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
   }
 
   .notif-item {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--border-primary);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
 
   .notif-item:hover {
     background: var(--bg-hover);
   }
 
+  .notif-item:active {
+    background: var(--interactive-active);
+  }
+
   .notif-item.unread {
-    background: rgba(124, 58, 237, 0.05);
+    background: rgba(124, 58, 237, 0.04);
   }
 
   .notif-item:last-child {
@@ -584,23 +615,24 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
 
   .notif-content {
     flex: 1;
+    min-width: 0;
   }
 
   .notif-text {
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     color: var(--text-primary);
-    margin-bottom: 0.25rem;
-    line-height: 1.4;
+    margin-bottom: var(--space-1);
+    line-height: var(--leading-normal);
   }
 
   .notif-time {
-    font-size: 0.75rem;
+    font-size: var(--text-xs);
     color: var(--text-tertiary);
   }
 
   .notif-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     background: var(--brand);
     border-radius: 50%;
     flex-shrink: 0;
@@ -609,14 +641,14 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
   .notif-loading,
   .notif-empty,
   .notif-error {
-    padding: 2rem 1rem;
+    padding: var(--space-8) var(--space-4);
     text-align: center;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
   }
 
   .notif-error {
-    color: #ef4444;
+    color: var(--error);
   }
 
   /* Mobile Responsive */

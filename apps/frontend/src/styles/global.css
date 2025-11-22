@@ -42,30 +42,21 @@
     --info: #3B82F6;
     --info-bg: #DBEAFE;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    /* Shadows - Subtle elevation, minimal but perceptible */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 2px 8px -2px rgba(0, 0, 0, 0.08), 0 4px 4px -2px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 8px 16px -4px rgba(0, 0, 0, 0.1), 0 4px 8px -4px rgba(0, 0, 0, 0.06);
+    --shadow-focus: 0 0 0 3px rgba(124, 58, 237, 0.1); /* Focus ring */
 
-    /* Spacing Scale - Consistent spacing across all components */
-    --space-1: 0.25rem;   /* 4px */
-    --space-2: 0.5rem;    /* 8px */
-    --space-3: 0.75rem;   /* 12px */
-    --space-4: 1rem;      /* 16px */
-    --space-5: 1.25rem;   /* 20px */
-    --space-6: 1.5rem;    /* 24px */
-    --space-8: 2rem;      /* 32px */
-    --space-10: 2.5rem;   /* 40px */
-    --space-12: 3rem;     /* 48px */
-    --space-16: 4rem;     /* 64px */
-
-    /* Layout Spacing */
-    --layout-gap: 1rem;           /* Gap between grid items */
-    --layout-gap-lg: 1.5rem;      /* Large gap for wide screens */
-    --section-gap: 0.5rem;        /* Gap between sections */
-    --container-padding: 0.5rem;  /* Container padding */
-    --card-padding: 1rem;         /* Card padding */
-    --card-padding-sm: 0.75rem;   /* Small card padding */
+    /* Spacing Scale - Harmonious progression based on multiples of 4px */
+    --space-1: 0.25rem;   /* 4px - Minimal spacing */
+    --space-2: 0.5rem;    /* 8px - Tight spacing */
+    --space-3: 0.75rem;   /* 12px - Compact spacing */
+    --space-4: 1rem;      /* 16px - Base spacing unit */
+    --space-6: 1.5rem;    /* 24px - Comfortable spacing */
+    --space-8: 2rem;      /* 32px - Generous spacing */
+    --space-12: 3rem;     /* 48px - Section spacing */
+    --space-16: 4rem;     /* 64px - Large section spacing */
 
     /* Border Radius */
     --radius-sm: 0;      /* Small radius - brutalist, sharp edges */
@@ -80,6 +71,28 @@
     /* Sidebar Widths */
     --sidebar-left-width: 280px;
     --sidebar-right-width: 300px;
+
+    /* Typography Scale - Based on golden ratio (1.618) and major third (1.25) */
+    --text-xs: 0.75rem;      /* 10.5px - Small labels, captions */
+    --text-sm: 0.875rem;     /* 12.25px - Secondary text */
+    --text-base: 1rem;       /* 14px - Body text */
+    --text-md: 1.125rem;     /* 15.75px - Emphasis */
+    --text-lg: 1.266rem;     /* 17.7px - h4 */
+    --text-xl: 1.424rem;     /* 19.9px - h3 */
+    --text-2xl: 1.602rem;    /* 22.4px - h2 */
+    --text-3xl: 1.802rem;    /* 25.2px - h1 */
+    --text-4xl: 2.027rem;    /* 28.3px - Display */
+
+    /* Font Weights - Minimal, intentional */
+    --font-regular: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    /* Line Heights - Golden ratio based */
+    --leading-tight: 1.272;   /* 1.618 / 1.272 ≈ golden ratio */
+    --leading-normal: 1.618;  /* Golden ratio */
+    --leading-relaxed: 1.75;  /* Slightly more relaxed */
 }
 
 /* Dark Theme */
@@ -120,10 +133,11 @@ html[data-theme="dark"] {
     --info: #60A5FA;
     --info-bg: #1E3A8A;
 
-    /* Shadows - more subtle in dark mode */
+    /* Shadows - More pronounced in dark mode for depth perception */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 2px 8px -2px rgba(0, 0, 0, 0.4), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 16px -4px rgba(0, 0, 0, 0.5), 0 4px 8px -4px rgba(0, 0, 0, 0.3);
+    --shadow-focus: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 /* Auto dark mode - respects system preference unless overridden */
@@ -161,8 +175,9 @@ html[data-theme="dark"] {
         --info-bg: #1E3A8A;
 
         --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        --shadow-md: 0 2px 8px -2px rgba(0, 0, 0, 0.4), 0 4px 4px -2px rgba(0, 0, 0, 0.2);
+        --shadow-lg: 0 8px 16px -4px rgba(0, 0, 0, 0.5), 0 4px 8px -4px rgba(0, 0, 0, 0.3);
+        --shadow-focus: 0 0 0 3px rgba(139, 92, 246, 0.15);
     }
 }
 
@@ -175,11 +190,14 @@ html[data-theme="dark"] {
     font-size: 14px;
     background: var(--bg-primary);
     color: var(--text-primary);
-    line-height: 1.5;
+    line-height: 1.618; /* Golden ratio for perfect readability */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.1s ease, color 0.1s ease;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.011em; /* Optical refinement */
   }
 
   body {
@@ -188,18 +206,24 @@ html[data-theme="dark"] {
     background: var(--bg-primary);
   }
 
-  /* Links */
+  /* Links - Refined interactions */
   a {
     color: var(--text-primary);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   a:hover {
-    text-decoration: underline;
+    opacity: 0.7;
+    text-decoration: none;
   }
 
-  /* Buttons */
+  a:active {
+    opacity: 0.5;
+  }
+
+  /* Buttons - Intentional feedback */
   button {
     font-family: inherit;
     font-size: inherit;
@@ -208,28 +232,45 @@ html[data-theme="dark"] {
     cursor: pointer;
     padding: 0;
     color: inherit;
-    transition: all 0.1s ease;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Form inputs */
+  button:hover:not(:disabled) {
+    opacity: 0.8;
+  }
+
+  button:active:not(:disabled) {
+    transform: scale(0.98);
+    opacity: 0.6;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  /* Form inputs - Subtle, elegant focus */
   input, textarea, select {
     font-family: inherit;
     font-size: inherit;
+    line-height: 1.618;
     background: var(--bg-input);
     border: 1px solid var(--border-primary);
     padding: 0.5rem;
     color: var(--text-primary);
-    transition: all 0.1s ease;
+    transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   input:focus, textarea:focus, select:focus {
-    outline: 1px solid var(--border-focus);
-    outline-offset: 0;
+    outline: none;
     border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
   }
 
-  input:hover, textarea:hover, select:hover {
-    border-color: var(--border-focus);
+  input:hover:not(:focus), textarea:hover:not(:focus), select:hover:not(:focus) {
+    border-color: var(--border-secondary);
   }
 
 /* Utility classes */
@@ -250,4 +291,121 @@ html[data-theme="dark"] {
   .spacer {
     display: inline-block;
     width: 1em;
+  }
+
+  /* Typography - Clear hierarchy, optimal readability */
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+    letter-spacing: -0.02em; /* Tighter tracking for headings */
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-bold);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: 0.875rem;
+  }
+
+  h3 {
+    font-size: var(--text-xl);
+    margin-bottom: 0.75rem;
+  }
+
+  h4 {
+    font-size: var(--text-lg);
+    margin-bottom: 0.625rem;
+  }
+
+  h5 {
+    font-size: var(--text-md);
+    margin-bottom: 0.5rem;
+  }
+
+  h6 {
+    font-size: var(--text-base);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Paragraphs - Optimal line length and spacing */
+  p {
+    margin: 0 0 1rem 0;
+    line-height: var(--leading-normal);
+    max-width: 65ch; /* Optimal reading length */
+  }
+
+  /* Small text */
+  small {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  /* Strong emphasis */
+  strong, b {
+    font-weight: var(--font-semibold);
+  }
+
+  /* Code - Monospace with subtle background */
+  code {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.9em;
+    background: var(--bg-secondary);
+    padding: 0.125rem 0.375rem;
+    border: 1px solid var(--border-primary);
+    font-variant-ligatures: none;
+  }
+
+  /* Lists - Proper spacing and hierarchy */
+  ul, ol {
+    margin: 0 0 var(--space-4) 0;
+    padding-left: var(--space-6);
+  }
+
+  li {
+    margin-bottom: var(--space-2);
+    line-height: var(--leading-normal);
+  }
+
+  /* Horizontal Rule - Minimal divider */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border-primary);
+    margin: var(--space-6) 0;
+  }
+
+  /* Selection - Brand colored */
+  ::selection {
+    background: var(--brand);
+    color: white;
+  }
+
+  /* Focus visible - Accessibility */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* Smooth scrolling - Intentional navigation */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    html {
+      scroll-behavior: auto;
+    }
   }
