@@ -1,0 +1,280 @@
+---
+export const prerender = false;
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import { ChevronUp, ChevronDown, MessageSquare, Eye, Share2, Bookmark } from 'lucide-astro';
+
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+const sort = Astro.url.searchParams.get('sort') || 'hot';
+
+let posts: any[] = [];
+let error = null;
+let requiresAuth = true;
+
+// This page requires authentication - we'll check client-side and fetch posts
+// Server-side rendering would expose the token, so we fetch client-side
+---
+
+<Layout title="My Feed - VapeIndex">
+  <Header />
+
+  <main class="main-content">
+    <div class="container">
+      <div class="feed-header">
+        <div>
+          <h1>My Feed</h1>
+          <p class="feed-description">Posts from boards you subscribe to</p>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-tabs">
+          <a href="/feed" class={`filter-tab ${sort === 'hot' ? 'active' : ''}`}>hot</a>
+          <a href="/feed?sort=new" class={`filter-tab ${sort === 'new' ? 'active' : ''}`}>new</a>
+          <a href="/feed?sort=top" class={`filter-tab ${sort === 'top' ? 'active' : ''}`}>top</a>
+          <a href="/feed?sort=rising" class={`filter-tab ${sort === 'rising' ? 'active' : ''}`}>rising</a>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading" class="loading-state">
+        <p>Loading your personalized feed...</p>
+      </div>
+
+      <!-- Posts Container (filled by JavaScript) -->
+      <div id="posts-container" class="posts-container" style="display: none;"></div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <h2>No posts in your feed</h2>
+        <p>Subscribe to boards to see posts from them here!</p>
+        <a href="/" class="browse-link">Browse all boards →</a>
+      </div>
+
+      <!-- Auth Required State -->
+      <div id="auth-required" class="auth-required" style="display: none;">
+        <h2>Login Required</h2>
+        <p>You need to be logged in to view your personalized feed.</p>
+        <a href="/login" class="login-link">Login →</a>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .main-content {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+    padding: var(--space-4);
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .feed-header {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: var(--space-8) var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+
+  .feed-header h1 {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-bold);
+    margin: 0 0 var(--space-2) 0;
+    color: var(--text-primary);
+  }
+
+  .feed-description {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .filter-bar {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: var(--space-3) var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .filter-tab {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: var(--font-regular);
+    font-size: var(--text-sm);
+    transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .filter-tab.active {
+    color: var(--text-primary);
+    font-weight: var(--font-semibold);
+  }
+
+  .filter-tab:hover {
+    color: var(--brand);
+  }
+
+  .loading-state,
+  .empty-state,
+  .auth-required {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    padding: var(--space-16) var(--space-8);
+    text-align: center;
+  }
+
+  .empty-state h2,
+  .auth-required h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+  }
+
+  .empty-state p,
+  .auth-required p {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .browse-link,
+  .login-link {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: var(--font-semibold);
+    font-size: var(--text-base);
+  }
+
+  .browse-link:hover,
+  .login-link:hover {
+    opacity: 0.8;
+  }
+
+  .posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+</style>
+
+<script>
+  import { isAuthenticated } from '../lib/auth';
+
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+  const urlParams = new URLSearchParams(window.location.search);
+  const sort = urlParams.get('sort') || 'hot';
+
+  const loadingEl = document.getElementById('loading');
+  const postsContainer = document.getElementById('posts-container');
+  const emptyState = document.getElementById('empty-state');
+  const authRequired = document.getElementById('auth-required');
+
+  async function loadFeed() {
+    // Check authentication
+    if (!isAuthenticated()) {
+      loadingEl!.style.display = 'none';
+      authRequired!.style.display = 'block';
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_URL}/api/feed?sort=${sort}&limit=20`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load feed');
+      }
+
+      const posts = await response.json();
+
+      loadingEl!.style.display = 'none';
+
+      if (posts.length === 0) {
+        emptyState!.style.display = 'block';
+        return;
+      }
+
+      // Render posts
+      postsContainer!.innerHTML = posts.map((post: any) => `
+        <article class="post-card">
+          <div class="vote-column">
+            <button class="vote-btn vote-up" aria-label="Upvote">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            </button>
+            <span class="vote-score">${post.score}</span>
+            <button class="vote-btn vote-down" aria-label="Downvote">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+          </div>
+          <div class="post-content">
+            <div class="post-meta">
+              <a href="/b/${post.boardSlug}" class="board-link" style="color: ${post.boardColor}">b/${post.boardSlug}</a>
+              <span class="meta-separator">•</span>
+              <a href="/user/${post.author}" class="author-link">u/${post.author}</a>
+              <span class="author-karma">${post.authorKarma.toLocaleString()}</span>
+              <span class="meta-separator">•</span>
+              <time class="post-time">${post.time}</time>
+              ${post.hot ? '<span class="badge badge-hot">🔥 HOT</span>' : ''}
+              ${post.awarded ? '<span class="badge badge-award">⭐</span>' : ''}
+            </div>
+            <h2 class="post-title">
+              <a href="/post/${post.id}">${post.title}</a>
+            </h2>
+            ${post.imageUrl ? `
+              <div class="post-thumbnail">
+                <a href="/post/${post.id}">
+                  <img src="${post.imageUrl}" alt="${post.title}" loading="lazy" />
+                </a>
+              </div>
+            ` : ''}
+            <div class="post-actions">
+              <a href="/post/${post.id}" class="action-btn action-comment">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>${post.comments}</span>
+              </a>
+              <span class="action-btn action-views">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                <span>${post.views.toLocaleString()}</span>
+              </span>
+              <button class="action-btn action-share">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                <span>Share</span>
+              </button>
+              <button class="action-btn action-save">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                <span>Save</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      postsContainer!.style.display = 'flex';
+
+      // Import posts styles
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/src/styles/posts.css';
+      document.head.appendChild(link);
+
+    } catch (error) {
+      console.error('Failed to load feed:', error);
+      loadingEl!.innerHTML = '<p>Failed to load feed. Please try again.</p>';
+    }
+  }
+
+  // Load feed on page load
+  loadFeed();
+</script>

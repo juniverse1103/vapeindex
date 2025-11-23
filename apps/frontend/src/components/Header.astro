@@ -21,6 +21,7 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
     <!-- Navigation -->
     <nav class="nav-menu">
       <div class="nav-links">
+        <a href="/feed" id="feed-link" class="auth-only-link" style="display: none;">feed</a>
         <a href="/new">new</a>
         <a href="/past">past</a>
         <a href="/comments">comments</a>
@@ -131,9 +132,20 @@ import { Search, Bell, Bookmark, Sun, Moon } from 'lucide-astro';
   // Update auth state on load
   updateAuthState();
 
+  // Show/hide feed link based on auth
+  const feedLink = document.getElementById('feed-link');
+  function updateFeedLinkVisibility() {
+    const user = getStoredUser();
+    if (feedLink) {
+      feedLink.style.display = user ? 'block' : 'none';
+    }
+  }
+  updateFeedLinkVisibility();
+
   // Listen for auth state changes (for when user logs in/out)
   $isAuthenticated.subscribe(() => {
     updateAuthState();
+    updateFeedLinkVisibility();
   });
 
   // Notifications functionality

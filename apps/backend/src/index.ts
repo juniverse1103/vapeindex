@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import authRoutes from './routes/auth';
 import postsRoutes from './routes/posts';
+import boardsRoutes from './routes/boards';
 import moderationRoutes from './routes/moderation';
 import notificationsRoutes from './routes/notifications';
 import uploadRoutes from './routes/upload';
@@ -32,6 +33,7 @@ app.use('/*', cors({
 // Mount routes
 app.route('/api/auth', authRoutes);
 app.route('/api/posts', postsRoutes);
+app.route('/api/boards', boardsRoutes);
 app.route('/api/moderation', moderationRoutes);
 app.route('/api/notifications', notificationsRoutes);
 app.route('/api/upload', uploadRoutes);
@@ -48,7 +50,8 @@ app.get('/api/boards', async (c) => {
     SELECT
       b.*,
       COALESCE(bs.post_count, 0) as posts,
-      COALESCE(bs.member_count, 0) as members
+      COALESCE(bs.member_count, 0) as members,
+      COALESCE(bs.subscriber_count, 0) as subscribers
     FROM boards b
     LEFT JOIN board_stats bs ON b.id = bs.board_id
     ORDER BY b.name
@@ -60,7 +63,8 @@ app.get('/api/boards', async (c) => {
     description: b.description,
     color: b.color,
     posts: b.posts,
-    members: b.members
+    members: b.members,
+    subscribers: b.subscribers
   })) || []);
 });
 
@@ -175,6 +179,102 @@ app.get('/api/posts', async (c) => {
     : c.env.DB.prepare(query).bind(limit, offset);
 
   const { results } = await stmt.all();
+
+  // Convert timestamps to relative time
+  const now = Math.floor(Date.now() / 1000);
+  const posts = results?.map(p => {
+    const age = now - p.created_at;
+    let time = '';
+    if (age < 3600) time = `${Math.floor(age / 60)}m`;
+    else if (age < 86400) time = `${Math.floor(age / 3600)}h`;
+    else if (age < 2592000) time = `${Math.floor(age / 86400)}d`;
+    else if (age < 31536000) time = `${Math.floor(age / 2592000)}mo`;
+    else time = `${Math.floor(age / 31536000)}y`;
+
+    return {
+      id: p.id.toString(),
+      title: p.title,
+      url: p.url,
+      imageUrl: p.image_url,
+      board: p.board,
+      boardSlug: p.board_slug,
+      boardColor: p.board_color,
+      score: p.score,
+      comments: p.comments,
+      views: p.views,
+      author: p.author,
+      authorKarma: p.author_karma,
+      time,
+      hot: sort === 'hot',
+      awarded: p.score > 1000
+    };
+  }) || [];
+
+  return c.json(posts);
+});
+
+// Get personalized feed from subscribed boards (requires auth)
+app.get('/api/feed', authMiddleware, async (c) => {
+  const user = c.get('user');
+  const sort = c.req.query('sort') || 'hot';
+  const limit = parseInt(c.req.query('limit') || '20');
+  const offset = parseInt(c.req.query('offset') || '0');
+
+  // Get user's subscribed board IDs
+  const { results: subscriptions } = await c.env.DB.prepare(`
+    SELECT board_id FROM board_subscriptions WHERE user_id = ?
+  `).bind(user.userId).all();
+
+  if (!subscriptions || subscriptions.length === 0) {
+    // No subscriptions, return empty feed
+    return c.json([]);
+  }
+
+  const boardIds = subscriptions.map((s: any) => s.board_id);
+  const placeholders = boardIds.map(() => '?').join(',');
+
+  let query = `
+    SELECT
+      p.id,
+      p.title,
+      p.url,
+      p.image_url,
+      p.score,
+      p.comment_count as comments,
+      p.view_count as views,
+      p.created_at,
+      b.slug as board_slug,
+      b.name as board,
+      b.color as board_color,
+      u.username as author,
+      u.karma as author_karma
+    FROM posts p
+    JOIN boards b ON p.board_id = b.id
+    JOIN users u ON p.author_id = u.id
+    WHERE p.board_id IN (${placeholders})
+  `;
+
+  // Sorting logic
+  switch (sort) {
+    case 'new':
+      query += ` ORDER BY p.created_at DESC`;
+      break;
+    case 'top':
+      query += ` ORDER BY p.score DESC`;
+      break;
+    case 'rising':
+      query += ` ORDER BY (p.score * 1.0 / (CAST((unixepoch() - p.created_at) AS REAL) / 3600 + 2)) DESC`;
+      break;
+    case 'hot':
+    default:
+      query += ` ORDER BY (p.score - 1) / ((CAST((unixepoch() - p.created_at) AS REAL) / 3600) + 2) DESC`;
+  }
+
+  query += ` LIMIT ? OFFSET ?`;
+
+  const { results } = await c.env.DB.prepare(query)
+    .bind(...boardIds, limit, offset)
+    .all();
 
   // Convert timestamps to relative time
   const now = Math.floor(Date.now() / 1000);

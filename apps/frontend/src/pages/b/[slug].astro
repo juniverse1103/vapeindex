@@ -48,7 +48,7 @@ try {
     ) : board && (
       <div class="board-container">
         <!-- Board Header -->
-        <div class="board-header" style={`border-left: 4px solid ${board.color}`}>
+        <div class="board-header" style={`border-left: 4px solid ${board.color}`} data-board-slug={board.slug}>
           <div class="board-info">
             <h1>b/{board.slug}</h1>
             <p class="board-description">{board.description}</p>
@@ -56,9 +56,17 @@ try {
               <span>{board.posts.toLocaleString()} posts</span>
               <span>•</span>
               <span>{board.members.toLocaleString()} members</span>
+              <span>•</span>
+              <span id="subscriber-count">{board.subscribers ? board.subscribers.toLocaleString() : '0'} subscribers</span>
             </div>
           </div>
-          <a href="/submit" class="submit-btn">+ Submit Post</a>
+          <div class="board-actions">
+            <button id="subscribe-btn" class="subscribe-btn" data-subscribed="false">
+              <span class="subscribe-text">Subscribe</span>
+              <span class="unsubscribe-text">Subscribed</span>
+            </button>
+            <a href="/submit" class="submit-btn">+ Submit Post</a>
+          </div>
         </div>
 
         <!-- Filter Bar -->
@@ -164,6 +172,33 @@ try {
   .board-description { font-size: 0.9375rem; color: var(--text-secondary); margin: 0 0 1rem 0; line-height: 1.5; }
   .board-stats { display: flex; gap: 0.5rem; font-size: 0.875rem; color: var(--text-secondary); font-weight: 600; }
 
+  .board-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+  .subscribe-btn {
+    background: transparent;
+    border: 2px solid var(--brand);
+    color: var(--brand);
+    padding: 0.625rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .subscribe-btn:hover { background: var(--brand); color: white; }
+
+  .subscribe-btn[data-subscribed="false"] .unsubscribe-text { display: none; }
+  .subscribe-btn[data-subscribed="true"] .subscribe-text { display: none; }
+  .subscribe-btn[data-subscribed="true"] {
+    background: var(--brand);
+    color: white;
+  }
+  .subscribe-btn[data-subscribed="true"]:hover {
+    background: transparent;
+    color: var(--brand);
+  }
+
   .submit-btn {
     background: var(--brand);
     color: white;
@@ -210,9 +245,96 @@ try {
       flex-direction: column;
       padding: 1.5rem;
     }
+    .board-actions {
+      width: 100%;
+      flex-direction: column;
+    }
+    .subscribe-btn,
     .submit-btn {
       width: 100%;
       text-align: center;
     }
   }
 </style>
+
+<script>
+  import { isAuthenticated } from '../../lib/auth';
+
+  const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:51728';
+  const subscribeBtn = document.getElementById('subscribe-btn') as HTMLButtonElement;
+  const subscriberCount = document.getElementById('subscriber-count');
+  const boardHeader = document.querySelector('.board-header');
+  const boardSlug = boardHeader?.getAttribute('data-board-slug');
+
+  // Check subscription status on page load
+  async function checkSubscription() {
+    if (!isAuthenticated() || !boardSlug) {
+      subscribeBtn.style.display = 'none';
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_URL}/api/boards/${boardSlug}/subscription`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        updateSubscriptionUI(data.subscribed);
+      }
+    } catch (error) {
+      console.error('Failed to check subscription:', error);
+    }
+  }
+
+  // Update UI based on subscription status
+  function updateSubscriptionUI(subscribed: boolean) {
+    if (subscribeBtn) {
+      subscribeBtn.setAttribute('data-subscribed', String(subscribed));
+    }
+  }
+
+  // Handle subscribe/unsubscribe
+  async function toggleSubscription() {
+    if (!isAuthenticated()) {
+      window.location.href = '/login';
+      return;
+    }
+
+    if (!boardSlug) return;
+
+    const isSubscribed = subscribeBtn.getAttribute('data-subscribed') === 'true';
+    const token = localStorage.getItem('auth_token');
+
+    try {
+      const response = await fetch(`${API_URL}/api/boards/${boardSlug}/subscribe`, {
+        method: isSubscribed ? 'DELETE' : 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        updateSubscriptionUI(!isSubscribed);
+
+        // Update subscriber count
+        if (subscriberCount) {
+          const currentCount = parseInt(subscriberCount.textContent?.replace(/[^0-9]/g, '') || '0');
+          const newCount = isSubscribed ? currentCount - 1 : currentCount + 1;
+          subscriberCount.textContent = `${newCount.toLocaleString()} subscribers`;
+        }
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to update subscription');
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      alert('Failed to update subscription');
+    }
+  }
+
+  // Add click listener
+  subscribeBtn?.addEventListener('click', toggleSubscription);
+
+  // Check subscription on page load
+  checkSubscription();
+</script>

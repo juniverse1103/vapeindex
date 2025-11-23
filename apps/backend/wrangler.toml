@@ -2,6 +2,9 @@ name = "vapeindex-backend"
 main = "src/index.ts"
 compatibility_date = "2024-11-19"
 
+[dev]
+port = 51728
+
 # Default local development database (in-memory, ephemeral)
 [[d1_databases]]
 binding = "DB"
