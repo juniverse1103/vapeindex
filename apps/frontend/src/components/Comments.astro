@@ -37,6 +37,8 @@ const { postId } = Astro.props;
   .reply-form .cancel-reply:hover, .edit-comment-form .cancel-edit-comment:hover { color: var(--text-primary); border-color: var(--text-secondary); }
   .vote-comment-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 0.8125rem; font-weight: 600; padding: 0; }
   .vote-comment-btn:hover { color: var(--brand); }
+  .vote-comment-btn.voted-up { color: #ff4500; }
+  .vote-comment-btn.voted-down { color: #7193ff; }
   .comment-score { font-weight: 600; color: var(--text-primary); margin: 0 0.25rem; }
 </style>
 
@@ -65,15 +67,17 @@ const { postId } = Astro.props;
   function renderComment(comment: any, depth: number = 0): string {
     const replyFormId = `reply-form-${comment.id}`;
     const editFormId = `edit-form-${comment.id}`;
-    const editedText = comment.editedAt ? ` (edited ${formatTimeAgo(comment.editedAt)})` : '';
+    const editedText = comment.editedAt ? ` (edited)` : '';
+    const voteUpClass = comment.userVote === 1 ? 'voted-up' : '';
+    const voteDownClass = comment.userVote === -1 ? 'voted-down' : '';
 
     return `
-      <div class="comment" data-comment-id="${comment.id}" data-author-id="${comment.authorId}" style="margin-left: ${depth * 1.5}rem;">
+      <div class="comment" data-comment-id="${comment.id}" data-author="${comment.author}" style="margin-left: ${depth * 1.5}rem;">
         <div class="comment-header">
-          <span class="comment-author">${comment.author}</span>
+          <span class="comment-author">u/${comment.author}</span>
           <span>${comment.authorKarma || 0} karma</span>
           <span>•</span>
-          <span>${formatTimeAgo(comment.createdAt)}${editedText}</span>
+          <span>${comment.timeAgo}${editedText}</span>
         </div>
         <div class="comment-content" id="content-${comment.id}">${comment.content}</div>
         <form class="edit-comment-form" id="${editFormId}" style="display: none;">
@@ -84,9 +88,9 @@ const { postId } = Astro.props;
           </div>
         </form>
         <div class="comment-actions">
-          <button class="vote-comment-btn" data-comment-id="${comment.id}" data-value="1">▲ upvote</button>
+          <button class="vote-comment-btn ${voteUpClass}" data-comment-id="${comment.id}" data-value="1">▲ upvote</button>
           <span class="comment-score" data-comment-id="${comment.id}">${comment.score}</span>
-          <button class="vote-comment-btn" data-comment-id="${comment.id}" data-value="-1">▼ downvote</button>
+          <button class="vote-comment-btn ${voteDownClass}" data-comment-id="${comment.id}" data-value="-1">▼ downvote</button>
           <button class="reply-btn" data-comment-id="${comment.id}">reply</button>
           <button class="edit-comment-btn" data-comment-id="${comment.id}" style="display: none;">edit</button>
           <button class="delete-comment-btn" data-comment-id="${comment.id}" style="display: none;">delete</button>
@@ -107,7 +111,13 @@ const { postId } = Astro.props;
 
   async function loadComments() {
     try {
-      const res = await fetch(`${API_URL}/api/posts/${postId}/comments`);
+      const token = localStorage.getItem('auth_token');
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`${API_URL}/api/posts/${postId}/comments`, { headers });
 
       if (!res.ok) {
         if (list) list.innerHTML = '<p style="color: var(--text-secondary);">Failed to load comments.</p>';
@@ -136,8 +146,8 @@ const { postId } = Astro.props;
     const user = getStoredUser();
     if (user) {
       document.querySelectorAll('.comment').forEach(comment => {
-        const authorId = parseInt(comment.getAttribute('data-author-id') || '0');
-        if (user.id === authorId) {
+        const author = comment.getAttribute('data-author');
+        if (user.username === author) {
           const commentId = comment.getAttribute('data-comment-id');
           const editBtn = comment.querySelector(`.edit-comment-btn[data-comment-id="${commentId}"]`) as HTMLElement;
           const deleteBtn = comment.querySelector(`.delete-comment-btn[data-comment-id="${commentId}"]`) as HTMLElement;
@@ -196,16 +206,32 @@ const { postId } = Astro.props;
         const value = parseInt(btn.getAttribute('data-value')!);
         const token = localStorage.getItem('auth_token');
 
+        // Check if already voted with this value - if so, remove vote
+        const isAlreadyVoted = btn.classList.contains(value === 1 ? 'voted-up' : 'voted-down');
+        const voteValue = isAlreadyVoted ? 0 : value;
+
         const res = await fetch(`${API_URL}/api/posts/comments/${commentId}/vote`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ value }),
+          body: JSON.stringify({ value: voteValue }),
         });
 
         if (res.ok) {
           const data = await res.json();
           const scoreSpan = document.querySelector(`.comment-score[data-comment-id="${commentId}"]`);
           if (scoreSpan) scoreSpan.textContent = data.score;
+
+          // Update button states
+          const upBtn = btn.parentElement?.querySelector('.vote-comment-btn[data-value="1"]') as HTMLElement;
+          const downBtn = btn.parentElement?.querySelector('.vote-comment-btn[data-value="-1"]') as HTMLElement;
+          if (upBtn) {
+            upBtn.classList.toggle('voted-up', data.userVote === 1);
+            if (data.userVote !== 1) upBtn.classList.remove('voted-up');
+          }
+          if (downBtn) {
+            downBtn.classList.toggle('voted-down', data.userVote === -1);
+            if (data.userVote !== -1) downBtn.classList.remove('voted-down');
+          }
         }
       });
     });
